@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'motion/react'
-import { ArrowRight } from '@phosphor-icons/react'
+import { ArrowRightIcon } from '@phosphor-icons/react'
 
 export function Hero() {
   return (
@@ -11,7 +11,7 @@ export function Hero() {
       className="relative h-screen bg-black overflow-hidden flex items-center justify-center"
       id="hero-section"
     >
-      {/* Background Image */}
+      {/* Background Image s */}
       <div className="absolute inset-0 scale-105 z-0">
         <Image
           src="https://images.unsplash.com/photo-1629195068010-1389c5ff86e4?auto=format&fit=crop&q=80&w=1920"
