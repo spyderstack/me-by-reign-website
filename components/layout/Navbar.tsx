@@ -6,10 +6,10 @@ import { motion, AnimatePresence } from 'motion/react'
 import { MagnifyingGlass, Bag, List, X } from '@phosphor-icons/react'
 
 const navLinks = [
-  { label: 'Skincare', href: '/collections/skincare' },
-  { label: 'Home Decor', href: '/collections/home-decor' },
+  { label: 'Catalog', href: '/collections/skincare' },
   { label: 'Our Story', href: '/our-story' },
-  { label: 'Journal', href: '/journal' },
+  { label: 'Blog', href: '/collections/home-decor' },
+  { label: 'Contact', href: '/contact' },
 ]
 
 export function Navbar() {
