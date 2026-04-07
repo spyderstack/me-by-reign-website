@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'motion/react'
-import { ArrowRightIcon } from '@phosphor-icons/react'
+import { ArrowRight } from '@phosphor-icons/react'
 
 export function Hero() {
   return (
