@@ -2,9 +2,11 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Bag } from '@phosphor-icons/react'
+import { Bag, Check } from '@phosphor-icons/react'
 import { NormalizedProduct } from '@/lib/shopify/types'
+import { addToCart } from '@/lib/cart'
 
 interface ProductCardProps {
   product: NormalizedProduct
@@ -13,6 +15,21 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, index, isInView }: ProductCardProps) {
+  const [added, setAdded] = useState(false)
+
+  const handleQuickAdd = (e: React.MouseEvent) => {
+    e.preventDefault()
+    const numericPrice = parseFloat(product.price.replace(/[^0-9.]/g, ''))
+    addToCart({
+      id: product.id,
+      name: product.name,
+      category: product.category,
+      price: numericPrice,
+      image: product.image,
+    })
+    setAdded(true)
+    setTimeout(() => setAdded(false), 1500)
+  }
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -60,16 +77,20 @@ export function ProductCard({ product, index, isInView }: ProductCardProps) {
           {/* Quick Add — slides up on hover */}
           {product.available && (
             <button
-              className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 bg-black text-white py-4 text-[10px] uppercase tracking-[0.3em] font-bold translate-y-full group-hover:translate-y-0 transition-transform duration-300 hover:bg-[#C5A059] z-20"
+              className={`absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 py-4 text-[10px] uppercase tracking-[0.3em] font-bold translate-y-full group-hover:translate-y-0 transition-all duration-300 z-20 ${
+                added
+                  ? 'bg-[#C5A059] text-white'
+                  : 'bg-black text-white hover:bg-[#C5A059]'
+              }`}
               style={{ fontFamily: "'Montserrat', sans-serif" }}
               id={`add-to-cart-${product.id}`}
-              onClick={(e) => {
-                e.preventDefault()
-                // TODO: wire up to Shopify Cart API — addToCart(product.variantId)
-              }}
+              onClick={handleQuickAdd}
             >
-              <Bag size={16} weight="regular" />
-              Quick Add
+              {added ? (
+                <><Check size={16} weight="bold" /> Added!</>
+              ) : (
+                <><Bag size={16} weight="regular" /> Quick Add</>
+              )}
             </button>
           )}
         </div>

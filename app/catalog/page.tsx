@@ -90,13 +90,13 @@ export default function CatalogPage() {
             className="object-cover object-center"
           />
           {/* Layered overlay: dark at top (navbar legibility) → dark at bottom (text legibility) */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/25 to-black/80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/90" />
         </div>
 
         {/* Hero text — flush bottom, starts below navbar */}
         <div
-          className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 md:pb-24"
-          style={{ paddingTop: 'calc(var(--banner-height, 0px) + 120px)' }}
+          className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          style={{ paddingTop: 'calc(var(--banner-height, 0px) + 120px)', paddingBottom: '4rem' }}
         >
           {/* Eyebrow */}
           <motion.div
@@ -136,8 +136,8 @@ export default function CatalogPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={isHeroVisible ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.85, delay: 0.2 }}
-            className="text-gray-300 text-sm md:text-base leading-relaxed font-light max-w-lg"
-            style={{ fontFamily: "'Montserrat', sans-serif" }}
+            className="text-sm md:text-base leading-relaxed font-light max-w-lg"
+            style={{ fontFamily: "'Montserrat', sans-serif", color: 'rgba(255,255,255,0.85)' }}
           >
             Artisan-crafted skincare and luxury home essentials — chosen for their
             craftsmanship, botanical integrity, and the ritual they inspire.
@@ -171,7 +171,9 @@ export default function CatalogPage() {
           PRODUCT GRID
       ──────────────────────────────────────────────────────────────────── */}
       <section className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-100 pb-32 md:pb-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-100 pb-32 md:pb-100"
+          style={{ paddingBottom: '4rem' }}
+        >
 
           <div ref={gridRef}>
             {filteredProducts.length > 0 ? (
@@ -267,6 +269,6 @@ export default function CatalogPage() {
         </div>
       </section>
 
-    </main>
+    </main >
   )
 }

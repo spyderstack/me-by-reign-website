@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'motion/react'
 import { MagnifyingGlass, Bag, List, X } from '@phosphor-icons/react'
+import { getCartCount } from '@/lib/cart'
 
 const navLinks = [
   { label: 'Catalog', href: '/catalog' },
@@ -15,7 +16,15 @@ const navLinks = [
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const cartCount = 0
+  const [cartCount, setCartCount] = useState(0)
+
+  useEffect(() => {
+    // Sync count on mount and on every cart update
+    const sync = () => setCartCount(getCartCount())
+    sync()
+    window.addEventListener('cartUpdated', sync)
+    return () => window.removeEventListener('cartUpdated', sync)
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -93,19 +102,22 @@ export function Navbar() {
                 <MagnifyingGlass size={20} weight="regular" />
               </button>
 
-              <button
+              <Link
+                href="/cart"
                 className="relative transition-colors duration-200 hover:text-[#C5A059]"
                 aria-label={`Shopping bag (${cartCount} items)`}
                 id="navbar-cart-btn"
               >
                 <Bag size={20} weight="regular" />
-                <span
-                  className="absolute -top-2 -right-2 w-4 h-4 rounded-full flex items-center justify-center text-white text-[9px] font-bold"
-                  style={{ backgroundColor: '#C5A059', fontFamily: "'Montserrat', sans-serif" }}
-                >
-                  {cartCount}
-                </span>
-              </button>
+                {cartCount > 0 && (
+                  <span
+                    className="absolute -top-2 -right-2 w-4 h-4 rounded-full flex items-center justify-center text-white text-[9px] font-bold"
+                    style={{ backgroundColor: '#C5A059', fontFamily: "'Montserrat', sans-serif" }}
+                  >
+                    {cartCount > 9 ? '9+' : cartCount}
+                  </span>
+                )}
+              </Link>
 
               {/* Mobile Menu Toggle */}
               <button
