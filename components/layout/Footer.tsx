@@ -4,10 +4,10 @@ import Link from 'next/link'
 import { InstagramLogo, FacebookLogo, TwitterLogo, MapPin, Phone, Envelope, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 
 const discoverLinks = [
-  { label: 'Skincare Collection', href: '/collections/skincare' },
-  { label: 'Home Decor', href: '/collections/home-decor' },
-  { label: 'New Arrivals', href: '/collections/new-arrivals' },
-  { label: 'Best Sellers', href: '/collections/best-sellers' },
+  { label: 'Skincare Collection', href: '/catalog' },
+  { label: 'Home Decor', href: '/catalog' },
+  { label: 'New Arrivals', href: '/catalog' },
+  { label: 'Best Sellers', href: '/catalog' },
   { label: 'Gift Cards', href: '/gift-cards' },
 ]
 
@@ -92,7 +92,7 @@ export function Footer() {
             </h3>
             <ul className="space-y-4">
               {discoverLinks.map((link) => (
-                <li key={link.href}>
+                <li key={link.label}>
                   <Link
                     href={link.href}
                     className="text-sm uppercase tracking-wider text-gray-400 hover:text-[#C5A059] transition-colors duration-200"

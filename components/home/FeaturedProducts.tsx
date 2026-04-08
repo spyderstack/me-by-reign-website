@@ -65,7 +65,7 @@ export function FeaturedProducts() {
             </p>
           </div>
           <Link
-            href="/collections"
+            href="/catalog"
             className="group flex items-center gap-2 text-black hover:text-[#C5A059] transition-colors uppercase tracking-widest text-xs font-semibold whitespace-nowrap pb-2 border-b border-black hover:border-[#C5A059]"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
             id="featured-products-view-all"

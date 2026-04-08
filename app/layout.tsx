@@ -38,7 +38,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${playfair.variable} ${montserrat.variable}`} suppressHydrationWarning>
-      <body>
+      <body suppressHydrationWarning>
         <ScrollProgressBar />
         <SeasonalBanner />
         <Navbar />

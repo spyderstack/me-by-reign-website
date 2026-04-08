@@ -71,7 +71,7 @@ export function Hero() {
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <Link
-            href="/collections"
+            href="/catalog"
             className="group flex items-center gap-2 bg-white text-black px-8 py-4 uppercase tracking-widest text-xs font-semibold transition-all duration-300 hover:bg-[#C5A059] hover:text-white"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
             id="hero-shop-btn"
