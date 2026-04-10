@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'motion/react'
 import { MagnifyingGlass, Bag, List, X } from '@phosphor-icons/react'
 import { getCartCount } from '@/lib/cart'
+import { SearchModal } from '@/components/search/SearchModal'
 
 const navLinks = [
   { label: 'Catalog', href: '/catalog' },
@@ -17,6 +18,7 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [cartCount, setCartCount] = useState(0)
+  const [searchOpen, setSearchOpen] = useState(false)
 
   useEffect(() => {
     // Sync count on mount and on every cart update
@@ -98,6 +100,7 @@ export function Navbar() {
                 className="transition-colors duration-200 hover:text-[#C5A059]"
                 aria-label="Search"
                 id="navbar-search-btn"
+                onClick={() => setSearchOpen(true)}
               >
                 <MagnifyingGlass size={20} weight="regular" />
               </button>
@@ -206,6 +209,9 @@ export function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Search Modal */}
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   )
 }

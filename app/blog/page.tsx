@@ -98,6 +98,7 @@ function PostGrid({ posts }: { posts: BlogPost[] }) {
           transition={{ duration: 0.7, delay: index * 0.1 }}
           className="group cursor-pointer"
         >
+          <Link href={`/blog/${post.id}`} className="block">
           {/* Image */}
           <div className="relative aspect-[3/2] overflow-hidden bg-[#faf9f6] mb-5">
             <img
@@ -148,6 +149,7 @@ function PostGrid({ posts }: { posts: BlogPost[] }) {
             </span>
             <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform duration-200" />
           </div>
+          </Link>
         </motion.article>
       ))}
     </div>
@@ -245,13 +247,13 @@ export default function BlogPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
 
             {/* Image */}
-            <div className="relative aspect-[16/9] overflow-hidden bg-[#faf9f6] group cursor-pointer">
+            <Link href={`/blog/${featured.id}`} className="relative aspect-[16/9] overflow-hidden bg-[#faf9f6] group cursor-pointer block">
               <img
                 src={featured.image}
                 alt={featured.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
-            </div>
+            </Link>
 
             {/* Content */}
             <div>
@@ -288,7 +290,7 @@ export default function BlogPage() {
                 <span>{featured.readTime}</span>
               </div>
 
-              <button className="group flex items-center gap-3 border border-black px-8 py-4 hover:bg-black hover:text-white transition-all duration-300">
+              <Link href={`/blog/${featured.id}`} className="group flex items-center gap-3 border border-black px-8 py-4 hover:bg-black hover:text-white transition-all duration-300 inline-flex">
                 <span
                   className="text-[10px] uppercase tracking-[0.3em] font-bold"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
@@ -296,7 +298,7 @@ export default function BlogPage() {
                   Read Article
                 </span>
                 <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-200" />
-              </button>
+              </Link>
             </div>
           </div>
         </div>
