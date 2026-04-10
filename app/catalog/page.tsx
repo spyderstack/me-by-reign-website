@@ -172,7 +172,7 @@ export default function CatalogPage() {
       ──────────────────────────────────────────────────────────────────── */}
       <section className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-100 pb-32 md:pb-100"
-          style={{ paddingBottom: '4rem' }}
+          style={{ paddingTop: 'calc(var(--banner-height, 0px) + 50px)', paddingBottom: '4rem' }}
         >
 
           <div ref={gridRef}>
