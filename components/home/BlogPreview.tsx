@@ -23,7 +23,7 @@ export function BlogPreview() {
             From the Journal
           </h2>
           <Link
-            href="/journal"
+            href="/blog"
             className="group flex items-center gap-2 text-black hover:text-[#C5A059] transition-colors uppercase tracking-widest text-xs font-semibold whitespace-nowrap pb-2 border-b border-black hover:border-[#C5A059]"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
             id="blog-preview-read-all"
@@ -42,7 +42,7 @@ export function BlogPreview() {
           {blogPosts.map((post, index) => (
             <motion.a
               key={post.id}
-              href={`/journal/${post.slug}`}
+              href={`/blog/${post.slug}`}
               initial={{ opacity: 0, y: 50 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
               transition={{ duration: 0.8, delay: index * 0.1 }}

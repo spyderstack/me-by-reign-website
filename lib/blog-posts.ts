@@ -5,6 +5,7 @@
 
 export interface BlogPostContent {
   id: number
+  slug: string
   title: string
   excerpt: string
   date: string
@@ -22,6 +23,7 @@ export interface BlogPostContent {
 export const BLOG_POSTS: BlogPostContent[] = [
   {
     id: 1,
+    slug: 'ancient-art-of-botanical-skincare',
     title: 'The Ancient Art of Botanical Skincare',
     excerpt: 'Exploring time-honored traditions from Mediterranean herbalists and how they inform our modern formulations.',
     date: 'March 28, 2026',
@@ -54,6 +56,7 @@ export const BLOG_POSTS: BlogPostContent[] = [
   },
   {
     id: 2,
+    slug: 'mindful-morning-ritual',
     title: 'Creating a Mindful Morning Ritual',
     excerpt: 'How to transform your skincare routine into a grounding practice that sets the tone for your entire day.',
     date: 'March 21, 2026',
@@ -86,6 +89,7 @@ export const BLOG_POSTS: BlogPostContent[] = [
   },
   {
     id: 3,
+    slug: 'power-of-rose-in-natural-beauty',
     title: 'The Power of Rose in Natural Beauty',
     excerpt: 'Discover why rose has been treasured for centuries and how we harness its properties in our signature serum.',
     date: 'March 14, 2026',
@@ -118,6 +122,7 @@ export const BLOG_POSTS: BlogPostContent[] = [
   },
   {
     id: 4,
+    slug: 'spa-energy-into-your-home',
     title: 'Bringing Spa Energy Into Your Home',
     excerpt: 'Simple ways to create a sanctuary atmosphere through scent, light, and intentional design.',
     date: 'March 7, 2026',
@@ -150,6 +155,7 @@ export const BLOG_POSTS: BlogPostContent[] = [
   },
   {
     id: 5,
+    slug: 'understanding-clean-beauty',
     title: 'Understanding Clean Beauty',
     excerpt: "What 'clean' really means, why it matters, and how to navigate the overwhelming world of natural skincare.",
     date: 'February 28, 2026',
@@ -182,6 +188,7 @@ export const BLOG_POSTS: BlogPostContent[] = [
   },
   {
     id: 6,
+    slug: 'seasonal-skincare-spring-edition',
     title: 'Seasonal Skincare: Spring Edition',
     excerpt: "Adjusting your routine as the seasons change to support your skin's evolving needs.",
     date: 'February 21, 2026',

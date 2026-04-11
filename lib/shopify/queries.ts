@@ -125,3 +125,38 @@ export const GET_ALL_COLLECTIONS_QUERY = `
     }
   }
 `
+
+// Fetch single product by handle
+export const GET_PRODUCT_BY_HANDLE_QUERY = `
+  ${PRODUCT_FRAGMENT}
+  query GetProductByHandle($handle: String!) {
+    product(handle: $handle) {
+      ...ProductFragment
+    }
+  }
+`
+
+// Create a checkout session
+export const CHECKOUT_CREATE_MUTATION = `
+  mutation checkoutCreate($input: CheckoutCreateInput!) {
+    checkoutCreate(input: $input) {
+      checkout {
+        id
+        webUrl
+      }
+      checkoutUserErrors {
+        code
+        field
+        message
+      }
+    }
+  }
+`
+export const GET_PRODUCT_RECOMMENDATIONS_QUERY = `
+  ${PRODUCT_FRAGMENT}
+  query GetProductRecommendations($productId: ID!) {
+    productRecommendations(productId: $productId) {
+      ...ProductFragment
+    }
+  }
+`

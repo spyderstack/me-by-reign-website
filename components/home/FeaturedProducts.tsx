@@ -1,49 +1,35 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, useInView } from 'motion/react'
-import { ArrowRight, Bag } from '@phosphor-icons/react'
+import { ArrowRight, Bag, Check } from '@phosphor-icons/react'
+import { NormalizedProduct } from '@/lib/shopify/types'
+import { addToCart } from '@/lib/cart'
 
-const products = [
-  { 
-    id: 1, 
-    name: 'Golden Elixir Serum',         
-    category: 'Skincare',    
-    price: '$120.00', 
-    tag: 'Best Seller',
-    image: '/images/placeholder.png'
-  },
-  { 
-    id: 2, 
-    name: 'Oat & Honey Artisanal Soap',  
-    category: 'Skincare',    
-    price: '$28.00',  
-    tag: 'New Arrival',
-    image: '/images/placeholder.png'
-  },
-  { 
-    id: 3, 
-    name: 'Noir Fig & Amber Candle',      
-    category: 'Home Decor',  
-    price: '$85.00',  
-    tag: 'Limited Edition',
-    image: '/images/placeholder.png'
-  },
-  { 
-    id: 4, 
-    name: 'Minimalist Sculptural Vase',   
-    category: 'Home Decor',  
-    price: '$150.00', 
-    tag: 'Signature',
-    image: '/images/placeholder.png'
-  },
-]
+interface FeaturedProductsProps {
+  initialProducts: NormalizedProduct[]
+}
 
-export function FeaturedProducts() {
+export function FeaturedProducts({ initialProducts }: FeaturedProductsProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const [addedId, setAddedId] = useState<string | null>(null)
+
+  const handleAddToCart = (product: NormalizedProduct) => {
+    const numericPrice = parseFloat(product.price.replace(/[^0-9.]/g, ''))
+    addToCart({
+      id: product.id,
+      variantId: product.variantId,
+      name: product.name,
+      category: product.category,
+      price: numericPrice,
+      image: product.image,
+    })
+    setAddedId(product.id)
+    setTimeout(() => setAddedId(null), 1500)
+  }
 
   return (
     <section className="bg-white py-32" id="featured-products" ref={ref}>
@@ -81,47 +67,65 @@ export function FeaturedProducts() {
 
         {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
-          {products.map((product, index) => (
+          {initialProducts.map((product, index) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 50 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
               transition={{ duration: 0.8, delay: index * 0.1 }}
-              className="group cursor-pointer"
+              className="group"
             >
               {/* Image Container */}
               <div className="relative aspect-[3/4] overflow-hidden bg-gray-50 mb-5">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-                  priority={index === 0}
-                  loading={index === 0 ? "eager" : "lazy"}
-                />
+                <Link href={`/products/${product.handle}`}>
+                  <Image
+                    src={product.image}
+                    alt={product.imageAlt}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                    priority={index === 0}
+                    loading={index === 0 ? "eager" : "lazy"}
+                  />
+                </Link>
 
                 {/* Tag Badge */}
-                <div
-                  className="absolute top-4 left-4 bg-white/90 px-3 py-1 text-[10px] uppercase tracking-widest font-semibold text-black z-10"
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
-                >
-                  {product.tag}
-                </div>
+                {product.tag && (
+                  <div
+                    className="absolute top-4 left-4 bg-white/90 px-3 py-1 text-[10px] uppercase tracking-widest font-semibold text-black z-10"
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  >
+                    {product.tag}
+                  </div>
+                )}
 
                 {/* Gradient overlay on hover */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/50 to-transparent" />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
 
                 {/* Add to Cart overlay */}
-                <button
-                  className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 bg-black text-white py-4 text-xs uppercase tracking-widest font-semibold translate-y-full group-hover:translate-y-0 transition-transform duration-300 hover:bg-[#C5A059] z-10"
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
-                  id={`add-to-cart-${product.id}`}
-                  aria-label={`Add ${product.name} to cart`}
-                >
-                  <Bag size={16} weight="regular" />
-                  Add to Cart
-                </button>
+                {product.available ? (
+                  <button
+                    onClick={() => handleAddToCart(product)}
+                    className={`absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 py-4 text-xs uppercase tracking-widest font-semibold translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-10 ${
+                      addedId === product.id 
+                        ? 'bg-[#C5A059] text-white' 
+                        : 'bg-black text-white hover:bg-[#C5A059]'
+                    }`}
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                    id={`add-to-cart-${product.id}`}
+                    aria-label={`Add ${product.name} to cart`}
+                  >
+                    {addedId === product.id ? (
+                      <><Check size={16} weight="bold" /> Added!</>
+                    ) : (
+                      <><Bag size={16} weight="regular" /> Add to Cart</>
+                    )}
+                  </button>
+                ) : (
+                  <div className="absolute inset-0 bg-white/40 flex items-center justify-center backdrop-blur-[2px]">
+                    <span className="bg-white/90 px-4 py-2 text-[10px] uppercase tracking-widest font-bold">Out of Stock</span>
+                  </div>
+                )}
               </div>
 
               {/* Product Info */}
@@ -131,12 +135,14 @@ export function FeaturedProducts() {
               >
                 {product.category}
               </p>
-              <h3
-                className="text-lg font-serif text-black hover:text-[#C5A059] transition-colors duration-200 mb-1 leading-snug"
-                style={{ fontFamily: "'Playfair Display', serif" }}
-              >
-                {product.name}
-              </h3>
+              <Link href={`/products/${product.handle}`}>
+                <h3
+                  className="text-lg font-serif text-black hover:text-[#C5A059] transition-colors duration-200 mb-1 leading-snug"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
+                  {product.name}
+                </h3>
+              </Link>
               <p
                 className="text-gray-900 font-medium text-sm"
                 style={{ fontFamily: "'Montserrat', sans-serif" }}

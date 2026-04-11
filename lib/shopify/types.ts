@@ -68,6 +68,8 @@ export interface NormalizedProduct {
   available: boolean
   image: string              // featuredImage.url
   imageAlt: string
+  images: string[]           // full image gallery
+  description: string        // full product description
   variantId: string          // default variant id for add-to-cart
 }
 

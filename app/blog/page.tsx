@@ -6,86 +6,9 @@ import { useRef } from 'react'
 import { motion, useInView } from 'motion/react'
 import { ArrowRight } from '@phosphor-icons/react'
 
-interface BlogPost {
-  id: number
-  title: string
-  excerpt: string
-  date: string
-  category: string
-  image: string
-  readTime: string
-}
+import { BLOG_POSTS, BlogPostContent } from '@/lib/blog-posts'
 
-const blogPosts: BlogPost[] = [
-  {
-    id: 1,
-    title: 'The Ancient Art of Botanical Skincare',
-    excerpt:
-      'Exploring time-honored traditions from Mediterranean herbalists and how they inform our modern formulations.',
-    date: 'March 28, 2026',
-    category: 'Heritage',
-    image:
-      'https://images.unsplash.com/photo-1763742259246-80eb61e760d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-    readTime: '8 min read',
-  },
-  {
-    id: 2,
-    title: 'Creating a Mindful Morning Ritual',
-    excerpt:
-      'How to transform your skincare routine into a grounding practice that sets the tone for your entire day.',
-    date: 'March 21, 2026',
-    category: 'Wellness',
-    image:
-      'https://images.unsplash.com/photo-1556228720-195a672e8a03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-    readTime: '5 min read',
-  },
-  {
-    id: 3,
-    title: 'The Power of Rose in Natural Beauty',
-    excerpt:
-      'Discover why rose has been treasured for centuries and how we harness its properties in our signature serum.',
-    date: 'March 14, 2026',
-    category: 'Ingredients',
-    image:
-      'https://images.unsplash.com/photo-1617897903246-719242758050?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-    readTime: '6 min read',
-  },
-  {
-    id: 4,
-    title: 'Bringing Spa Energy Into Your Home',
-    excerpt:
-      'Simple ways to create a sanctuary atmosphere through scent, light, and intentional design.',
-    date: 'March 7, 2026',
-    category: 'Home',
-    image:
-      'https://images.unsplash.com/photo-1600857062241-98e5dba7f417?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-    readTime: '7 min read',
-  },
-  {
-    id: 5,
-    title: 'Understanding Clean Beauty',
-    excerpt:
-      "What 'clean' really means, why it matters, and how to navigate the overwhelming world of natural skincare.",
-    date: 'February 28, 2026',
-    category: 'Education',
-    image:
-      'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-    readTime: '10 min read',
-  },
-  {
-    id: 6,
-    title: 'Seasonal Skincare: Spring Edition',
-    excerpt:
-      "Adjusting your routine as the seasons change to support your skin's evolving needs.",
-    date: 'February 21, 2026',
-    category: 'Skincare',
-    image:
-      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-    readTime: '6 min read',
-  },
-]
-
-function PostGrid({ posts }: { posts: BlogPost[] }) {
+function PostGrid({ posts }: { posts: BlogPostContent[] }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-60px' })
   return (
@@ -98,13 +21,15 @@ function PostGrid({ posts }: { posts: BlogPost[] }) {
           transition={{ duration: 0.7, delay: index * 0.1 }}
           className="group cursor-pointer"
         >
-          <Link href={`/blog/${post.id}`} className="block">
+          <Link href={`/blog/${post.slug}`} className="block">
           {/* Image */}
           <div className="relative aspect-[3/2] overflow-hidden bg-[#faf9f6] mb-5">
-            <img
+            <Image
               src={post.image}
               alt={post.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover group-hover:scale-105 transition-transform duration-700"
             />
             {/* Category badge */}
             <div
@@ -159,8 +84,8 @@ function PostGrid({ posts }: { posts: BlogPost[] }) {
 export default function BlogPage() {
   const heroRef = useRef(null)
   const isHeroIn = useInView(heroRef, { once: true })
-  const featured = blogPosts[0]
-  const rest = blogPosts.slice(1)
+  const featured = BLOG_POSTS[0]
+  const rest = BLOG_POSTS.slice(1)
 
   return (
     <main className="min-h-screen bg-white antialiased">
@@ -212,7 +137,7 @@ export default function BlogPage() {
               lineHeight: 1.05,
             }}
           >
-            The <em style={{ fontStyle: 'italic', fontWeight: 300 }}>Blog</em>
+            The <em style={{ fontStyle: 'italic', fontWeight: 300 }}>Journal</em>
           </motion.h1>
 
           <motion.p
@@ -247,10 +172,12 @@ export default function BlogPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
 
             {/* Image */}
-            <Link href={`/blog/${featured.id}`} className="relative aspect-[16/9] overflow-hidden bg-[#faf9f6] group cursor-pointer block">
-              <img
+            <Link href={`/blog/${featured.slug}`} className="relative aspect-[16/9] overflow-hidden bg-[#faf9f6] group cursor-pointer block">
+              <Image
                 src={featured.image}
                 alt={featured.title}
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
             </Link>
@@ -290,7 +217,7 @@ export default function BlogPage() {
                 <span>{featured.readTime}</span>
               </div>
 
-              <Link href={`/blog/${featured.id}`} className="group flex items-center gap-3 border border-black px-8 py-4 hover:bg-black hover:text-white transition-all duration-300 inline-flex">
+              <Link href={`/blog/${featured.slug}`} className="group flex items-center gap-3 border border-black px-8 py-4 hover:bg-black hover:text-white transition-all duration-300 inline-flex">
                 <span
                   className="text-[10px] uppercase tracking-[0.3em] font-bold"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}

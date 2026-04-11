@@ -38,7 +38,7 @@ export function NewsletterSection() {
             type="email"
             placeholder="Enter your email"
             className="flex-1 bg-white border border-gray-200 px-6 py-4 focus:outline-none focus:border-[#C5A059] transition-colors rounded-sm text-sm"
-            style={{ fontFamily: "'Montserrat', sans-serif" }}
+            aria-label="Email address for newsletter"
             required
             id="newsletter-email-input"
           />

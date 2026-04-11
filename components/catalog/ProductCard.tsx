@@ -22,6 +22,7 @@ export function ProductCard({ product, index, isInView }: ProductCardProps) {
     const numericPrice = parseFloat(product.price.replace(/[^0-9.]/g, ''))
     addToCart({
       id: product.id,
+      variantId: product.variantId,
       name: product.name,
       category: product.category,
       price: numericPrice,

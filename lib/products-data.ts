@@ -1,7 +1,9 @@
 // ─── Enriched Product Data ────────────────────────────────────────────────────
 // Rich detail data for /products/[handle] pages.
-// Keyed by handle to match the MOCK_PRODUCTS in lib/shopify/client.ts.
-// When Shopify is connected, this will be replaced by Storefront API data.
+//
+// PRODUCTION NOTE: For the live store, migrate this content to Shopify Metafields
+// (e.g. custom.ingredients, custom.benefits) and fetch them via the Storefront API
+// instead of maintaining this local fallback. See PRODUCTION_MIGRATION_GUIDE.md.
 
 export interface ProductDetail {
   handle: string

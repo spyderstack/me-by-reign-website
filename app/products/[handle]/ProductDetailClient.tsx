@@ -4,35 +4,52 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { motion } from 'motion/react'
 import { ArrowLeft, Check, Plus, Star } from '@phosphor-icons/react'
-import { ProductDetail, PRODUCT_DETAILS } from '@/lib/products-data'
+import { getProductByHandle as getMockDetail } from '@/lib/products-data'
 import { addToCart } from '@/lib/cart'
+import { NormalizedProduct } from '@/lib/shopify/types'
 
-export default function ProductDetailClient({ product }: { product: ProductDetail }) {
+export default function ProductDetailClient({
+  product,
+  relatedProducts,
+}: {
+  product: NormalizedProduct
+  relatedProducts: NormalizedProduct[]
+}) {
   const [selectedImage, setSelectedImage] = useState(0)
   const [added, setAdded] = useState(false)
+
+  // Fallback to rich mock data for descriptions/ingredients if available
+  const richDetail = getMockDetail(product.handle)
 
   const numericPrice = parseFloat(product.price.replace(/[^0-9.]/g, ''))
 
   const handleAddToCart = () => {
     addToCart({
-      id: `product-${product.handle}`,
+      id: product.id,
+      variantId: product.variantId,
       name: product.name,
       category: product.category,
       price: numericPrice,
-      image: product.images[0],
+      image: product.image,
     })
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
   }
 
-  const related = PRODUCT_DETAILS.filter(
-    (p) => p.category === product.category && p.handle !== product.handle
-  ).slice(0, 3)
+  // Related products logic (using real Shopify recommendations)
+  const related = relatedProducts.slice(0, 3)
+
+  const images = product.images.length > 0 ? product.images : [product.image]
+  const description = product.description || richDetail?.fullDescription || 'No description available.'
+  const size = richDetail?.size || 'Standard'
+  const ingredients = richDetail?.ingredients || []
+  const benefits = richDetail?.benefits || []
+  const howToUse = richDetail?.howToUse || ''
 
   return (
     <div className="min-h-screen bg-white">
 
-      {/* ── Breadcrumb ───────────────────────────────────────────────────── */}
+      {/* ── Breadcrumb ── */}
       <div
         className="border-b border-gray-100 bg-white"
         style={{ paddingTop: 'calc(var(--banner-height, 0px) + 80px)' }}
@@ -54,7 +71,7 @@ export default function ProductDetailClient({ product }: { product: ProductDetai
         </div>
       </div>
 
-      {/* ── Main Grid ────────────────────────────────────────────────────── */}
+      {/* ── Main Grid ── */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
@@ -69,15 +86,15 @@ export default function ProductDetailClient({ product }: { product: ProductDetai
                 className="aspect-[3/4] bg-[#faf9f6] overflow-hidden mb-4"
               >
                 <img
-                  src={product.images[selectedImage]}
-                  alt={product.name}
+                  src={images[selectedImage]}
+                  alt={product.imageAlt}
                   className="w-full h-full object-cover"
                 />
               </motion.div>
 
-              {product.images.length > 1 && (
+              {images.length > 1 && (
                 <div className="grid grid-cols-4 gap-3">
-                  {product.images.map((img, i) => (
+                  {images.map((img, i) => (
                     <button
                       key={i}
                       onClick={() => setSelectedImage(i)}
@@ -134,19 +151,29 @@ export default function ProductDetailClient({ product }: { product: ProductDetai
               </div>
 
               {/* Price */}
-              <p
-                className="text-3xl mb-6"
-                style={{ fontFamily: "'Montserrat', sans-serif" }}
-              >
-                {product.price}
-              </p>
+              <div className="flex items-center gap-4 mb-6">
+                <p
+                  className="text-3xl"
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                >
+                  {product.price}
+                </p>
+                {product.compareAtPrice && (
+                  <p
+                    className="text-xl text-gray-400 line-through"
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  >
+                    {product.compareAtPrice}
+                  </p>
+                )}
+              </div>
 
               {/* Full Description */}
               <p
                 className="text-gray-600 text-base leading-relaxed mb-8 pb-8 border-b border-gray-100"
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
               >
-                {product.fullDescription}
+                {description}
               </p>
 
               {/* Size */}
@@ -155,28 +182,33 @@ export default function ProductDetailClient({ product }: { product: ProductDetai
                   className="text-[10px] uppercase tracking-[0.25em] text-gray-500 mb-1 font-semibold"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
-                  Size
+                  SKU / Size
                 </p>
                 <p
                   className="text-gray-700"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
-                  {product.size}
+                  {size}
                 </p>
               </div>
 
               {/* Add to Cart */}
               <button
                 onClick={handleAddToCart}
+                disabled={!product.available}
                 className={`w-full flex items-center justify-center gap-3 px-8 py-4 uppercase tracking-widest text-xs font-bold transition-all duration-300 mb-3 ${
-                  added
+                  !product.available
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : added
                     ? 'bg-[#C5A059] text-white'
                     : 'bg-black text-white hover:bg-[#C5A059]'
                 }`}
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
                 id="product-add-to-cart-btn"
               >
-                {added ? (
+                {!product.available ? (
+                  'Out of Stock'
+                ) : added ? (
                   <><Check size={18} weight="bold" /> Added to Cart</>
                 ) : (
                   <><Plus size={18} weight="regular" /> Add to Cart</>
@@ -191,70 +223,76 @@ export default function ProductDetailClient({ product }: { product: ProductDetai
               </p>
 
               {/* Ingredients */}
-              <div className="mb-8 pb-8 border-b border-gray-100">
-                <h2
-                  className="text-xl mb-4"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
-                >
-                  Key Ingredients
-                </h2>
-                <ul className="space-y-2">
-                  {product.ingredients.map((item, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-3 text-gray-600 text-sm"
-                      style={{ fontFamily: "'Montserrat', sans-serif" }}
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] mt-2 flex-shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {ingredients.length > 0 && (
+                <div className="mb-8 pb-8 border-b border-gray-100">
+                  <h2
+                    className="text-xl mb-4"
+                    style={{ fontFamily: "'Playfair Display', serif" }}
+                  >
+                    Key Ingredients
+                  </h2>
+                  <ul className="space-y-2">
+                    {ingredients.map((item, i) => (
+                      <li
+                        key={i}
+                        className="flex items-start gap-3 text-gray-600 text-sm"
+                        style={{ fontFamily: "'Montserrat', sans-serif" }}
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] mt-2 flex-shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               {/* Benefits */}
-              <div className="mb-8 pb-8 border-b border-gray-100">
-                <h2
-                  className="text-xl mb-4"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
-                >
-                  Benefits
-                </h2>
-                <ul className="space-y-2">
-                  {product.benefits.map((item, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-3 text-gray-600 text-sm"
-                      style={{ fontFamily: "'Montserrat', sans-serif" }}
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] mt-2 flex-shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {benefits.length > 0 && (
+                <div className="mb-8 pb-8 border-b border-gray-100">
+                  <h2
+                    className="text-xl mb-4"
+                    style={{ fontFamily: "'Playfair Display', serif" }}
+                  >
+                    Benefits
+                  </h2>
+                  <ul className="space-y-2">
+                    {benefits.map((item, i) => (
+                      <li
+                        key={i}
+                        className="flex items-start gap-3 text-gray-600 text-sm"
+                        style={{ fontFamily: "'Montserrat', sans-serif" }}
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] mt-2 flex-shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               {/* How to Use */}
-              <div>
-                <h2
-                  className="text-xl mb-4"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
-                >
-                  How to Use
-                </h2>
-                <p
-                  className="text-gray-600 text-sm leading-relaxed"
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
-                >
-                  {product.howToUse}
-                </p>
-              </div>
+              {howToUse && (
+                <div>
+                  <h2
+                    className="text-xl mb-4"
+                    style={{ fontFamily: "'Playfair Display', serif" }}
+                  >
+                    How to Use
+                  </h2>
+                  <p
+                    className="text-gray-600 text-sm leading-relaxed"
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  >
+                    {howToUse}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Related Products ─────────────────────────────────────────────── */}
+      {/* ── Related Products ── */}
       {related.length > 0 && (
         <section className="py-24 bg-[#faf9f6]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -278,8 +316,8 @@ export default function ProductDetailClient({ product }: { product: ProductDetai
                 >
                   <div className="aspect-[3/4] overflow-hidden bg-white mb-5">
                     <img
-                      src={rel.images[0]}
-                      alt={rel.name}
+                      src={rel.image}
+                      alt={rel.imageAlt}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                   </div>

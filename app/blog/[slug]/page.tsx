@@ -10,10 +10,10 @@ import { BLOG_POSTS } from '@/lib/blog-posts'
 export default function BlogPostPage({
   params,
 }: {
-  params: Promise<{ id: string }>
+  params: Promise<{ slug: string }>
 }) {
   const resolvedParams = use(params);
-  const post = BLOG_POSTS.find((p) => p.id === Number(resolvedParams.id))
+  const post = BLOG_POSTS.find((p) => p.slug === resolvedParams.slug)
   if (!post) notFound()
 
   const related = BLOG_POSTS.filter(
@@ -204,7 +204,7 @@ export default function BlogPostPage({
               {related.map((rel) => (
                 <Link
                   key={rel.id}
-                  href={`/blog/${rel.id}`}
+                  href={`/blog/${rel.slug}`}
                   className="group"
                   id={`related-blog-${rel.id}`}
                 >

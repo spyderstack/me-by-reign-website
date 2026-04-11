@@ -4,6 +4,7 @@
 
 export interface CartItem {
   id: string         // product id (Shopify GID or mock)
+  variantId: string  // variant id for Shopify checkout
   name: string
   category: string
   price: number      // numeric — strip "$" before storing

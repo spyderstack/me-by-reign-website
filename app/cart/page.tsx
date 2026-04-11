@@ -10,6 +10,7 @@ import {
   updateCartQuantity,
   removeFromCart,
 } from '@/lib/cart'
+import { redirectToCheckout } from '@/lib/shopify/actions'
 
 // ─── Empty State ──────────────────────────────────────────────────────────────
 function EmptyCart() {
@@ -52,6 +53,8 @@ function EmptyCart() {
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
 
+  const [isCheckingOut, setIsCheckingOut] = useState(false)
+
   useEffect(() => {
     const load = () => setCartItems(getCart())
     load()
@@ -65,6 +68,30 @@ export default function CartPage() {
 
   const handleRemove = (id: string) => {
     removeFromCart(id)
+  }
+
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) return
+    setIsCheckingOut(true)
+    try {
+      const checkoutUrl = await redirectToCheckout(
+        cartItems.map((item) => ({
+          variantId: item.variantId, // Assumes variantId is stored in the cart
+          quantity: item.quantity,
+        }))
+      )
+
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl
+      } else {
+        alert('Failed to connect to Shopify checkout. Please try again.')
+      }
+    } catch (error) {
+      console.error('Checkout error:', error)
+      alert('An unexpected error occurred. Please try again.')
+    } finally {
+      setIsCheckingOut(false)
+    }
   }
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -241,12 +268,15 @@ export default function CartPage() {
               </div>
 
               <button
-                className="w-full bg-black text-white px-8 py-4 uppercase tracking-widest text-xs font-semibold hover:bg-[#C5A059] transition-colors duration-300 mb-4"
+                className={`w-full bg-black text-white px-8 py-4 uppercase tracking-widest text-xs font-semibold transition-colors duration-300 mb-4 ${
+                  isCheckingOut ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#C5A059]'
+                }`}
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
                 id="checkout-btn"
-                onClick={() => alert('Checkout will be implemented with Shopify.')}
+                disabled={isCheckingOut}
+                onClick={handleCheckout}
               >
-                Proceed to Checkout
+                {isCheckingOut ? 'Connecting...' : 'Proceed to Checkout'}
               </button>
 
               <div className="pt-6 border-t border-gray-200 space-y-3 text-sm text-gray-600">
