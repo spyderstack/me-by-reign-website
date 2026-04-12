@@ -189,6 +189,14 @@ export async function getProductByHandle(handle: string): Promise<NormalizedProd
   return data.product ? normalizeProduct(data.product) : null
 }
 
+export async function getProductRecommendations(productId: string): Promise<NormalizedProduct[]> {
+  const data = await shopifyFetch<{ productRecommendations: ShopifyProduct[] }>({
+    query: GET_PRODUCT_RECOMMENDATIONS_QUERY,
+    variables: { productId },
+  })
+  return data.productRecommendations.map(normalizeProduct)
+}
+
 export async function getCollectionProducts({
   handle,
   first = 24,
