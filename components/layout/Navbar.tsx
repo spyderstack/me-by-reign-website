@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'motion/react'
 import { MagnifyingGlass, Bag, List, X } from '@phosphor-icons/react'
-import { getCartCount } from '@/lib/cart'
 import { SearchModal } from '@/components/search/SearchModal'
+import { useCart } from '@/components/providers/CartProvider'
 
 const navLinks = [
   { label: 'Catalog', href: '/catalog' },
@@ -15,18 +15,12 @@ const navLinks = [
 ]
 
 export function Navbar() {
+  const { cart } = useCart()
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [cartCount, setCartCount] = useState(0)
   const [searchOpen, setSearchOpen] = useState(false)
 
-  useEffect(() => {
-    // Sync count on mount and on every cart update
-    const sync = () => setCartCount(getCartCount())
-    sync()
-    window.addEventListener('cartUpdated', sync)
-    return () => window.removeEventListener('cartUpdated', sync)
-  }, [])
+  const cartCount = cart?.totalQuantity || 0
 
   useEffect(() => {
     const handleScroll = () => {

@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { motion } from 'motion/react'
 import { Bag, Check } from '@phosphor-icons/react'
 import { NormalizedProduct } from '@/lib/shopify/types'
-import { addToCart } from '@/lib/cart'
+import { useCart } from '@/components/providers/CartProvider'
 
 interface ProductCardProps {
   product: NormalizedProduct
@@ -15,19 +15,12 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, index, isInView }: ProductCardProps) {
+  const { addItem } = useCart()
   const [added, setAdded] = useState(false)
 
-  const handleQuickAdd = (e: React.MouseEvent) => {
+  const handleQuickAdd = async (e: React.MouseEvent) => {
     e.preventDefault()
-    const numericPrice = parseFloat(product.price.replace(/[^0-9.]/g, ''))
-    addToCart({
-      id: product.id,
-      variantId: product.variantId,
-      name: product.name,
-      category: product.category,
-      price: numericPrice,
-      image: product.image,
-    })
+    await addItem(product.variantId, 1)
     setAdded(true)
     setTimeout(() => setAdded(false), 1500)
   }

@@ -1,18 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Minus, Plus, X, ShoppingBag } from '@phosphor-icons/react'
-import {
-  CartItem,
-  getCart,
-  updateCartQuantity,
-  removeFromCart,
-} from '@/lib/cart'
-import { redirectToCheckout } from '@/lib/shopify/actions'
+import { useCart } from '@/components/providers/CartProvider'
 
 // ─── Empty State ──────────────────────────────────────────────────────────────
+
 function EmptyCart() {
   return (
     <div
@@ -50,67 +45,49 @@ function EmptyCart() {
 }
 
 // ─── Cart Page ────────────────────────────────────────────────────────────────
-export default function CartPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
 
+export default function CartPage() {
+  const { cart, isLoading, updateItem, removeItem } = useCart()
   const [isCheckingOut, setIsCheckingOut] = useState(false)
 
-  useEffect(() => {
-    const load = () => setCartItems(getCart())
-    load()
-    window.addEventListener('cartUpdated', load)
-    return () => window.removeEventListener('cartUpdated', load)
-  }, [])
-
-  const handleUpdateQuantity = (id: string, qty: number) => {
-    updateCartQuantity(id, qty)
-  }
-
-  const handleRemove = (id: string) => {
-    removeFromCart(id)
-  }
-
-  const handleCheckout = async () => {
-    if (cartItems.length === 0) return
-    setIsCheckingOut(true)
-    try {
-      const checkoutUrl = await redirectToCheckout(
-        cartItems.map((item) => ({
-          variantId: item.variantId, // Assumes variantId is stored in the cart
-          quantity: item.quantity,
-        }))
-      )
-
-      if (checkoutUrl) {
-        window.location.href = checkoutUrl
-      } else {
-        alert('Failed to connect to Shopify checkout. Please try again.')
-      }
-    } catch (error) {
-      console.error('Checkout error:', error)
-      alert('An unexpected error occurred. Please try again.')
-    } finally {
-      setIsCheckingOut(false)
+  const handleUpdateQuantity = async (lineId: string, qty: number) => {
+    if (qty <= 0) {
+      await removeItem(lineId)
+    } else {
+      await updateItem(lineId, qty)
     }
   }
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const shipping  = subtotal > 100 ? 0 : 12
-  const total     = subtotal + shipping
+  const handleCheckout = () => {
+    if (!cart?.checkoutUrl) return
+    setIsCheckingOut(true)
+    window.location.href = cart.checkoutUrl
+  }
 
-  if (cartItems.length === 0) return <EmptyCart />
+  // Handle Loading state for the initial fetch
+  if (isLoading && !cart) {
+    return (
+      <div 
+        className="min-h-screen bg-white flex items-center justify-center"
+        style={{ paddingTop: 'calc(var(--banner-height, 0px) + 80px)' }}
+      >
+        <div className="animate-pulse text-gray-400 tracking-widest text-xs uppercase">Loading Cart...</div>
+      </div>
+    )
+  }
+
+  if (!cart || cart.lines.length === 0) return <EmptyCart />
 
   return (
-
-
     <div
       className="min-h-screen bg-gray-50"
       style={{ paddingTop: 'calc(var(--banner-height, 0px) + 80px)' }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-black via-[#2a2010] to-transparent pointer-events-none z-0" />
+        <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-black via-[#2a2010] to-transparent pointer-events-none z-0" />
+        
         {/* Header */}
-        <div className="mb-12">
+        <div className="mb-12 relative z-10">
           <h1
             className="text-4xl md:text-5xl mb-2"
             style={{ fontFamily: "'Playfair Display', serif" }}
@@ -121,29 +98,28 @@ export default function CartPage() {
             className="text-gray-600"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
-            {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'}
+            {cart.totalQuantity} {cart.totalQuantity === 1 ? 'item' : 'items'}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
           {/* ── Cart Items ────────────────────────────────────────── */}
           <div className="lg:col-span-2 space-y-6">
-            <AnimatePresence>
-              {cartItems.map((item) => (
+            <AnimatePresence mode="popLayout">
+              {cart.lines.map((line) => (
                 <motion.div
-                  key={item.id}
+                  key={line.id}
                   layout
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -100 }}
-                  className="bg-white p-6 flex gap-6"
+                  className="bg-white p-6 flex gap-6 shadow-sm border border-gray-100"
                 >
                   {/* Image */}
-                  <div className="w-32 h-32 flex-shrink-0 bg-gray-100 overflow-hidden">
+                  <div className="w-32 h-32 flex-shrink-0 bg-gray-50 overflow-hidden">
                     <img
-                      src={item.image}
-                      alt={item.name}
+                      src={line.image}
+                      alt={line.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -152,61 +128,65 @@ export default function CartPage() {
                   <div className="flex-1 flex flex-col">
                     <div className="flex justify-between mb-2">
                       <div>
-                        <p
-                          className="text-xs uppercase tracking-[0.2em] text-gray-500 mb-1"
-                          style={{ fontFamily: "'Montserrat', sans-serif" }}
-                        >
-                          {item.category}
-                        </p>
-                        <h3
-                          className="text-xl"
-                          style={{ fontFamily: "'Playfair Display', serif" }}
-                        >
-                          {item.name}
-                        </h3>
+                        <Link href={`/products/${line.handle}`} className="hover:text-[#C5A059] transition-colors">
+                          <h3
+                            className="text-xl leading-tight"
+                            style={{ fontFamily: "'Playfair Display', serif" }}
+                          >
+                            {line.name}
+                          </h3>
+                        </Link>
                       </div>
                       <button
-                        onClick={() => handleRemove(item.id)}
-                        className="text-gray-400 hover:text-black transition-colors h-fit"
-                        id={`remove-${item.id}`}
-                        aria-label={`Remove ${item.name}`}
+                        onClick={() => removeItem(line.id)}
+                        className="text-gray-400 hover:text-black transition-colors h-fit p-1"
+                        id={`remove-${line.id}`}
+                        aria-label={`Remove ${line.name}`}
                       >
                         <X size={20} weight="regular" />
                       </button>
                     </div>
 
-                    <div className="mt-auto flex items-center justify-between">
+                    <div className="mt-auto flex items-end justify-between">
                       {/* Quantity */}
-                      <div className="flex items-center gap-4 border border-gray-200">
-                        <button
-                          onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                          className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 transition-colors"
-                          id={`qty-minus-${item.id}`}
-                        >
-                          <Minus size={16} weight="regular" />
-                        </button>
-                        <span
-                          className="w-8 text-center"
-                          style={{ fontFamily: "'Montserrat', sans-serif" }}
-                        >
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                          className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 transition-colors"
-                          id={`qty-plus-${item.id}`}
-                        >
-                          <Plus size={16} weight="regular" />
-                        </button>
+                      <div className="flex flex-col gap-2">
+                        <span className="text-[10px] uppercase tracking-widest text-gray-400 font-semibold" style={{ fontFamily: "'Montserrat', sans-serif" }}>Quantity</span>
+                        <div className="flex items-center gap-4 border border-gray-100">
+                          <button
+                            onClick={() => handleUpdateQuantity(line.id, line.quantity - 1)}
+                            className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-30"
+                            id={`qty-minus-${line.id}`}
+                            disabled={isLoading}
+                          >
+                            <Minus size={14} weight="regular" />
+                          </button>
+                          <span
+                            className="min-w-[20px] text-center text-sm"
+                            style={{ fontFamily: "'Montserrat', sans-serif" }}
+                          >
+                            {line.quantity}
+                          </span>
+                          <button
+                            onClick={() => handleUpdateQuantity(line.id, line.quantity + 1)}
+                            className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-30"
+                            id={`qty-plus-${line.id}`}
+                            disabled={isLoading}
+                          >
+                            <Plus size={14} weight="regular" />
+                          </button>
+                        </div>
                       </div>
 
                       {/* Price */}
-                      <p
-                        className="text-xl"
-                        style={{ fontFamily: "'Montserrat', sans-serif" }}
-                      >
-                        ${(item.price * item.quantity).toFixed(2)}
-                      </p>
+                      <div className="text-right">
+                        <p className="text-xs text-gray-400 mb-1" style={{ fontFamily: "'Montserrat', sans-serif" }}>Subtotal</p>
+                        <p
+                          className="text-xl font-medium"
+                          style={{ fontFamily: "'Montserrat', sans-serif" }}
+                        >
+                          {line.total}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -215,97 +195,79 @@ export default function CartPage() {
 
             <Link
               href="/catalog"
-              className="inline-block text-black hover:text-[#C5A059] transition-colors text-sm uppercase tracking-[0.15em]"
+              className="inline-flex items-center gap-3 text-black hover:text-[#C5A059] transition-colors text-xs uppercase tracking-[0.2em] font-bold"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
               id="continue-shopping-link"
             >
-              ← Continue Shopping
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Continue Shopping
             </Link>
           </div>
 
           {/* ── Order Summary ─────────────────────────────────────── */}
           <div className="lg:col-span-1">
             <div
-              className="bg-white p-8"
+              className="bg-white p-8 border border-gray-100 shadow-sm"
               style={{
                 position: 'sticky',
                 top: 'calc(var(--banner-height, 0px) + 100px)',
               }}
             >
               <h2
-                className="text-2xl mb-6"
+                className="text-2xl mb-8"
                 style={{ fontFamily: "'Playfair Display', serif" }}
               >
                 Order Summary
               </h2>
 
-              <div className="space-y-4 mb-6 pb-6 border-b border-gray-200">
+              <div className="space-y-4 mb-8 pb-8 border-b border-gray-100">
                 <div className="flex justify-between text-gray-600">
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }}>Subtotal</span>
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }}>${subtotal.toFixed(2)}</span>
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm">Items Subtotal</span>
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-semibold">{cart.subtotal}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }}>Shipping</span>
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                    {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
-                  </span>
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-sm">Shipping</span>
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-[#C5A059] font-semibold">Calculated at Checkout</span>
                 </div>
-                {shipping === 0 && (
-                  <p
-                    className="text-sm text-[#C5A059]"
-                    style={{ fontFamily: "'Montserrat', sans-serif" }}
-                  >
-                    Free shipping on orders over $100
-                  </p>
-                )}
               </div>
 
-              <div className="flex justify-between text-xl mb-8">
-                <span style={{ fontFamily: "'Playfair Display', serif" }}>Total</span>
-                <span style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                  ${total.toFixed(2)}
+              <div className="flex justify-between text-2xl mb-10">
+                <span style={{ fontFamily: "'Playfair Display', serif" }}>Estimated Total</span>
+                <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="font-semibold">
+                  {cart.total}
                 </span>
               </div>
 
               <button
-                className={`w-full bg-black text-white px-8 py-4 uppercase tracking-widest text-xs font-semibold transition-colors duration-300 mb-4 ${
-                  isCheckingOut ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#C5A059]'
+                className={`w-full bg-black text-white px-8 py-5 uppercase tracking-widest text-[11px] font-bold transition-all duration-300 mb-6 ${
+                  isCheckingOut ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#C5A059] hover:shadow-lg'
                 }`}
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
                 id="checkout-btn"
-                disabled={isCheckingOut}
+                disabled={isCheckingOut || isLoading}
                 onClick={handleCheckout}
               >
-                {isCheckingOut ? 'Connecting...' : 'Proceed to Checkout'}
+                {isCheckingOut ? 'Opening Secure Checkout...' : 'Proceed to Checkout'}
               </button>
 
-              <div className="pt-6 border-t border-gray-200 space-y-3 text-sm text-gray-600">
-                {[
-                  'Free shipping on orders over $100',
-                  '30-day return policy',
-                  'Secure payment processing',
-                ].map((text) => (
-                  <div key={text} className="flex items-start gap-3">
-                    <svg
-                      className="w-5 h-5 text-[#C5A059] flex-shrink-0 mt-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                    <span style={{ fontFamily: "'Montserrat', sans-serif" }}>{text}</span>
-                  </div>
-                ))}
+              <div className="space-y-4 text-[10px] text-gray-400">
+                <div className="flex items-center gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#C5A059]" />
+                  <span className="uppercase tracking-widest font-semibold" style={{ fontFamily: "'Montserrat', sans-serif" }}>Secure payment processing</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#C5A059]" />
+                  <span className="uppercase tracking-widest font-semibold" style={{ fontFamily: "'Montserrat', sans-serif" }}>Tax and shipping calculated later</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#C5A059]" />
+                  <span className="uppercase tracking-widest font-semibold" style={{ fontFamily: "'Montserrat', sans-serif" }}>30-day return policy</span>
+                </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>

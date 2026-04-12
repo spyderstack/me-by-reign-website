@@ -71,6 +71,8 @@ export const metadata: Metadata = {
   },
 }
 
+import { CartProvider } from '@/components/providers/CartProvider'
+
 export default function RootLayout({
   children,
 }: {
@@ -79,11 +81,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${playfair.variable} ${montserrat.variable}`} suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <ScrollProgressBar />
-        <SeasonalBanner />
-        <Navbar />
-        {children}
-        <Footer />
+        <CartProvider>
+          <ScrollProgressBar />
+          <SeasonalBanner />
+          <Navbar />
+          {children}
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   )

@@ -6,27 +6,20 @@ import Image from 'next/image'
 import { motion, useInView } from 'motion/react'
 import { ArrowRight, Bag, Check } from '@phosphor-icons/react'
 import { NormalizedProduct } from '@/lib/shopify/types'
-import { addToCart } from '@/lib/cart'
+import { useCart } from '@/components/providers/CartProvider'
 
 interface FeaturedProductsProps {
   initialProducts: NormalizedProduct[]
 }
 
 export function FeaturedProducts({ initialProducts }: FeaturedProductsProps) {
+  const { addItem } = useCart()
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
   const [addedId, setAddedId] = useState<string | null>(null)
 
-  const handleAddToCart = (product: NormalizedProduct) => {
-    const numericPrice = parseFloat(product.price.replace(/[^0-9.]/g, ''))
-    addToCart({
-      id: product.id,
-      variantId: product.variantId,
-      name: product.name,
-      category: product.category,
-      price: numericPrice,
-      image: product.image,
-    })
+  const handleAddToCart = async (product: NormalizedProduct) => {
+    await addItem(product.variantId, 1)
     setAddedId(product.id)
     setTimeout(() => setAddedId(null), 1500)
   }

@@ -5,8 +5,8 @@ import { useState } from 'react'
 import { motion } from 'motion/react'
 import { ArrowLeft, Check, Plus, Star } from '@phosphor-icons/react'
 import { getProductByHandle as getMockDetail } from '@/lib/products-data'
-import { addToCart } from '@/lib/cart'
 import { NormalizedProduct } from '@/lib/shopify/types'
+import { useCart } from '@/components/providers/CartProvider'
 
 export default function ProductDetailClient({
   product,
@@ -15,23 +15,18 @@ export default function ProductDetailClient({
   product: NormalizedProduct
   relatedProducts: NormalizedProduct[]
 }) {
+  const { addItem } = useCart()
   const [selectedImage, setSelectedImage] = useState(0)
   const [added, setAdded] = useState(false)
+  const [isAdding, setIsAdding] = useState(false)
 
   // Fallback to rich mock data for descriptions/ingredients if available
   const richDetail = getMockDetail(product.handle)
 
-  const numericPrice = parseFloat(product.price.replace(/[^0-9.]/g, ''))
-
-  const handleAddToCart = () => {
-    addToCart({
-      id: product.id,
-      variantId: product.variantId,
-      name: product.name,
-      category: product.category,
-      price: numericPrice,
-      image: product.image,
-    })
+  const handleAddToCart = async () => {
+    setIsAdding(true)
+    await addItem(product.variantId, 1)
+    setIsAdding(false)
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
   }
@@ -195,9 +190,9 @@ export default function ProductDetailClient({
               {/* Add to Cart */}
               <button
                 onClick={handleAddToCart}
-                disabled={!product.available}
+                disabled={!product.available || isAdding}
                 className={`w-full flex items-center justify-center gap-3 px-8 py-4 uppercase tracking-widest text-xs font-bold transition-all duration-300 mb-3 ${
-                  !product.available
+                  !product.available || isAdding
                     ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                     : added
                     ? 'bg-[#C5A059] text-white'
@@ -208,6 +203,8 @@ export default function ProductDetailClient({
               >
                 {!product.available ? (
                   'Out of Stock'
+                ) : isAdding ? (
+                  'Adding...'
                 ) : added ? (
                   <><Check size={18} weight="bold" /> Added to Cart</>
                 ) : (

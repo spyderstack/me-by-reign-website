@@ -1,6 +1,9 @@
 // ─── Shopify Storefront API GraphQL Queries ───────────────────────────────────
 
-// Fragment reused across queries — ensures consistent product shape
+/**
+ * Fragment for reusable Product data.
+ * Optimized to fetch pricing, variant details, and SEO metadata.
+ */
 export const PRODUCT_FRAGMENT = `
   fragment ProductFragment on Product {
     id
@@ -16,7 +19,7 @@ export const PRODUCT_FRAGMENT = `
       width
       height
     }
-    images(first: 4) {
+    images(first: 8) {
       nodes {
         url
         altText
@@ -34,11 +37,12 @@ export const PRODUCT_FRAGMENT = `
         currencyCode
       }
     }
-    variants(first: 1) {
+    variants(first: 250) {
       nodes {
         id
         title
         availableForSale
+        sku
         price {
           amount
           currencyCode
@@ -47,12 +51,81 @@ export const PRODUCT_FRAGMENT = `
           amount
           currencyCode
         }
+        selectedOptions {
+          name
+          value
+        }
+      }
+    }
+    seo {
+      description
+      title
+    }
+  }
+`;
+
+/**
+ * Fragment for reusable Cart data.
+ * Used across Cart Creation, Line Updates, and Fetches.
+ */
+export const CART_FRAGMENT = `
+  fragment CartFragment on Cart {
+    id
+    checkoutUrl
+    totalQuantity
+    lines(first: 100) {
+      nodes {
+        id
+        quantity
+        merchandise {
+          ... on ProductVariant {
+            id
+            title
+            price {
+              amount
+              currencyCode
+            }
+            product {
+              id
+              handle
+              title
+              featuredImage {
+                url
+                altText
+              }
+            }
+          }
+        }
+        attributes {
+          key
+          value
+        }
+      }
+    }
+    cost {
+      subtotalAmount {
+        amount
+        currencyCode
+      }
+      totalAmount {
+        amount
+        currencyCode
+      }
+    }
+    buyerIdentity {
+      email
+      phone
+      customer {
+        id
+        firstName
+        lastName
       }
     }
   }
-`
+`;
 
-// Fetch all products (catalog page — /collections)
+// ─── Product Queries ──────────────────────────────────────────────────────────
+
 export const GET_ALL_PRODUCTS_QUERY = `
   ${PRODUCT_FRAGMENT}
   query GetAllProducts(
@@ -78,9 +151,8 @@ export const GET_ALL_PRODUCTS_QUERY = `
       }
     }
   }
-`
+`;
 
-// Fetch products by collection handle (e.g. /collections/skincare)
 export const GET_COLLECTION_QUERY = `
   ${PRODUCT_FRAGMENT}
   query GetCollection(
@@ -102,7 +174,7 @@ export const GET_COLLECTION_QUERY = `
         reverse: $reverse
       ) {
         nodes {
-          ...ProductFragment
+          ... PRODUCT_FRAGMENT
         }
         pageInfo {
           hasNextPage
@@ -111,9 +183,117 @@ export const GET_COLLECTION_QUERY = `
       }
     }
   }
-`
+`;
 
-// Fetch all collections for nav/filter generation
+export const GET_PRODUCT_BY_HANDLE_QUERY = `
+  ${PRODUCT_FRAGMENT}
+  query GetProductByHandle($handle: String!) {
+    product(handle: $handle) {
+      ...ProductFragment
+    }
+  }
+`;
+
+export const GET_PRODUCT_RECOMMENDATIONS_QUERY = `
+  ${PRODUCT_FRAGMENT}
+  query GetProductRecommendations($productId: ID!) {
+    productRecommendations(productId: $productId) {
+      ...ProductFragment
+    }
+  }
+`;
+
+// ─── Cart Queries & Mutations ──────────────────────────────────────────────────
+
+export const GET_CART_QUERY = `
+  ${CART_FRAGMENT}
+  query GetCart($cartId: ID!) {
+    cart(id: $cartId) {
+      ...CartFragment
+    }
+  }
+`;
+
+export const CART_CREATE_MUTATION = `
+  ${CART_FRAGMENT}
+  mutation CartCreate($input: CartInput) {
+    cartCreate(input: $input) {
+      cart {
+        ...CartFragment
+      }
+      userErrors {
+        field
+        message
+      }
+    }
+  }
+`;
+
+export const CART_LINES_ADD_MUTATION = `
+  ${CART_FRAGMENT}
+  mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+    cartLinesAdd(cartId: $cartId, lines: $lines) {
+      cart {
+        ...CartFragment
+      }
+      userErrors {
+        field
+        message
+      }
+    }
+  }
+`;
+
+export const CART_LINES_UPDATE_MUTATION = `
+  ${CART_FRAGMENT}
+  mutation CartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+    cartLinesUpdate(cartId: $cartId, lines: $lines) {
+      cart {
+        ...CartFragment
+      }
+      userErrors {
+        field
+        message
+      }
+    }
+  }
+`;
+
+export const CART_LINES_REMOVE_MUTATION = `
+  ${CART_FRAGMENT}
+  mutation CartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+    cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+      cart {
+        ...CartFragment
+      }
+      userErrors {
+        field
+        message
+      }
+    }
+  }
+`;
+
+// ─── Shop Settings ────────────────────────────────────────────────────────────
+
+export const GET_SHOP_SETTINGS_QUERY = `
+  query GetShopSettings {
+    shop {
+      name
+      description
+      paymentSettings {
+        acceptedCardBrands
+        supportedDigitalWallets
+        enabledPresentmentCurrencies
+      }
+      primaryDomain {
+        url
+        host
+      }
+    }
+  }
+`;
+
 export const GET_ALL_COLLECTIONS_QUERY = `
   query GetAllCollections($first: Int!) {
     collections(first: $first) {
@@ -124,19 +304,9 @@ export const GET_ALL_COLLECTIONS_QUERY = `
       }
     }
   }
-`
+`;
 
-// Fetch single product by handle
-export const GET_PRODUCT_BY_HANDLE_QUERY = `
-  ${PRODUCT_FRAGMENT}
-  query GetProductByHandle($handle: String!) {
-    product(handle: $handle) {
-      ...ProductFragment
-    }
-  }
-`
-
-// Create a checkout session
+// Legacy Checkout mutation (kept for backward compatibility if needed)
 export const CHECKOUT_CREATE_MUTATION = `
   mutation checkoutCreate($input: CheckoutCreateInput!) {
     checkoutCreate(input: $input) {
@@ -151,12 +321,4 @@ export const CHECKOUT_CREATE_MUTATION = `
       }
     }
   }
-`
-export const GET_PRODUCT_RECOMMENDATIONS_QUERY = `
-  ${PRODUCT_FRAGMENT}
-  query GetProductRecommendations($productId: ID!) {
-    productRecommendations(productId: $productId) {
-      ...ProductFragment
-    }
-  }
-`
+`;

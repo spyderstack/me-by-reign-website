@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "skills": {
+    "shopify-admin": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "computedHash": "e67c3c551e8486250f2736ea18abdc32b87be97328692320b9c6af8b7afe1d02"
+    },
+    "shopify-customer": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "computedHash": "d48c35fa17901070b87b700fae74094331512a935b2a1e9dd1cdb181ead9efe7"
+    },
+    "shopify-dev": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "computedHash": "1e0797d7a6c997df8ff48047162dabc7c6e9c7d8de9cea966ddf2c07191cac7c"
+    },
+    "shopify-partner": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "computedHash": "c3b04d84f81e2af26258c02ee8a6a236202029da53712ad34b0aaf6801e499a5"
+    },
+    "shopify-payments-apps": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "computedHash": "354687c0c02c6547894bd9dc86e916c4de847f5754e5cd01d26c28d2b58fbb59"
+    },
+    "shopify-storefront-graphql": {
+      "source": "Shopify/shopify-ai-toolkit",
+      "sourceType": "github",
+      "computedHash": "f6d34caf77d2d5f0812d575abd91f2ea6ba0af776dc332e4e135dce85df68b00"
+    }
+  }
+}

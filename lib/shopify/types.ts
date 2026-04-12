@@ -1,6 +1,5 @@
 // ─── Shopify Storefront API Types ────────────────────────────────────────────
 // These mirror the Shopify Storefront API GraphQL schema exactly.
-// When you wire up the real API, responses will map 1:1 to these types.
 
 export interface ShopifyImage {
   url: string
@@ -14,29 +13,89 @@ export interface ShopifyMoneyV2 {
   currencyCode: string  // e.g. "USD"
 }
 
+export interface ShopifySEO {
+  title: string | null
+  description: string | null
+}
+
+export interface ShopifySelectedOption {
+  name: string
+  value: string
+}
+
 export interface ShopifyProductVariant {
   id: string
   title: string
   availableForSale: boolean
+  sku: string | null
   price: ShopifyMoneyV2
   compareAtPrice: ShopifyMoneyV2 | null
+  selectedOptions: ShopifySelectedOption[]
+  product?: {
+    id: string
+    handle: string
+    title: string
+    featuredImage: ShopifyImage | null
+  }
 }
 
 export interface ShopifyProduct {
   id: string
-  handle: string               // URL slug, e.g. "golden-elixir-serum"
+  handle: string
   title: string
   description: string
-  productType: string          // e.g. "Skincare", "Home Decor"
-  tags: string[]               // e.g. ["Best Seller", "Limited Edition"]
+  productType: string
+  tags: string[]
   availableForSale: boolean
-  featuredImage: ShopifyImage
+  featuredImage: ShopifyImage | null
   images: { nodes: ShopifyImage[] }
   priceRange: {
     minVariantPrice: ShopifyMoneyV2
     maxVariantPrice: ShopifyMoneyV2
   }
   variants: { nodes: ShopifyProductVariant[] }
+  seo: ShopifySEO
+}
+
+export interface ShopifyCartLine {
+  id: string
+  quantity: number
+  merchandise: ShopifyProductVariant
+  attributes: { key: string; value: string }[]
+}
+
+export interface ShopifyCart {
+  id: string
+  checkoutUrl: string
+  totalQuantity: number
+  lines: { nodes: ShopifyCartLine[] }
+  cost: {
+    subtotalAmount: ShopifyMoneyV2
+    totalAmount: ShopifyMoneyV2
+  }
+  buyerIdentity: {
+    email: string | null
+    phone: string | null
+    customer: {
+      id: string
+      firstName: string | null
+      lastName: string | null
+    } | null
+  }
+}
+
+export interface ShopifyShop {
+  name: string
+  description: string | null
+  paymentSettings: {
+    acceptedCardBrands: string[]
+    supportedDigitalWallets: string[]
+    enabledPresentmentCurrencies: string[]
+  }
+  primaryDomain: {
+    url: string
+    host: string
+  }
 }
 
 export interface ShopifyCollection {
@@ -54,23 +113,44 @@ export interface ShopifyCollection {
 }
 
 // ─── Derived UI Types ─────────────────────────────────────────────────────────
-// Flat, UI-friendly shape derived from ShopifyProduct.
-// Transform raw API responses into this shape via `normalizeProduct()` in client.ts
 
 export interface NormalizedProduct {
   id: string
   handle: string
   name: string
-  category: string           // productType
-  tag: string                // first tag, e.g. "Best Seller"
-  price: string              // formatted, e.g. "$120.00"
+  category: string
+  tag: string
+  price: string
   compareAtPrice: string | null
   available: boolean
-  image: string              // featuredImage.url
+  image: string
   imageAlt: string
-  images: string[]           // full image gallery
-  description: string        // full product description
-  variantId: string          // default variant id for add-to-cart
+  images: string[]
+  description: string
+  variantId: string
+  sku: string | null
+  seo: ShopifySEO
+}
+
+export interface NormalizedCartLine {
+  id: string
+  variantId: string
+  quantity: number
+  name: string
+  price: string
+  total: string
+  image: string
+  handle: string
+}
+
+export interface NormalizedCart {
+  id: string
+  checkoutUrl: string
+  totalQuantity: number
+  lines: NormalizedCartLine[]
+  subtotal: string
+  total: string
+  currencyCode: string
 }
 
 export type SortKey = 'MANUAL' | 'BEST_SELLING' | 'PRICE_ASC' | 'PRICE_DESC' | 'CREATED_AT'
