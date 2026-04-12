@@ -174,7 +174,7 @@ export const GET_COLLECTION_QUERY = `
         reverse: $reverse
       ) {
         nodes {
-          ... PRODUCT_FRAGMENT
+          ...ProductFragment
         }
         pageInfo {
           hasNextPage

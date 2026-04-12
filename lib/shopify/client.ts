@@ -127,14 +127,14 @@ export function normalizeCart(cart: ShopifyCart): NormalizedCart {
       id: line.id,
       variantId: line.merchandise.id,
       quantity: line.quantity,
-      name: line.merchandise.product.title,
+      name: line.merchandise.product?.title || 'Product',
       price: formatPrice(line.merchandise.price.amount, line.merchandise.price.currencyCode),
       total: formatPrice(
         (parseFloat(line.merchandise.price.amount) * line.quantity).toString(),
         line.merchandise.price.currencyCode
       ),
-      image: line.merchandise.product.featuredImage?.url || '/images/placeholder.png',
-      handle: line.merchandise.product.handle,
+      image: line.merchandise.product?.featuredImage?.url || '/images/placeholder.png',
+      handle: line.merchandise.product?.handle || '',
     })),
     subtotal: formatPrice(cart.cost.subtotalAmount.amount, cart.cost.subtotalAmount.currencyCode),
     total: formatPrice(cart.cost.totalAmount.amount, cart.cost.totalAmount.currencyCode),
