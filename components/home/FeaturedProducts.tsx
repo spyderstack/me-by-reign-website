@@ -70,7 +70,7 @@ export function FeaturedProducts({ initialProducts }: FeaturedProductsProps) {
             >
               {/* Image Container */}
               <div className="relative aspect-[3/4] overflow-hidden bg-gray-50 mb-5">
-                <Link href={`/products/${product.handle}`}>
+                <Link href={`/products/${product.handle}`} className="relative block w-full h-full">
                   <Image
                     src={product.image}
                     alt={product.imageAlt}
