@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import { getAllProducts } from '@/lib/shopify/client'
-import { CatalogGrid }    from '@/components/catalog/CatalogGrid'
-import { HeroSection }    from '@/components/catalog/HeroSection'
+import { CatalogGrid } from '@/components/catalog/CatalogGrid'
+import { HeroSection } from '@/components/catalog/HeroSection'
 
 export const metadata: Metadata = {
   title: 'The Edit — Shop the Collection',

@@ -12,7 +12,7 @@ export function HeroSection({ title = 'Edit' }: { title?: string }) {
     <section
       ref={heroRef}
       className="relative flex items-end overflow-hidden"
-      style={{ minHeight: '75vh' }}
+      style={{ minHeight: '30vh' }}
     >
       {/* Background image */}
       <div className="absolute inset-0">
