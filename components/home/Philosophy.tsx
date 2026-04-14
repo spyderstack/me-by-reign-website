@@ -29,7 +29,7 @@ export function Philosophy() {
               <div className="absolute -inset-4 border border-[#C5A059]/40 hidden md:block" style={{ zIndex: 0 }} />
               <div className="relative aspect-[4/5] rounded-sm shadow-2xl overflow-hidden" style={{ zIndex: 1 }}>
                 <Image
-                  src="/images/placeholder.png"
+                  src="/images/bio_photo.jpg"
                   alt="ME by Reign philosophy — handcrafted with botanical intention"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
@@ -53,7 +53,7 @@ export function Philosophy() {
                 className="text-[#C5A059] text-xs uppercase tracking-[0.2em] font-semibold"
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
               >
-                Our Philosophy
+                Meet Reign
               </p>
             </div>
 
@@ -61,27 +61,27 @@ export function Philosophy() {
               className="text-4xl md:text-5xl lg:text-6xl font-serif text-black leading-[1.2] mb-8"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
-              Lorem Ipsum Dolor,<br />
-              <span className="italic font-light">Sit Amet Consectetur</span>
+              Reign Hudson,<br />
+              <span className="italic font-light">Founder</span>
             </h2>
 
             <p
               className="text-gray-600 leading-relaxed font-light mb-5"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.
+              Reign Hudson is a former fitness instructor and trainer with 26 years of experience, featured on national and international platforms.
             </p>
             <p
               className="text-gray-600 leading-relaxed font-light mb-5"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
-              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.
+              Driven by a passion for self-care, she transitioned into entrepreneurship, founding ME...byReign LLC, a handmade natural skin and home care brand. What started as a personal passion for creating body butters, scrubs, and candles has grown into a thriving business with a strong presence in New York, Philly, and LA.
             </p>
             <p
               className="text-gray-600 leading-relaxed font-light mb-8"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
-              Curabitur aliquet quam id dui posuere blandit. Donec sollicitudin molestie malesuada. Pellentesque in ipsum id orci porta dapibus.
+              Committed to promoting self-love through natural products, Reign's ultimate goal is to expand globally while inspiring others to embrace wellness and entrepreneurship.
             </p>
 
             {/* Pull Quote */}
