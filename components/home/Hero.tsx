@@ -15,7 +15,7 @@ export function Hero() {
       <div className="absolute inset-0 scale-105 z-0">
         <Image
           src="https://images.unsplash.com/photo-1629195068010-1389c5ff86e4?auto=format&fit=crop&q=80&w=1920"
-          alt="ME by Reign — Artisan handmade skincare and home decor"
+          alt="ME byReign — Artisan handmade skincare and home decor"
           fill
           sizes="100vw"
           className="object-cover object-center"
