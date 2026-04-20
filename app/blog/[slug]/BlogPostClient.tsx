@@ -5,21 +5,25 @@ import { motion } from 'motion/react'
 import { ArrowLeft, User, Calendar, Clock, ArrowRight } from '@phosphor-icons/react'
 import { NormalizedArticle } from '@/lib/shopify/types'
 
-export function BlogPostClient({ 
-  post, 
-  related 
-}: { 
+export function BlogPostClient({
+  post,
+  related
+}: {
   post: NormalizedArticle
-  related: NormalizedArticle[] 
+  related: NormalizedArticle[]
 }) {
   return (
     <div className="min-h-screen bg-white">
+      <div
+        className="bg-[#111] w-full"
+        style={{ height: 'calc(var(--banner-height, 0px) + 80px)' }}
+      />
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-black via-[#2a2010] to-transparent pointer-events-none z-0" />
 
       {/* ── Breadcrumb ───────────────────────────────────────────────────── */}
-      <div 
+      <div
         className="border-b border-gray-100 bg-white relative z-10"
-        style={{ paddingTop: 'calc(var(--banner-height, 0px) + 80px)' }}
+
       >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <Link
