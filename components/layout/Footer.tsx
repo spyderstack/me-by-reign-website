@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { InstagramLogo, FacebookLogo, TwitterLogo, MapPin, Phone, Envelope, ArrowRight } from '@phosphor-icons/react/dist/ssr'
+import Image from 'next/image'
 
 const discoverLinks = [
   { label: 'Skincare Collection', href: '/catalog' },
@@ -30,18 +31,30 @@ export function Footer() {
 
           {/* Brand Column */}
           <div className="lg:col-span-1">
-            <p
-              className="text-3xl tracking-widest uppercase text-white mb-1"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
-              ME byReign
-            </p>
-            <p
-              className="text-[10px] tracking-[0.3em] uppercase text-[#C5A059] mb-6"
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
-            >
-              Handcrafted Luxury
-            </p>
+            <Link href="/" className="flex items-center gap-3 mb-6 transition-opacity hover:opacity-80">
+              <div className="relative h-12 w-12">
+                <Image
+                  src="/images/reign_logo.png"
+                  alt=""
+                  fill
+                  className="object-contain brightness-0 invert"
+                />
+              </div>
+              <div className="flex flex-col">
+                <p
+                  className="text-2xl tracking-widest uppercase text-white leading-none"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
+                  ME byReign
+                </p>
+                <p
+                  className="text-[9px] tracking-[0.3em] uppercase text-[#C5A059] mt-1"
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                >
+                  Handcrafted Luxury
+                </p>
+              </div>
+            </Link>
             <p
               className="text-gray-400 text-sm leading-relaxed mb-8"
               style={{ fontFamily: "'Montserrat', sans-serif" }}

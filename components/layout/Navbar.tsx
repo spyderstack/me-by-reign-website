@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'motion/react'
 import { MagnifyingGlass, Bag, List, X } from '@phosphor-icons/react'
+import Image from 'next/image'
 import { SearchModal, SearchResult } from '@/components/search/SearchModal'
 import { useCart } from '@/components/providers/CartProvider'
 
@@ -55,22 +56,33 @@ export function Navbar({ searchData }: { searchData: SearchResult[] }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link href="/" className="flex flex-col items-start leading-none group" id="navbar-logo">
-              <span
-                className="text-2xl tracking-widest uppercase font-semibold"
-                style={{ fontFamily: "'Playfair Display', serif" }}
-              >
-                ME byReign
-              </span>
-              <span
-                className="text-[10px] tracking-[0.3em] uppercase mt-0.5"
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                  color: isScrolled ? '#C5A059' : '#C5A059',
-                }}
-              >
-                Handcrafted Luxury
-              </span>
+            <Link href="/" className="flex items-center gap-3 group transition-opacity hover:opacity-80" id="navbar-logo">
+              <div className="relative h-10 w-10">
+                <Image
+                  src="/images/reign_logo.png"
+                  alt=""
+                  fill
+                  className={`object-contain transition-all duration-500 ${!isScrolled ? 'brightness-0 invert' : ''}`}
+                  priority
+                />
+              </div>
+              <div className="flex flex-col items-start leading-none">
+                <span
+                  className="text-lg md:text-xl tracking-widest uppercase font-semibold"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
+                  ME byReign
+                </span>
+                <span
+                  className="text-[8px] md:text-[9px] tracking-[0.3em] uppercase mt-0.5"
+                  style={{
+                    fontFamily: "'Montserrat', sans-serif",
+                    color: '#C5A059',
+                  }}
+                >
+                  Handcrafted Luxury
+                </span>
+              </div>
             </Link>
 
             {/* Desktop Nav Links */}
@@ -154,19 +166,29 @@ export function Navbar({ searchData }: { searchData: SearchResult[] }) {
             </div>
 
             {/* Mobile brand */}
-            <div className="px-10 pb-10 border-b border-gray-100">
-              <p
-                className="text-3xl tracking-widest uppercase"
-                style={{ fontFamily: "'Playfair Display', serif", color: '#111' }}
-              >
-                ME byReign
-              </p>
-              <p
-                className="text-[10px] tracking-[0.3em] uppercase mt-1 text-[#C5A059]"
-                style={{ fontFamily: "'Montserrat', sans-serif" }}
-              >
-                Handcrafted Luxury
-              </p>
+            <div className="px-10 pb-10 border-b border-gray-100 flex items-center gap-4">
+              <Link href="/" onClick={() => setMobileOpen(false)} className="relative h-12 w-12 block">
+                <Image
+                  src="/images/reign_logo.png"
+                  alt="ME byReign"
+                  fill
+                  className="object-contain"
+                />
+              </Link>
+              <div className="flex flex-col">
+                <p
+                  className="text-2xl tracking-widest uppercase"
+                  style={{ fontFamily: "'Playfair Display', serif", color: '#111' }}
+                >
+                  ME byReign
+                </p>
+                <p
+                  className="text-[10px] tracking-[0.3em] uppercase mt-1 text-[#C5A059]"
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                >
+                  Handcrafted Luxury
+                </p>
+              </div>
             </div>
 
             {/* Mobile nav links */}

@@ -21,6 +21,10 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://me-by-reign.com'), // Replace with actual production URL
+  icons: {
+    icon: '/images/reign_logo.png',
+    apple: '/images/reign_logo.png',
+  },
   title: {
     default: 'ME byReign — Handmade Skin & Home Decor',
     template: '%s | ME byReign',
