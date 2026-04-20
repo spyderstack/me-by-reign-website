@@ -5,11 +5,16 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion, useInView } from 'motion/react'
 import { ArrowRight } from '@phosphor-icons/react'
-import { blogPosts } from '@/lib/blog-posts'
+import { NormalizedArticle } from '@/lib/shopify/types'
 
-export function BlogPreview() {
+export function BlogPreview({ posts }: { posts: NormalizedArticle[] }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+
+  // Only show the 3 most recent articles
+  const displayedPosts = posts.slice(0, 3)
+
+  if (displayedPosts.length === 0) return null
 
   return (
     <section className="py-32 bg-white" id="blog-preview" ref={ref}>
@@ -39,7 +44,7 @@ export function BlogPreview() {
 
         {/* 3-column grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-16">
-          {blogPosts.map((post, index) => (
+          {displayedPosts.map((post, index) => (
             <motion.a
               key={post.id}
               href={`/blog/${post.slug}`}
@@ -70,23 +75,22 @@ export function BlogPreview() {
 
               {/* Title */}
               <h3
-                className="text-lg font-serif text-black mb-3 group-hover:text-[#C5A059] transition-colors leading-snug"
+                className="text-lg font-serif text-black mb-3 group-hover:text-[#C5A059] transition-colors leading-snug line-clamp-2 min-h-[3rem]"
                 style={{ fontFamily: "'Playfair Display', serif" }}
               >
                 {post.title}
               </h3>
 
               {/* Excerpt */}
-              <p
-                className="text-gray-500 text-sm leading-relaxed mb-4 flex-grow"
+              <div
+                className="text-gray-500 text-sm leading-relaxed mb-4 flex-grow line-clamp-3 overflow-hidden min-h-[4.5rem]"
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
-              >
-                {post.excerpt}
-              </p>
+                dangerouslySetInnerHTML={{ __html: post.excerptHtml || post.contentHtml }}
+              />
 
               {/* Date */}
               <p
-                className="text-gray-400 text-[10px] uppercase tracking-widest"
+                className="text-gray-400 text-[10px] uppercase tracking-widest mt-auto pt-2"
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
               >
                 {post.date}

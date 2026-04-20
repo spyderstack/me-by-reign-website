@@ -64,6 +64,20 @@ export interface ShopifyCartLine {
   attributes: { key: string; value: string }[]
 }
 
+export interface ShopifyArticle {
+  id: string
+  handle: string
+  title: string
+  contentHtml: string
+  excerptHtml: string | null
+  publishedAt: string
+  image: ShopifyImage | null
+  authorV2: {
+    name: string
+  } | null
+  tags: string[]
+}
+
 export interface ShopifyCart {
   id: string
   checkoutUrl: string
@@ -130,6 +144,20 @@ export interface NormalizedProduct {
   variantId: string
   sku: string | null
   seo: ShopifySEO
+}
+
+export interface NormalizedArticle {
+  id: string
+  slug: string
+  title: string
+  contentHtml: string
+  excerptHtml: string
+  date: string
+  image: string
+  author: string
+  tags: string[]
+  category: string
+  readTime: string
 }
 
 export interface NormalizedCartLine {
