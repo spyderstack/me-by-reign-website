@@ -24,7 +24,7 @@ export default function BlogPostPage({
     <div className="min-h-screen bg-white">
 
       {/* ── Dark Header Underlay for Navbar ── */}
-      <div 
+      <div
         className="bg-[#111] w-full"
         style={{ height: 'calc(var(--banner-height, 0px) + 80px)' }}
       />
