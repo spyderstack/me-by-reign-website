@@ -65,6 +65,30 @@ export const PRODUCT_FRAGMENT = `
 `;
 
 /**
+ * Fragment for reusable Article data.
+ */
+export const ARTICLE_FRAGMENT = `
+  fragment ArticleFragment on Article {
+    id
+    handle
+    title
+    contentHtml
+    excerptHtml
+    publishedAt
+    image {
+      url
+      altText
+      width
+      height
+    }
+    authorV2 {
+      name
+    }
+    tags
+  }
+`;
+
+/**
  * Fragment for reusable Cart data.
  * Used across Cart Creation, Line Updates, and Fetches.
  */
@@ -199,6 +223,34 @@ export const GET_PRODUCT_RECOMMENDATIONS_QUERY = `
   query GetProductRecommendations($productId: ID!) {
     productRecommendations(productId: $productId) {
       ...ProductFragment
+    }
+  }
+`;
+
+// ─── Blog Queries ─────────────────────────────────────────────────────────────
+
+export const GET_ALL_ARTICLES_QUERY = `
+  ${ARTICLE_FRAGMENT}
+  query GetAllArticles($first: Int!, $after: String) {
+    articles(first: $first, after: $after, sortKey: PUBLISHED_AT, reverse: true) {
+      nodes {
+        ...ArticleFragment
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+export const GET_ARTICLE_BY_HANDLE_QUERY = `
+  ${ARTICLE_FRAGMENT}
+  query GetArticleByHandle($blogHandle: String!, $handle: String!) {
+    blog(handle: $blogHandle) {
+      articleByHandle(handle: $handle) {
+        ...ArticleFragment
+      }
     }
   }
 `;

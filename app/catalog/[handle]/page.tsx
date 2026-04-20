@@ -20,7 +20,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const resolvedParams = await params;
   const { title } = await getCollectionProducts({ handle: resolvedParams.handle })
-  
+
   return {
     title: `${title} — Shop the Collection`,
     description: `Explore our ${title} collection. Handcrafted botanical skincare and luxury home essentials from ME byReign.`,
@@ -33,9 +33,9 @@ export default async function CollectionPage({
   params: Promise<{ handle: string }>
 }) {
   const resolvedParams = await params;
-  const { products, title } = await getCollectionProducts({ 
+  const { products, title } = await getCollectionProducts({
     handle: resolvedParams.handle,
-    first: 100 
+    first: 100
   })
 
   // If collection not found or empty, we can choose to 404 or show empty state

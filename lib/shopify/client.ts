@@ -13,6 +13,8 @@ import {
   NormalizedCart,
   ShopifyShop,
   SortKey,
+  ShopifyArticle,
+  NormalizedArticle,
 } from './types'
 import {
   GET_ALL_PRODUCTS_QUERY,
@@ -26,6 +28,8 @@ import {
   CART_LINES_UPDATE_MUTATION,
   CART_LINES_REMOVE_MUTATION,
   GET_SHOP_SETTINGS_QUERY,
+  GET_ALL_ARTICLES_QUERY,
+  GET_ARTICLE_BY_HANDLE_QUERY,
 } from './queries'
 
 // ─── Config ──────────────────────────────────────────────────────────────────
@@ -115,6 +119,33 @@ export function normalizeProduct(product: ShopifyProduct): NormalizedProduct {
       title: seo?.title || title,
       description: seo?.description || description,
     },
+  }
+}
+
+export function normalizeArticle(article: ShopifyArticle): NormalizedArticle {
+  const { id, handle, title, contentHtml, excerptHtml, publishedAt, image, authorV2, tags } = article
+
+  // Calculate read time based on word count of the HTML content (approx 200 words per min)
+  const plainText = contentHtml.replace(/<[^>]+>/g, '')
+  const wordCount = plainText.split(/\s+/).length
+  const readTimeMinutes = Math.max(1, Math.ceil(wordCount / 200))
+
+  return {
+    id,
+    slug: handle,
+    title,
+    contentHtml,
+    excerptHtml: excerptHtml || '',
+    date: new Date(publishedAt).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }),
+    image: image?.url || '/images/placeholder.png',
+    author: authorV2?.name || 'Editorial Team',
+    tags,
+    category: tags[0] || 'Journal',
+    readTime: `${readTimeMinutes} min read`,
   }
 }
 
@@ -225,6 +256,45 @@ export async function getCollectionProducts({
     hasNextPage: data.collection.products.pageInfo.hasNextPage,
     endCursor: data.collection.products.pageInfo.endCursor,
   }
+}
+
+// ─── Blog Functions ───────────────────────────────────────────────────────────
+
+export async function getAllArticles({
+  first = 24,
+  after,
+}: {
+  first?: number
+  after?: string
+} = {}): Promise<{ articles: NormalizedArticle[]; hasNextPage: boolean; endCursor: string | null }> {
+  const data = await shopifyFetch<{
+    articles: {
+      nodes: ShopifyArticle[]
+      pageInfo: { hasNextPage: boolean; endCursor: string | null }
+    }
+  }>({
+    query: GET_ALL_ARTICLES_QUERY,
+    variables: { first, after },
+  })
+
+  return {
+    articles: data.articles.nodes.map(normalizeArticle),
+    hasNextPage: data.articles.pageInfo.hasNextPage,
+    endCursor: data.articles.pageInfo.endCursor,
+  }
+}
+
+export async function getArticleByHandle(handle: string, blogHandle: string = 'news'): Promise<NormalizedArticle | null> {
+  const data = await shopifyFetch<{
+    blog: {
+      articleByHandle: ShopifyArticle | null
+    } | null
+  }>({
+    query: GET_ARTICLE_BY_HANDLE_QUERY,
+    variables: { blogHandle, handle },
+  })
+
+  return data.blog?.articleByHandle ? normalizeArticle(data.blog.articleByHandle) : null
 }
 
 // ─── Cart Functions ───────────────────────────────────────────────────────────

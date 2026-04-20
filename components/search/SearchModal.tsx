@@ -5,8 +5,8 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'motion/react'
 import { MagnifyingGlass, X, ArrowRight } from '@phosphor-icons/react'
 
-interface SearchResult {
-  type: 'product' | 'blog' | 'page'
+export interface SearchResult {
+  type: 'product' | 'blog'
   title: string
   description: string
   url: string
@@ -14,137 +14,13 @@ interface SearchResult {
   image?: string
 }
 
-const SEARCH_DATA: SearchResult[] = [
-  // ── Products ────────────────────────────────────────────────────────────────
-  {
-    type: 'product',
-    title: 'Golden Elixir Serum',
-    description: 'Our signature botanical face serum — a radiance ritual in a bottle.',
-    url: '/products/golden-elixir-serum',
-    category: 'Skincare',
-    image: 'https://images.unsplash.com/photo-1768483018807-bd0b9ab86539?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400',
-  },
-  {
-    type: 'product',
-    title: 'Oat & Honey Artisanal Soap',
-    description: 'A gentle cold-process soap bar that cleanses without stripping.',
-    url: '/products/oat-honey-soap',
-    category: 'Skincare',
-    image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400',
-  },
-  {
-    type: 'product',
-    title: 'Noir Fig & Amber Candle',
-    description: 'A deep, complex fragrance for your most intentional space.',
-    url: '/products/noir-fig-amber-candle',
-    category: 'Home Decor',
-    image: 'https://images.unsplash.com/photo-1603905485372-c8e96a3a4aaa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400',
-  },
-  {
-    type: 'product',
-    title: 'Minimalist Sculptural Vase',
-    description: 'Hand-thrown stoneware — each piece is one of a kind.',
-    url: '/products/minimalist-sculptural-vase',
-    category: 'Home Decor',
-    image: 'https://images.unsplash.com/photo-1772442364571-c340bcc2efc0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400',
-  },
-  {
-    type: 'product',
-    title: 'Velvet Rose Body Oil',
-    description: 'A silky, fast-absorbing body oil with a true rose botanical heart.',
-    url: '/products/velvet-rose-body-oil',
-    category: 'Skincare',
-    image: 'https://images.unsplash.com/photo-1573575155376-b5010099301b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400',
-  },
-  {
-    type: 'product',
-    title: 'Linen Cloud Pillowcase Set',
-    description: 'European flax linen — breathable, temperature-regulating, effortlessly beautiful.',
-    url: '/products/linen-cloud-pillowcase',
-    category: 'Home Decor',
-    image: 'https://images.unsplash.com/photo-1629198688000-71f23e745b6e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400',
-  },
-  {
-    type: 'product',
-    title: 'Obsidian Face Roller',
-    description: 'Volcanic obsidian, hand-polished. A tool and a ritual object.',
-    url: '/products/obsidian-face-roller',
-    category: 'Skincare',
-    image: 'https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400',
-  },
-  {
-    type: 'product',
-    title: 'Cedar & Sage Room Mist',
-    description: 'A single spritz that transforms a room into a sanctuary.',
-    url: '/products/cedar-sage-room-mist',
-    category: 'Home Decor',
-    image: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400',
-  },
-
-  // ── Blog Posts ──────────────────────────────────────────────────────────────
-  {
-    type: 'blog',
-    title: 'The Ancient Art of Botanical Skincare',
-    description: 'Exploring time-honored traditions from Mediterranean herbalists',
-    url: '/blog/ancient-art-of-botanical-skincare',
-    category: 'Heritage',
-    image: 'https://images.unsplash.com/photo-1763742259246-80eb61e760d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400',
-  },
-  {
-    type: 'blog',
-    title: 'Creating a Mindful Morning Ritual',
-    description: 'Transform your skincare routine into a grounding practice',
-    url: '/blog/mindful-morning-ritual',
-    category: 'Wellness',
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400',
-  },
-  {
-    type: 'blog',
-    title: 'The Power of Rose in Natural Beauty',
-    description: 'Why rose has been treasured for centuries',
-    url: '/blog/power-of-rose-in-natural-beauty',
-    category: 'Ingredients',
-    image: 'https://images.unsplash.com/photo-1617897903246-719242758050?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400',
-  },
-  {
-    type: 'blog',
-    title: 'Bringing Spa Energy Into Your Home',
-    description: 'Simple ways to create a sanctuary atmosphere',
-    url: '/blog/spa-energy-into-your-home',
-    category: 'Home',
-    image: 'https://images.unsplash.com/photo-1600857062241-98e5dba7f417?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400',
-  },
-  {
-    type: 'blog',
-    title: 'Understanding Clean Beauty',
-    description: "What 'clean' really means and why it matters",
-    url: '/blog/understanding-clean-beauty',
-    category: 'Education',
-    image: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400',
-  },
-  {
-    type: 'blog',
-    title: 'Seasonal Skincare: Spring Edition',
-    description: 'Adjusting your routine as the seasons change',
-    url: '/blog/seasonal-skincare-spring-edition',
-    category: 'Skincare',
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400',
-  },
-
-  // ── Pages ───────────────────────────────────────────────────────────────────
-  { type: 'page', title: 'Our Story', description: 'Learn about our journey and philosophy', url: '/our-story' },
-  { type: 'page', title: 'Catalog', description: 'Browse our handcrafted collection', url: '/catalog' },
-  { type: 'page', title: 'The Blog', description: 'Read our journal on botanical beauty and wellness', url: '/blog' },
-  { type: 'page', title: 'Contact', description: 'Get in touch with our studio', url: '/contact' },
-  { type: 'page', title: 'Shopping Cart', description: 'View your cart and checkout', url: '/cart' },
-]
-
 interface SearchModalProps {
   isOpen: boolean
   onClose: () => void
+  data: SearchResult[]
 }
 
-export function SearchModal({ isOpen, onClose }: SearchModalProps) {
+export function SearchModal({ isOpen, onClose, data }: SearchModalProps) {
   const [query, setQuery]     = useState('')
   const [results, setResults] = useState<SearchResult[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
@@ -166,14 +42,14 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     if (!query.trim()) { setResults([]); return }
     const q = query.toLowerCase()
     setResults(
-      SEARCH_DATA.filter(
+      data.filter(
         (item) =>
           item.title.toLowerCase().includes(q) ||
           item.description.toLowerCase().includes(q) ||
           item.category?.toLowerCase().includes(q)
       )
     )
-  }, [query])
+  }, [query, data])
 
   // Escape key
   useEffect(() => {
@@ -183,8 +59,8 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     return () => window.removeEventListener('keydown', handler)
   }, [isOpen, onClose])
 
-  const groups: ('product' | 'blog' | 'page')[] = ['product', 'blog', 'page']
-  const groupLabels = { product: 'Products', blog: 'Articles', page: 'Pages' }
+  const groups: ('product' | 'blog')[] = ['product', 'blog']
+  const groupLabels = { product: 'Products', blog: 'Articles' }
 
   return (
     <AnimatePresence>

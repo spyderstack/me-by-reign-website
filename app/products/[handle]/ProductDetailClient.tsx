@@ -44,14 +44,18 @@ export default function ProductDetailClient({
   return (
     <div className="min-h-screen bg-white">
 
-      {/* ── Dark Header Underlay for Navbar ── */}
+
       <div
         className="bg-[#111] w-full"
         style={{ height: 'calc(var(--banner-height, 0px) + 80px)' }}
       />
-
+      <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-black via-[#2a2010] to-transparent pointer-events-none z-0" />
       {/* ── Breadcrumb ── */}
-      <div className="border-b border-gray-100 bg-white">
+      <div
+        className="border-b border-gray-100 bg-white relative z-10"
+
+      >
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <Link
             href="/catalog"
@@ -97,8 +101,8 @@ export default function ProductDetailClient({
                       key={i}
                       onClick={() => setSelectedImage(i)}
                       className={`aspect-square overflow-hidden bg-[#faf9f6] border-2 transition-all ${selectedImage === i
-                          ? 'border-black'
-                          : 'border-transparent hover:border-gray-200'
+                        ? 'border-black'
+                        : 'border-transparent hover:border-gray-200'
                         }`}
                       id={`product-image-thumb-${i}`}
                     >
@@ -194,10 +198,10 @@ export default function ProductDetailClient({
                 onClick={handleAddToCart}
                 disabled={!product.available || isAdding}
                 className={`w-full flex items-center justify-center gap-3 px-8 py-4 uppercase tracking-widest text-xs font-bold transition-all duration-300 mb-3 ${!product.available || isAdding
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    : added
-                      ? 'bg-[#C5A059] text-white'
-                      : 'bg-black text-white hover:bg-[#C5A059]'
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  : added
+                    ? 'bg-[#C5A059] text-white'
+                    : 'bg-black text-white hover:bg-[#C5A059]'
                   }`}
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
                 id="product-add-to-cart-btn"
