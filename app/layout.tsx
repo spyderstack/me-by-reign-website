@@ -72,19 +72,50 @@ export const metadata: Metadata = {
 }
 
 import { CartProvider } from '@/components/providers/CartProvider'
+import { getAllProducts, getAllArticles } from '@/lib/shopify/client'
+import { SearchResult } from '@/components/search/SearchModal'
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  // Fetch real data for global search
+  // Using Promise.all so they run concurrently
+  const [{ products }, { articles }] = await Promise.all([
+    getAllProducts({ first: 25 }),
+    getAllArticles({ first: 25 })
+  ])
+
+  // Map to unified search results format
+  const searchData: SearchResult[] = [
+    ...products.map((p) => ({
+      type: 'product' as const,
+      title: p.title,
+      description: p.description,
+      url: `/products/${p.handle}`,
+      category: 'Product',
+      image: p.images[0]?.url,
+    })),
+    ...articles.map((a) => ({
+      type: 'blog' as const,
+      title: a.title,
+      // Provide a pure text excerpt. We fall back to removing simple HTML if needed,
+      // but excerptHtml should be plain enough or we can use substring of contentHtml.
+      description: a.excerptHtml?.replace(/<[^>]+>/g, '') || 'Read this article in our journal.',
+      url: `/blog/${a.slug}`,
+      category: a.category,
+      image: a.image,
+    }))
+  ]
+
   return (
     <html lang="en" className={`${playfair.variable} ${montserrat.variable}`} suppressHydrationWarning data-scroll-behavior="smooth">
       <body suppressHydrationWarning>
         <CartProvider>
           <ScrollProgressBar />
           <SeasonalBanner />
-          <Navbar />
+          <Navbar searchData={searchData} />
           {children}
           <Footer />
         </CartProvider>

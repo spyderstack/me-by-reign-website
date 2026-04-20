@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'motion/react'
 import { MagnifyingGlass, Bag, List, X } from '@phosphor-icons/react'
-import { SearchModal } from '@/components/search/SearchModal'
+import { SearchModal, SearchResult } from '@/components/search/SearchModal'
 import { useCart } from '@/components/providers/CartProvider'
 
 const navLinks = [
@@ -14,7 +14,7 @@ const navLinks = [
   { label: 'Contact', href: '/contact' },
 ]
 
-export function Navbar() {
+export function Navbar({ searchData }: { searchData: SearchResult[] }) {
   const { cart } = useCart()
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -205,7 +205,7 @@ export function Navbar() {
       </AnimatePresence>
 
       {/* Search Modal */}
-      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} data={searchData} />
     </>
   )
 }
