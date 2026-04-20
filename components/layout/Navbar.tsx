@@ -60,7 +60,7 @@ export function Navbar() {
                 className="text-2xl tracking-widest uppercase font-semibold"
                 style={{ fontFamily: "'Playfair Display', serif" }}
               >
-                ME by Reign
+                ME byReign
               </span>
               <span
                 className="text-[10px] tracking-[0.3em] uppercase mt-0.5"
@@ -159,7 +159,7 @@ export function Navbar() {
                 className="text-3xl tracking-widest uppercase"
                 style={{ fontFamily: "'Playfair Display', serif", color: '#111' }}
               >
-                ME by Reign
+                ME byReign
               </p>
               <p
                 className="text-[10px] tracking-[0.3em] uppercase mt-1 text-[#C5A059]"

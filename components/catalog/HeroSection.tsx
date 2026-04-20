@@ -18,7 +18,7 @@ export function HeroSection({ title = 'Edit' }: { title?: string }) {
       <div className="absolute inset-0">
         <Image
           src="/images/golden_background.jpg"
-          alt="ME by Reign — The Edit"
+          alt="ME byReign — The Edit"
           fill
           priority
           sizes="100vw"
@@ -45,7 +45,7 @@ export function HeroSection({ title = 'Edit' }: { title?: string }) {
             className="text-[#C5A059] text-[10px] uppercase tracking-[0.45em] font-bold"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
-            ME by Reign
+            ME byReign
           </span>
         </motion.div>
 

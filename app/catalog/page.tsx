@@ -5,7 +5,7 @@ import { HeroSection } from '@/components/catalog/HeroSection'
 
 export const metadata: Metadata = {
   title: 'The Edit — Shop the Collection',
-  description: 'Explore the ME by Reign collection of artisanal skincare and luxury home essentials. Handcrafted with botanical integrity.',
+  description: 'Explore the ME byReign collection of artisanal skincare and luxury home essentials. Handcrafted with botanical integrity.',
 }
 
 // Revalidate this page every 60 seconds (ISR)

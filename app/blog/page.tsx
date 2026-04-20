@@ -99,7 +99,7 @@ export default function BlogPage() {
         <div className="absolute inset-0">
           <Image
             src="/images/golden_background.jpg"
-            alt="The Journal — ME by Reign"
+            alt="The Journal — ME byReign"
             fill priority sizes="100vw"
             className="object-cover object-center opacity-50"
           />
@@ -121,7 +121,7 @@ export default function BlogPage() {
               className="text-[#C5A059] text-[10px] uppercase tracking-[0.45em] font-bold"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
-              ME by Reign
+              ME byReign
             </span>
             <span className="w-8 h-px bg-[#C5A059]" />
           </motion.div>

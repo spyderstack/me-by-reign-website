@@ -22,31 +22,31 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   metadataBase: new URL('https://me-by-reign.com'), // Replace with actual production URL
   title: {
-    default: 'ME by Reign — Handmade Skin & Home Decor',
-    template: '%s | ME by Reign',
+    default: 'ME byReign — Handmade Skin & Home Decor',
+    template: '%s | ME byReign',
   },
   description:
-    'Discover ME by Reign — artisan-crafted skincare and luxury home decor rooted in botanical tradition. Handmade with intention, designed for the modern sanctuary.',
-  keywords: ['handmade skincare', 'artisan candles', 'botanical skincare', 'luxury home decor', 'ME by Reign', 'Atlanta artisan'],
-  authors: [{ name: 'ME by Reign' }],
-  creator: 'ME by Reign',
-  publisher: 'ME by Reign',
+    'Discover ME byReign — artisan-crafted skincare and luxury home decor rooted in botanical tradition. Handmade with intention, designed for the modern sanctuary.',
+  keywords: ['handmade skincare', 'artisan candles', 'botanical skincare', 'luxury home decor', 'ME byReign', 'Atlanta artisan'],
+  authors: [{ name: 'ME byReign' }],
+  creator: 'ME byReign',
+  publisher: 'ME byReign',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
   openGraph: {
-    title: 'ME by Reign — Handmade Skin & Home Decor',
+    title: 'ME byReign — Handmade Skin & Home Decor',
     description: 'Artisan-crafted skincare and luxury home decor. Handmade with intention.',
     url: 'https://me-by-reign.com',
-    siteName: 'ME by Reign',
+    siteName: 'ME byReign',
     images: [
       {
         url: '/images/og-image.jpg', // Ensure this asset exists or use a fallback
         width: 1200,
         height: 630,
-        alt: 'ME by Reign — Luxury Living',
+        alt: 'ME byReign — Luxury Living',
       },
     ],
     locale: 'en_US',
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ME by Reign — Handmade Skin & Home Decor',
+    title: 'ME byReign — Handmade Skin & Home Decor',
     description: 'Artisan-crafted skincare and luxury home decor. Handmade with intention.',
     images: ['/images/og-image.jpg'],
   },

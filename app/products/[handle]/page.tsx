@@ -15,7 +15,7 @@ export async function generateMetadata({
   if (!product) return { title: 'Product Not Found' }
 
   const richDetail = getMockDetail(product.handle)
-  const description = product.description || richDetail?.description || `Purchase ${product.name} from ME by Reign.`
+  const description = product.description || richDetail?.description || `Purchase ${product.name} from ME byReign.`
 
   return {
     title: product.name,

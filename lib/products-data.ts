@@ -30,7 +30,7 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
       'https://images.unsplash.com/photo-1761746556491-d8c0123a6f03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
     ],
     description: 'Our signature botanical face serum — a radiance ritual in a bottle.',
-    fullDescription: 'The Golden Elixir Serum is ME by Reign\'s most celebrated formula — a luxurious, small-batch blend of cold-pressed botanical oils that works to restore radiance, reduce the appearance of fine lines, and deeply nourish the skin barrier. Handcrafted in limited quantities to ensure freshness and potency.',
+    fullDescription: 'The Golden Elixir Serum is ME byReign\'s most celebrated formula — a luxurious, small-batch blend of cold-pressed botanical oils that works to restore radiance, reduce the appearance of fine lines, and deeply nourish the skin barrier. Handcrafted in limited quantities to ensure freshness and potency.',
     size: '30ml / 1 fl oz',
     ingredients: [
       'Cold-Pressed Rosehip Seed Oil',

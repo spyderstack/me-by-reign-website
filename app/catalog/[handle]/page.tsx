@@ -23,7 +23,7 @@ export async function generateMetadata({
   
   return {
     title: `${title} — Shop the Collection`,
-    description: `Explore our ${title} collection. Handcrafted botanical skincare and luxury home essentials from ME by Reign.`,
+    description: `Explore our ${title} collection. Handcrafted botanical skincare and luxury home essentials from ME byReign.`,
   }
 }
 

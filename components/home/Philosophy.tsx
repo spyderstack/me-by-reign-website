@@ -30,7 +30,7 @@ export function Philosophy() {
               <div className="relative aspect-[4/5] rounded-sm shadow-2xl overflow-hidden" style={{ zIndex: 1 }}>
                 <Image
                   src="/images/bio_photo.jpg"
-                  alt="ME by Reign philosophy — handcrafted with botanical intention"
+                  alt="ME byReign philosophy — handcrafted with botanical intention"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover object-center"
@@ -113,7 +113,7 @@ export function Philosophy() {
                   className="text-gray-500 text-xs uppercase tracking-widest"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
-                  Lorem Ipsum, ME by Reign
+                  Lorem Ipsum, ME byReign
                 </p>
               </div>
             </div>

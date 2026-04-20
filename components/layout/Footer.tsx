@@ -34,7 +34,7 @@ export function Footer() {
               className="text-3xl tracking-widest uppercase text-white mb-1"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
-              ME by Reign
+              ME byReign
             </p>
             <p
               className="text-[10px] tracking-[0.3em] uppercase text-[#C5A059] mb-6"
@@ -210,7 +210,7 @@ export function Footer() {
             className="text-gray-500 text-xs uppercase tracking-widest"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
-            © {new Date().getFullYear()} ME by Reign. All rights reserved.
+            © {new Date().getFullYear()} ME byReign. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <Link

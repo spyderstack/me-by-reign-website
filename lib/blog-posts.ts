@@ -40,11 +40,11 @@ export const BLOG_POSTS: BlogPostContent[] = [
         },
         {
           heading: 'West African Traditions',
-          text: 'Closer to our own roots at ME by Reign, the botanical traditions of West Africa are equally profound. Shea butter — pressed by hand from the nut of the Vitellaria tree — has been used for centuries to protect skin from the harmattan winds. Black soap, born from plantain ash and palm kernel oil, remains one of the most effective cleansers the world has ever produced.',
+          text: 'Closer to our own roots at ME byReign, the botanical traditions of West Africa are equally profound. Shea butter — pressed by hand from the nut of the Vitellaria tree — has been used for centuries to protect skin from the harmattan winds. Black soap, born from plantain ash and palm kernel oil, remains one of the most effective cleansers the world has ever produced.',
         },
         {
           heading: 'How We Translate Tradition into Formula',
-          text: 'At ME by Reign, we don\'t look to these traditions as aesthetic inspiration — we look to them as scientific precedent. Every botanical we use was used by someone before us, for good reason. Our Golden Elixir Serum contains cold-pressed rosehip oil not because it photographs well, but because its natural retinoid content has been validated across centuries of use.',
+          text: 'At ME byReign, we don\'t look to these traditions as aesthetic inspiration — we look to them as scientific precedent. Every botanical we use was used by someone before us, for good reason. Our Golden Elixir Serum contains cold-pressed rosehip oil not because it photographs well, but because its natural retinoid content has been validated across centuries of use.',
         },
         {
           heading: 'The Modern Return',
@@ -117,7 +117,7 @@ export const BLOG_POSTS: BlogPostContent[] = [
           text: 'Fragrance is processed in the limbic system — the part of the brain responsible for emotion and memory. Rose, in particular, has been clinically shown to reduce cortisol levels and promote a sense of warmth and ease. This is not incidental to our formulations. It is intentional. We believe skincare that makes you feel something is skincare that works on more levels than one.',
         },
       ],
-      conclusion: 'Rose has survived five thousand years of use because it deserves to. It is not a trend. It is the foundation of botanical beauty — and one we will continue to build on at ME by Reign.',
+      conclusion: 'Rose has survived five thousand years of use because it deserves to. It is not a trend. It is the foundation of botanical beauty — and one we will continue to build on at ME byReign.',
     },
   },
   {
@@ -176,10 +176,10 @@ export const BLOG_POSTS: BlogPostContent[] = [
         },
         {
           heading: 'How to Read an Ingredients List',
-          text: 'Ingredients are listed by concentration, from highest to lowest. The first five or six ingredients make up the bulk of the product. If your "rose serum" lists water, glycerin, dimethicone, and fragrance before any mention of rose, the rose is decoration. At ME by Reign, our key botanicals appear in the top third of every formula — not in the tail as marketing.',
+          text: 'Ingredients are listed by concentration, from highest to lowest. The first five or six ingredients make up the bulk of the product. If your "rose serum" lists water, glycerin, dimethicone, and fragrance before any mention of rose, the rose is decoration. At ME byReign, our key botanicals appear in the top third of every formula — not in the tail as marketing.',
         },
         {
-          heading: 'What ME by Reign Commits To',
+          heading: 'What ME byReign Commits To',
           text: 'We avoid: synthetic fragrance, parabens, PEGs, sulfates in cleansers, and petroleum derivatives. We use: cold-pressed plant oils, botanical extracts at efficacious concentrations, naturally-derived preservatives, and essential oils at safe and considered dilutions. We test. We reformulate when we learn something new. Clean, to us, is a practice — not a label.',
         },
       ],
