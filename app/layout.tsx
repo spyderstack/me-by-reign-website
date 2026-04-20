@@ -91,11 +91,11 @@ export default async function RootLayout({
   const searchData: SearchResult[] = [
     ...products.map((p) => ({
       type: 'product' as const,
-      title: p.title,
-      description: p.description,
+      title: p.name,
+      description: p.description || '',
       url: `/products/${p.handle}`,
-      category: 'Product',
-      image: p.images[0]?.url,
+      category: p.category || 'Product',
+      image: p.image,
     })),
     ...articles.map((a) => ({
       type: 'blog' as const,

@@ -10,12 +10,18 @@ import { useCart } from '@/components/providers/CartProvider'
 
 function EmptyCart() {
   return (
-    <div
-      className="min-h-screen bg-white flex items-center justify-center"
-      style={{ paddingTop: 'calc(var(--banner-height, 0px) + 80px)' }}
-    >
-      <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-black via-[#2a2010] to-transparent pointer-events-none z-0" />
-      <div className="text-center px-4">
+
+    <div className="min-h-screen bg-white">
+
+
+      <div
+        className="bg-[#111] w-full"
+        style={{ height: 'calc(var(--banner-height, 0px) + 80px)' }}
+      />
+      <div className="absolute top-0 inset-x-0 h-20 bg-gradient-to-b from-black via-[#2a2010] to-transparent pointer-events-none z-0" />
+
+
+      <div className="text-center px-4 pt-20">
         <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
           <ShoppingBag size={40} weight="light" className="text-gray-400" />
         </div>
@@ -67,11 +73,14 @@ export default function CartPage() {
   // Handle Loading state for the initial fetch
   if (isLoading && !cart) {
     return (
-      <div 
-        className="min-h-screen bg-white flex items-center justify-center"
-        style={{ paddingTop: 'calc(var(--banner-height, 0px) + 80px)' }}
-      >
-        <div className="animate-pulse text-gray-400 tracking-widest text-xs uppercase">Loading Cart...</div>
+      <div className="min-h-screen bg-white">
+
+
+        <div
+          className="bg-[#111] w-full"
+          style={{ height: 'calc(var(--banner-height, 0px) + 80px)' }}
+        />
+        <div className="absolute top-0 inset-x-0 h-20 bg-gradient-to-b from-black via-[#2a2010] to-transparent pointer-events-none z-0" />
       </div>
     )
   }
@@ -79,13 +88,17 @@ export default function CartPage() {
   if (!cart || cart.lines.length === 0) return <EmptyCart />
 
   return (
-    <div
-      className="min-h-screen bg-gray-50"
-      style={{ paddingTop: 'calc(var(--banner-height, 0px) + 80px)' }}
-    >
+    <div className="min-h-screen bg-white">
+
+
+      <div
+        className="bg-[#111] w-full"
+        style={{ height: 'calc(var(--banner-height, 0px) + 80px)' }}
+      />
+      <div className="absolute top-0 inset-x-0 h-10 bg-gradient-to-b from-black via-[#2a2010] to-transparent pointer-events-none z-0" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-black via-[#2a2010] to-transparent pointer-events-none z-0" />
-        
+        <div className="absolute top-0 inset-x-0 h-20 bg-gradient-to-b from-black via-[#2a2010] to-transparent pointer-events-none z-0" />
+
         {/* Header */}
         <div className="mb-12 relative z-10">
           <h1
@@ -241,9 +254,8 @@ export default function CartPage() {
               </div>
 
               <button
-                className={`w-full bg-black text-white px-8 py-5 uppercase tracking-widest text-[11px] font-bold transition-all duration-300 mb-6 ${
-                  isCheckingOut ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#C5A059] hover:shadow-lg'
-                }`}
+                className={`w-full bg-black text-white px-8 py-5 uppercase tracking-widest text-[11px] font-bold transition-all duration-300 mb-6 ${isCheckingOut ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#C5A059] hover:shadow-lg'
+                  }`}
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
                 id="checkout-btn"
                 disabled={isCheckingOut || isLoading}
