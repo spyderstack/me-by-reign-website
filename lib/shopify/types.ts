@@ -110,6 +110,14 @@ export interface ShopifyShop {
     url: string
     host: string
   }
+  privacyPolicy?: {
+    title: string
+    url: string
+  }
+  termsOfService?: {
+    title: string
+    url: string
+  }
 }
 
 export interface ShopifyCollection {

@@ -342,6 +342,14 @@ export const GET_SHOP_SETTINGS_QUERY = `
         url
         host
       }
+      privacyPolicy {
+        title
+        url
+      }
+      termsOfService {
+        title
+        url
+      }
     }
   }
 `;

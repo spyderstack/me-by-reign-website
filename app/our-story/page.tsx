@@ -2,15 +2,27 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { motion, useInView } from 'motion/react'
-import { ArrowRight } from '@phosphor-icons/react'
+import { ArrowRight, CheckCircle, WarningCircle } from '@phosphor-icons/react'
+import { subscribeToNewsletter } from '@/app/actions/newsletter'
 import { Philosophy }        from '@/components/home/Philosophy'
 
-
-
-
 export default function OurStoryPage() {
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [message, setMessage] = useState('')
+
+  async function handleSubmit(formData: FormData) {
+    setStatus('loading')
+    const result = await subscribeToNewsletter(formData)
+    if (result.success) {
+      setStatus('success')
+    } else {
+      setStatus('error')
+      setMessage(result.message)
+    }
+  }
+
   const heroRef = useRef(null)
   const isHeroIn = useInView(heroRef, { once: true })
 
@@ -113,28 +125,53 @@ export default function OurStoryPage() {
             Get our latest insights on botanical wellness, rituals, and new arrivals — delivered to your inbox.
           </p>
 
-          <form
-            className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
-            onSubmit={(e) => e.preventDefault()}
-            id="blog-newsletter-form"
-          >
-            <input
-              type="email"
-              placeholder="Enter your email"
-              required
-              className="flex-1 bg-white/10 border border-white/20 px-6 py-4 focus:outline-none focus:border-[#C5A059] transition-colors text-white placeholder:text-gray-500 text-sm"
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
-              id="blog-newsletter-email"
-            />
-            <button
-              type="submit"
-              className="bg-[#C5A059] text-white px-8 py-4 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-white hover:text-black transition-colors duration-300 whitespace-nowrap"
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
-              id="blog-newsletter-submit"
-            >
-              Subscribe
-            </button>
-          </form>
+          {status === 'success' ? (
+            <div className="flex flex-col items-center gap-3 py-10 bg-white/5 border border-[#C5A059]/30 rounded-sm mt-8">
+              <CheckCircle size={32} weight="fill" className="text-[#C5A059]" />
+              <p className="text-white font-medium" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                Welcome to the inner sanctum.
+              </p>
+              <p className="text-gray-400 text-sm">Please check your email to confirm your subscription.</p>
+            </div>
+          ) : (
+            <>
+              <form
+                action={handleSubmit}
+                className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
+                id="blog-newsletter-form"
+              >
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  required
+                  disabled={status === 'loading'}
+                  className="flex-1 bg-white/10 border border-white/20 px-6 py-4 focus:outline-none focus:border-[#C5A059] transition-colors text-white placeholder:text-gray-500 text-sm disabled:opacity-50"
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  id="blog-newsletter-email"
+                />
+                <button
+                  type="submit"
+                  disabled={status === 'loading'}
+                  className="bg-[#C5A059] text-white px-8 py-4 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-white hover:text-black transition-colors duration-300 whitespace-nowrap disabled:opacity-50 min-w-[140px] flex items-center justify-center"
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  id="blog-newsletter-submit"
+                >
+                  {status === 'loading' ? (
+                    <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
+                  ) : (
+                    'Subscribe'
+                  )}
+                </button>
+              </form>
+              {status === 'error' && (
+                <div className="flex items-center justify-center gap-2 text-red-400 text-xs mt-4">
+                  <WarningCircle size={16} />
+                  <span>{message}</span>
+                </div>
+              )}
+            </>
+          )}
 
           <p
             className="text-gray-600 text-[10px] uppercase tracking-widest mt-5"

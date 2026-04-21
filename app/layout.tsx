@@ -75,7 +75,7 @@ export const metadata: Metadata = {
 }
 
 import { CartProvider } from '@/components/providers/CartProvider'
-import { getAllProducts, getAllArticles } from '@/lib/shopify/client'
+import { getAllProducts, getAllArticles, getShopSettings } from '@/lib/shopify/client'
 import { SearchResult } from '@/components/search/SearchModal'
 
 export default async function RootLayout({
@@ -83,11 +83,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Fetch real data for global search
+  // Fetch real data for global search and footer policies
   // Using Promise.all so they run concurrently
-  const [{ products }, { articles }] = await Promise.all([
+  const [{ products }, { articles }, shop] = await Promise.all([
     getAllProducts({ first: 25 }),
-    getAllArticles({ first: 25 })
+    getAllArticles({ first: 25 }),
+    getShopSettings()
   ])
 
   // Map to unified search results format
@@ -112,6 +113,11 @@ export default async function RootLayout({
     }))
   ]
 
+  const policies = {
+    privacyPolicy: shop.privacyPolicy,
+    termsOfService: shop.termsOfService,
+  }
+
   return (
     <html lang="en" className={`${playfair.variable} ${montserrat.variable}`} suppressHydrationWarning data-scroll-behavior="smooth">
       <body suppressHydrationWarning>
@@ -119,7 +125,7 @@ export default async function RootLayout({
           <ScrollProgressBar />
           <Navbar searchData={searchData} />
           {children}
-          <Footer />
+          <Footer policies={policies} />
         </CartProvider>
       </body>
     </html>

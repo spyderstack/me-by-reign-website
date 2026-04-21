@@ -1,8 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { InstagramLogo, FacebookLogo, TwitterLogo, MapPin, Phone, Envelope, ArrowRight } from '@phosphor-icons/react/dist/ssr'
+import { InstagramLogo, FacebookLogo, ArrowRight, CheckCircle, WarningCircle } from '@phosphor-icons/react/dist/ssr'
 import Image from 'next/image'
+import { useState } from 'react'
+import { subscribeToNewsletter } from '@/app/actions/newsletter'
 
 const discoverLinks = [
   { label: 'Skincare Collection', href: '/catalog' },
@@ -20,7 +22,28 @@ const infoLinks = [
   { label: 'Contact', href: '/contact' },
 ]
 
-export function Footer() {
+interface FooterProps {
+  policies?: {
+    privacyPolicy?: { url: string; title: string }
+    termsOfService?: { url: string; title: string }
+  }
+}
+
+export function Footer({ policies }: FooterProps) {
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [message, setMessage] = useState('')
+
+  async function handleSubmit(formData: FormData) {
+    setStatus('loading')
+    const result = await subscribeToNewsletter(formData)
+    if (result.success) {
+      setStatus('success')
+    } else {
+      setStatus('error')
+      setMessage(result.message)
+    }
+  }
+
   return (
     <footer className="bg-[#111] py-24 text-white">
       {/* Gold gradient rule */}
@@ -63,7 +86,7 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-4">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/reign_mebyreign/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-[#C5A059] transition-colors duration-200"
@@ -73,7 +96,7 @@ export function Footer() {
                 <InstagramLogo size={20} weight="regular" />
               </a>
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/ReignHudson/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-[#C5A059] transition-colors duration-200"
@@ -81,16 +104,6 @@ export function Footer() {
                 id="footer-facebook-link"
               >
                 <FacebookLogo size={20} weight="regular" />
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-[#C5A059] transition-colors duration-200"
-                aria-label="Twitter"
-                id="footer-twitter-link"
-              >
-                <TwitterLogo size={20} weight="regular" />
               </a>
             </div>
           </div>
@@ -155,67 +168,69 @@ export function Footer() {
               className="text-gray-400 text-sm mb-5 leading-relaxed"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
-              Subscribe + receive 15% off your first order.
+              Subscribe for our latest updates.
             </p>
-            <form
-              className="flex items-center border-b border-gray-700 pb-2 mb-8 group focus-within:border-[#C5A059] transition-colors"
-              onSubmit={(e) => e.preventDefault()}
-              id="footer-newsletter-form"
-            >
-              <input
-                type="email"
-                placeholder="Enter your email"
-                required
-                className="bg-transparent flex-1 text-sm text-white placeholder-gray-500 focus:outline-none"
-                style={{ fontFamily: "'Montserrat', sans-serif" }}
-                id="footer-email-input"
-              />
-              <button
-                type="submit"
-                className="text-gray-400 hover:text-[#C5A059] transition-colors ml-2"
-                aria-label="Subscribe"
-                id="footer-subscribe-btn"
-              >
-                <ArrowRight size={18} weight="regular" />
-              </button>
-            </form>
 
-            {/* Contact Info */}
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                <MapPin size={15} weight="regular" className="text-[#C5A059] mt-0.5 shrink-0" />
-                <p
-                  className="text-gray-400 text-xs leading-relaxed"
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
-                >
-                  123 Bliss Lane, Atlanta, GA 30301
-                </p>
+            {status === 'success' ? (
+              <div className="flex items-center gap-2 text-[#C5A059] text-sm py-2 mb-8">
+                <CheckCircle size={20} weight="fill" />
+                <span>Thank you for joining our sanctuary.</span>
               </div>
-              <div className="flex items-center gap-3">
-                <Phone size={15} weight="regular" className="text-[#C5A059] shrink-0" />
-                <a
-                  href="tel:+14045550123"
-                  className="text-gray-400 text-xs hover:text-[#C5A059] transition-colors"
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
-                  id="footer-phone-link"
+            ) : (
+              <>
+                <form
+                  action={handleSubmit}
+                  className="flex items-center border-b border-gray-700 pb-2 mb-2 group focus-within:border-[#C5A059] transition-colors"
+                  id="footer-newsletter-form"
                 >
-                  +1 (404) 555-0123
-                </a>
-              </div>
-              <div className="flex items-center gap-3">
-                <Envelope size={15} weight="regular" className="text-[#C5A059] shrink-0" />
-                <a
-                  href="mailto:hello@mebyreign.com"
-                  className="text-gray-400 text-xs hover:text-[#C5A059] transition-colors"
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
-                  id="footer-email-link"
-                >
-                  hello@mebyreign.com
-                </a>
-              </div>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                    disabled={status === 'loading'}
+                    className="bg-transparent flex-1 text-sm text-white placeholder-gray-500 focus:outline-none disabled:opacity-50"
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                    id="footer-email-input"
+                  />
+                  <button
+                    type="submit"
+                    disabled={status === 'loading'}
+                    className="text-gray-400 hover:text-[#C5A059] transition-colors ml-2 disabled:opacity-50"
+                    aria-label="Subscribe"
+                    id="footer-subscribe-btn"
+                  >
+                    {status === 'loading' ? (
+                      <div className="animate-spin h-4 w-4 border-2 border-[#C5A059] border-t-transparent rounded-full" />
+                    ) : (
+                      <ArrowRight size={18} weight="regular" />
+                    )}
+                  </button>
+                </form>
+                {status === 'error' && (
+                  <div className="flex items-center gap-1.5 text-red-400 text-[10px] mb-8 pb-2">
+                    <WarningCircle size={14} />
+                    <span>{message}</span>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Contact Button */}
+            <div className={`mt-8 ${status !== 'idle' ? 'mt-4' : ''}`}>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 border border-[#C5A059] px-6 py-3 text-[10px] uppercase tracking-[0.2em] font-bold text-[#C5A059] hover:bg-[#C5A059] hover:text-white transition-all duration-300 transition-colors"
+                style={{ fontFamily: "'Montserrat', sans-serif" }}
+                id="footer-contact-button"
+              >
+                Contact Us
+                <ArrowRight size={14} />
+              </Link>
             </div>
           </div>
         </div>
+
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-16 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -226,22 +241,26 @@ export function Footer() {
             © {new Date().getFullYear()} ME byReign. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            <Link
-              href="/privacy"
+            <a
+              href={policies?.privacyPolicy?.url || '/privacy'}
+              target={policies?.privacyPolicy?.url ? "_blank" : undefined}
+              rel={policies?.privacyPolicy?.url ? "noopener noreferrer" : undefined}
               className="text-gray-500 text-xs uppercase tracking-widest hover:text-[#C5A059] transition-colors"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
               id="footer-privacy-link"
             >
               Privacy Policy
-            </Link>
-            <Link
-              href="/terms"
+            </a>
+            <a
+              href={policies?.termsOfService?.url || '/terms'}
+              target={policies?.termsOfService?.url ? "_blank" : undefined}
+              rel={policies?.termsOfService?.url ? "noopener noreferrer" : undefined}
               className="text-gray-500 text-xs uppercase tracking-widest hover:text-[#C5A059] transition-colors"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
               id="footer-terms-link"
             >
               Terms of Service
-            </Link>
+            </a>
           </div>
         </div>
       </div>
