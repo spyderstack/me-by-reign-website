@@ -89,7 +89,7 @@ export function Philosophy() {
               className="italic text-xl text-gray-800 border-l-2 border-[#C5A059] pl-6 my-10 leading-relaxed"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
-              &ldquo;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.&rdquo;
+              &ldquo;Self-care is not a luxury, it's a necessity. Each product we create is an invitation to embrace wellness and lead with love.&rdquo;
             </blockquote>
 
             {/* Founder Signature */}
@@ -99,7 +99,7 @@ export function Philosophy() {
                   className="text-[#C5A059] text-xl italic font-light"
                   style={{ fontFamily: "'Playfair Display', serif" }}
                 >
-                  L
+                  R
                 </span>
               </div>
               <div>
@@ -107,13 +107,13 @@ export function Philosophy() {
                   className="text-black font-medium text-sm"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
-                  Lorem Ipsum
+                  Reign Hudson
                 </p>
                 <p
                   className="text-gray-500 text-xs uppercase tracking-widest"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
-                  Lorem Ipsum, ME byReign
+                  Founder, ME byReign
                 </p>
               </div>
             </div>

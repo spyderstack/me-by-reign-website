@@ -4,7 +4,6 @@ import './globals.css'
 import { ScrollProgressBar } from '@/components/ScrollProgressBar'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
-import { SeasonalBanner } from '@/components/home/SeasonalBanner'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -118,7 +117,6 @@ export default async function RootLayout({
       <body suppressHydrationWarning>
         <CartProvider>
           <ScrollProgressBar />
-          <SeasonalBanner />
           <Navbar searchData={searchData} />
           {children}
           <Footer />

@@ -20,13 +20,13 @@ export function EditorialBanner() {
           className="text-3xl md:text-5xl text-white font-serif mb-6 leading-tight italic"
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
-          &ldquo;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.&rdquo;
+          &ldquo;Handcrafted with botanical intention, designed for the modern soul.&rdquo;
         </h2>
         <p
           className="text-[#C5A059] uppercase tracking-[0.2em] text-sm font-semibold"
           style={{ fontFamily: "'Montserrat', sans-serif" }}
         >
-          — Lorem Ipsum
+          — ME byReign
         </p>
       </div>
     </section>
