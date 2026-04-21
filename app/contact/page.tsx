@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { useState, useRef } from 'react'
 import { motion, useInView } from 'motion/react'
-import { MapPin, Phone, Envelope } from '@phosphor-icons/react'
+import { submitContactForm } from '@/app/actions/contact'
 
 // ─── Contact form state ───────────────────────────────────────────────────────
 interface FormData {
@@ -15,31 +15,6 @@ interface FormData {
 
 const INITIAL_FORM: FormData = { name: '', email: '', subject: '', message: '' }
 
-// ─── Contact details ──────────────────────────────────────────────────────────
-const contactDetails = [
-  {
-    Icon: MapPin,
-    label: 'Address',
-    value: '123 Bliss Lane\nAtlanta, GA 30301',
-  },
-  {
-    Icon: Phone,
-    label: 'Phone',
-    value: '+1 (404) 555-0123',
-  },
-  {
-    Icon: Envelope,
-    label: 'Email',
-    value: 'hello@mebyreign.com',
-  },
-]
-
-const hours = [
-  { days: 'Monday – Friday', time: '10am – 6pm' },
-  { days: 'Saturday', time: '11am – 5pm' },
-  { days: 'Sunday', time: 'Closed' },
-]
-
 export default function ContactPage() {
   const heroRef   = useRef(null)
   const formRef   = useRef(null)
@@ -47,17 +22,34 @@ export default function ContactPage() {
   const isFormIn  = useInView(formRef, { once: true, margin: '-60px' })
 
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM)
-  const [submitted, setSubmitted] = useState(false)
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
-    setFormData(INITIAL_FORM)
-    setTimeout(() => setSubmitted(false), 5000)
+    setStatus('loading')
+
+    const form = new FormData()
+    form.append('name', formData.name)
+    form.append('email', formData.email)
+    form.append('subject', formData.subject)
+    form.append('message', formData.message)
+
+    const result = await submitContactForm(form)
+    
+    if (result.success) {
+      setStatus('success')
+      setFormData(INITIAL_FORM)
+      // Optional: Reset status after 10 seconds
+      setTimeout(() => setStatus('idle'), 10000)
+    } else {
+      setStatus('error')
+      setErrorMessage(result.message)
+    }
   }
 
   return (
@@ -129,18 +121,18 @@ export default function ContactPage() {
         <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#C5A059]/60 to-transparent z-10" />
       </section>
 
-      {/* ── FORM + INFO ───────────────────────────────────────────────────── */}
+      {/* ── FORM SECTION ───────────────────────────────────────────────────── */}
       <section className="bg-white py-24 md:py-32" ref={formRef}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+          <div className="max-w-2xl mx-auto">
 
             {/* Contact Form */}
             <motion.div
-              initial={{ opacity: 0, x: -40 }}
-              animate={isFormIn ? { opacity: 1, x: 0 } : {}}
+              initial={{ opacity: 0, y: 40 }}
+              animate={isFormIn ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8 }}
             >
-              <div className="flex items-center gap-4 mb-8">
+              <div className="flex items-center justify-center gap-4 mb-8">
                 <div className="w-10 h-px bg-[#C5A059]" />
                 <p
                   className="text-[#C5A059] text-[10px] uppercase tracking-[0.3em] font-bold"
@@ -148,10 +140,11 @@ export default function ContactPage() {
                 >
                   Send a Message
                 </p>
+                <div className="w-10 h-px bg-[#C5A059]" />
               </div>
 
               <h2
-                className="font-serif text-black mb-10 leading-tight"
+                className="font-serif text-black mb-10 leading-tight text-center"
                 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.75rem, 4vw, 2.75rem)' }}
               >
                 We&apos;re Here for{' '}
@@ -159,13 +152,25 @@ export default function ContactPage() {
               </h2>
 
               {/* Success message */}
-              {submitted && (
+              {status === 'success' && (
                 <div className="mb-8 p-5 bg-[#faf9f6] border-l-2 border-[#C5A059]">
                   <p
                     className="text-sm text-gray-700 font-light"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   >
                     Thank you for reaching out. We&apos;ll be in touch soon.
+                  </p>
+                </div>
+              )}
+
+              {/* Error message */}
+              {status === 'error' && (
+                <div className="mb-8 p-5 bg-red-50 border-l-2 border-red-500">
+                  <p
+                    className="text-sm text-red-700 font-light"
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  >
+                    {errorMessage}
                   </p>
                 </div>
               )}
@@ -188,7 +193,8 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full bg-[#faf9f6] border border-gray-200 px-5 py-4 text-sm focus:outline-none focus:border-black transition-colors"
+                      disabled={status === 'loading'}
+                      className="w-full bg-[#faf9f6] border border-gray-200 px-5 py-4 text-sm focus:outline-none focus:border-black transition-colors disabled:opacity-50"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     />
                   </div>
@@ -207,7 +213,8 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full bg-[#faf9f6] border border-gray-200 px-5 py-4 text-sm focus:outline-none focus:border-black transition-colors"
+                      disabled={status === 'loading'}
+                      className="w-full bg-[#faf9f6] border border-gray-200 px-5 py-4 text-sm focus:outline-none focus:border-black transition-colors disabled:opacity-50"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     />
                   </div>
@@ -229,7 +236,8 @@ export default function ContactPage() {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full bg-[#faf9f6] border border-gray-200 px-5 py-4 text-sm focus:outline-none focus:border-black transition-colors"
+                    disabled={status === 'loading'}
+                    className="w-full bg-[#faf9f6] border border-gray-200 px-5 py-4 text-sm focus:outline-none focus:border-black transition-colors disabled:opacity-50"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   />
                 </div>
@@ -250,121 +258,29 @@ export default function ContactPage() {
                     onChange={handleChange}
                     required
                     rows={6}
-                    className="w-full bg-[#faf9f6] border border-gray-200 px-5 py-4 text-sm focus:outline-none focus:border-black transition-colors resize-none"
+                    disabled={status === 'loading'}
+                    className="w-full bg-[#faf9f6] border border-gray-200 px-5 py-4 text-sm focus:outline-none focus:border-black transition-colors resize-none disabled:opacity-50"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-black text-white py-4 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-[#C5A059] transition-colors duration-300"
+                  disabled={status === 'loading'}
+                  className="w-full bg-black text-white py-4 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-[#C5A059] transition-colors duration-300 disabled:opacity-50 flex items-center justify-center min-h-[52px]"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                   id="contact-submit-btn"
                 >
-                  Send Message
+                  {status === 'loading' ? (
+                    <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
+                  ) : (
+                    'Send Message'
+                  )}
                 </button>
               </form>
             </motion.div>
 
-            {/* Info Column */}
-            <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              animate={isFormIn ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.15 }}
-              className="flex flex-col gap-14"
-            >
-              <div>
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-10 h-px bg-[#C5A059]" />
-                  <p
-                    className="text-[#C5A059] text-[10px] uppercase tracking-[0.3em] font-bold"
-                    style={{ fontFamily: "'Montserrat', sans-serif" }}
-                  >
-                    Visit Our Studio
-                  </p>
-                </div>
-
-                <h2
-                  className="font-serif text-black mb-5 leading-tight"
-                  style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.75rem, 4vw, 2.75rem)' }}
-                >
-                  Come Experience
-                  <br />
-                  <span className="italic font-light">The Sanctuary</span>
-                </h2>
-
-                <p
-                  className="text-gray-500 text-sm leading-relaxed font-light"
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
-                >
-                  Stop by our Atlanta studio to experience our full collection, consult
-                  with our team, and discover the ritual that&apos;s right for you.
-                </p>
-              </div>
-
-              {/* Contact details */}
-              <div className="space-y-7">
-                {contactDetails.map(({ Icon, label, value }) => (
-                  <div key={label} className="flex gap-5 items-start">
-                    <div className="w-11 h-11 bg-[#faf9f6] border border-gray-100 flex items-center justify-center shrink-0">
-                      <Icon size={18} weight="regular" className="text-[#C5A059]" />
-                    </div>
-                    <div>
-                      <p
-                        className="text-[10px] uppercase tracking-[0.25em] text-gray-400 font-bold mb-1"
-                        style={{ fontFamily: "'Montserrat', sans-serif" }}
-                      >
-                        {label}
-                      </p>
-                      <p
-                        className="text-gray-700 text-sm font-light leading-relaxed whitespace-pre-line"
-                        style={{ fontFamily: "'Montserrat', sans-serif" }}
-                      >
-                        {value}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Hours */}
-              <div className="border-t border-gray-100 pt-8">
-                <p
-                  className="text-[10px] uppercase tracking-[0.25em] text-gray-400 font-bold mb-5"
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
-                >
-                  Studio Hours
-                </p>
-                <div className="space-y-3">
-                  {hours.map(({ days, time }) => (
-                    <div key={days} className="flex justify-between text-sm text-gray-600 font-light">
-                      <span style={{ fontFamily: "'Montserrat', sans-serif" }}>{days}</span>
-                      <span
-                        className={time === 'Closed' ? 'text-gray-400' : 'text-black font-medium'}
-                        style={{ fontFamily: "'Montserrat', sans-serif" }}
-                      >
-                        {time}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-
           </div>
-        </div>
-      </section>
-
-      {/* ── MAP PLACEHOLDER ───────────────────────────────────────────────── */}
-      <section className="h-80 bg-[#faf9f6] border-t border-gray-100 flex items-center justify-center">
-        <div className="text-center">
-          <MapPin size={28} weight="light" className="text-[#C5A059] mx-auto mb-4" />
-          <p
-            className="text-gray-400 text-[10px] uppercase tracking-[0.3em]"
-            style={{ fontFamily: "'Montserrat', sans-serif" }}
-          >
-            Map integration placeholder
-          </p>
         </div>
       </section>
 
