@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Minus, Plus, X, ShoppingBag } from '@phosphor-icons/react'
 import { useCart } from '@/components/providers/CartProvider'
@@ -55,6 +55,11 @@ function EmptyCart() {
 export default function CartPage() {
   const { cart, isLoading, updateItem, removeItem } = useCart()
   const [isCheckingOut, setIsCheckingOut] = useState(false)
+
+  // Reset checkout state when user navigates back to this page
+  useEffect(() => {
+    setIsCheckingOut(false)
+  }, [])
 
   const handleUpdateQuantity = async (lineId: string, qty: number) => {
     if (qty <= 0) {
