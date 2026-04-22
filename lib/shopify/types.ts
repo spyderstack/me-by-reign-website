@@ -27,6 +27,7 @@ export interface ShopifyProductVariant {
   id: string
   title: string
   availableForSale: boolean
+  quantityAvailable?: number | null
   sku: string | null
   price: ShopifyMoneyV2
   compareAtPrice: ShopifyMoneyV2 | null

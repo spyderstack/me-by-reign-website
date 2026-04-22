@@ -143,7 +143,7 @@ export function normalizeProduct(product: ShopifyProduct): NormalizedProduct {
       price: formatPrice(v.price.amount, v.price.currencyCode),
       compareAtPrice: v.compareAtPrice ? formatPrice(v.compareAtPrice.amount, v.compareAtPrice.currencyCode) : null,
       available: v.availableForSale,
-      quantityAvailable: v.quantityAvailable,
+      quantityAvailable: v.quantityAvailable ?? null,
       isOnSale: v.compareAtPrice ? parseFloat(v.price.amount) < parseFloat(v.compareAtPrice.amount) : false,
       selectedOptions: v.selectedOptions
     })),
