@@ -10,6 +10,7 @@ export const PRODUCT_FRAGMENT = `
     handle
     title
     description
+    descriptionHtml
     productType
     tags
     availableForSale
@@ -18,6 +19,41 @@ export const PRODUCT_FRAGMENT = `
       altText
       width
       height
+    }
+    media(first: 20) {
+      nodes {
+        mediaContentType
+        alt
+        ... on Video {
+          id
+          sources {
+            url
+            mimeType
+            format
+            height
+            width
+          }
+          previewImage {
+            url
+          }
+        }
+        ... on ExternalVideo {
+          id
+          embedUrl
+          previewImage {
+            url
+          }
+        }
+        ... on MediaImage {
+          id
+          image {
+            url
+            altText
+            width
+            height
+          }
+        }
+      }
     }
     images(first: 8) {
       nodes {
@@ -36,6 +72,18 @@ export const PRODUCT_FRAGMENT = `
         amount
         currencyCode
       }
+    }
+    options {
+      name
+      values
+    }
+    metafields(identifiers: [
+      {namespace: "reviews", key: "rating"},
+      {namespace: "reviews", key: "rating_count"}
+    ]) {
+      namespace
+      key
+      value
     }
     variants(first: 250) {
       nodes {

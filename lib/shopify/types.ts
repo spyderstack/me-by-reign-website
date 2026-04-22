@@ -39,22 +39,55 @@ export interface ShopifyProductVariant {
   }
 }
 
+export interface ShopifyMedia {
+  mediaContentType: 'IMAGE' | 'VIDEO' | 'EXTERNAL_VIDEO' | 'MODEL_3D'
+  alt: string | null
+  id: string
+  image?: ShopifyImage
+  sources?: {
+    url: string
+    mimeType: string
+    format: string
+    height: number
+    width: number
+  }[]
+  previewImage?: {
+    url: string
+  }
+  embedUrl?: string
+}
+
+export interface ShopifyProductOption {
+  name: string
+  values: string[]
+}
+
 export interface ShopifyProduct {
   id: string
   handle: string
   title: string
   description: string
+  descriptionHtml: string
   productType: string
   tags: string[]
   availableForSale: boolean
   featuredImage: ShopifyImage | null
   images: { nodes: ShopifyImage[] }
+  media: { nodes: ShopifyMedia[] }
   priceRange: {
     minVariantPrice: ShopifyMoneyV2
     maxVariantPrice: ShopifyMoneyV2
   }
+  options: ShopifyProductOption[]
+  metafields: (ShopifyMetafield | null)[]
   variants: { nodes: ShopifyProductVariant[] }
   seo: ShopifySEO
+}
+
+export interface ShopifyMetafield {
+  namespace: string
+  key: string
+  value: string
 }
 
 export interface ShopifyCartLine {
@@ -145,12 +178,38 @@ export interface NormalizedProduct {
   price: string
   compareAtPrice: string | null
   available: boolean
+  isOnSale: boolean
   image: string
   imageAlt: string
   images: string[]
+  media: {
+    type: 'IMAGE' | 'VIDEO' | 'EXTERNAL_VIDEO'
+    url: string
+    alt: string
+    previewImage?: string
+  }[]
   description: string
+  descriptionHtml: string
   variantId: string
   sku: string | null
+  options: {
+    name: string
+    values: string[]
+  }[]
+  variants: {
+    id: string
+    title: string
+    price: string
+    compareAtPrice: string | null
+    available: boolean
+    quantityAvailable: number | null
+    isOnSale: boolean
+    selectedOptions: { name: string; value: string }[]
+  }[]
+  reviews: {
+    rating: number
+    count: number
+  }
   seo: ShopifySEO
 }
 

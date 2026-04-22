@@ -278,10 +278,6 @@ export default function CartPage() {
                   <div className="w-1.5 h-1.5 rounded-full bg-[#C5A059]" />
                   <span className="uppercase tracking-widest font-semibold" style={{ fontFamily: "'Montserrat', sans-serif" }}>Tax and shipping calculated later</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#C5A059]" />
-                  <span className="uppercase tracking-widest font-semibold" style={{ fontFamily: "'Montserrat', sans-serif" }}>30-day return policy</span>
-                </div>
               </div>
             </div>
           </div>

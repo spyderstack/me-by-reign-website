@@ -114,7 +114,7 @@ export function ProductCard({ product, index, isInView }: ProductCardProps) {
         >
           {product.price}
         </span>
-        {product.compareAtPrice && (
+        {product.isOnSale && (
           <span
             className="text-gray-400 text-xs line-through font-light"
             style={{ fontFamily: "'Montserrat', sans-serif" }}

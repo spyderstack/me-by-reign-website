@@ -92,11 +92,24 @@ const formatPrice = (amount: string, currencyCode: string) =>
 // ─── Normalizers ──────────────────────────────────────────────────────────────
 
 export function normalizeProduct(product: ShopifyProduct): NormalizedProduct {
-  const { id, handle, title, description, productType, tags, availableForSale, featuredImage, images, variants, seo } = product
+  const { id, handle, title, description, descriptionHtml, productType, tags, availableForSale, featuredImage, images, media, variants, options, metafields, seo } = product
 
   const defaultVariant = variants.nodes[0]
   const price = defaultVariant?.price || product.priceRange.minVariantPrice
   const compareAtPrice = defaultVariant?.compareAtPrice
+
+  // Extract review metafields
+  const ratingMeta = metafields?.find(m => m?.namespace === 'reviews' && m?.key === 'rating')
+  const countMeta = metafields?.find(m => m?.namespace === 'reviews' && m?.key === 'rating_count')
+  
+  // Parse rating value (Shopify ratings are often JSON: {"value":"4.5","scale_max":"5.0"})
+  let rating = 0
+  try {
+    const ratingData = ratingMeta ? JSON.parse(ratingMeta.value) : null
+    rating = ratingData ? parseFloat(ratingData.value) : 0
+  } catch {
+    rating = ratingMeta ? parseFloat(ratingMeta.value) : 0
+  }
 
   return {
     id,
@@ -109,12 +122,35 @@ export function normalizeProduct(product: ShopifyProduct): NormalizedProduct {
       ? formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)
       : null,
     available: availableForSale,
+    isOnSale: compareAtPrice ? parseFloat(price.amount) < parseFloat(compareAtPrice.amount) : false,
     image: featuredImage?.url || '/images/placeholder.png',
     imageAlt: featuredImage?.altText || title,
     images: images.nodes.map((n) => n.url),
+    media: (media?.nodes || []).map((m) => ({
+      type: m.mediaContentType === 'VIDEO' ? 'VIDEO' : m.mediaContentType === 'EXTERNAL_VIDEO' ? 'EXTERNAL_VIDEO' : 'IMAGE',
+      url: m.mediaContentType === 'VIDEO' ? m.sources?.[0]?.url || '' : m.mediaContentType === 'EXTERNAL_VIDEO' ? m.embedUrl || '' : m.image?.url || '',
+      alt: m.alt || title,
+      previewImage: m.previewImage?.url
+    })),
     description,
+    descriptionHtml,
     variantId: defaultVariant?.id || '',
     sku: defaultVariant?.sku || null,
+    options: options?.map(o => ({ name: o.name, values: o.values })) || [],
+    variants: variants.nodes.map(v => ({
+      id: v.id,
+      title: v.title,
+      price: formatPrice(v.price.amount, v.price.currencyCode),
+      compareAtPrice: v.compareAtPrice ? formatPrice(v.compareAtPrice.amount, v.compareAtPrice.currencyCode) : null,
+      available: v.availableForSale,
+      quantityAvailable: v.quantityAvailable,
+      isOnSale: v.compareAtPrice ? parseFloat(v.price.amount) < parseFloat(v.compareAtPrice.amount) : false,
+      selectedOptions: v.selectedOptions
+    })),
+    reviews: {
+      rating: rating || 5, // Fallback to 5 if not set
+      count: countMeta ? parseInt(countMeta.value) : 0
+    },
     seo: {
       title: seo?.title || title,
       description: seo?.description || description,
