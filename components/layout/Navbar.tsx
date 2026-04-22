@@ -60,8 +60,9 @@ export function Navbar({ searchData }: { searchData: SearchResult[] }) {
               <div className="relative h-10 w-10">
                 <Image
                   src="/images/reign_logo.png"
-                  alt=""
+                  alt="ME byReign Logo"
                   fill
+                  sizes="(max-width: 768px) 40px, 40px"
                   className={`object-contain transition-all duration-500 ${!isScrolled ? 'brightness-0 invert' : ''}`}
                   priority
                 />
@@ -170,8 +171,9 @@ export function Navbar({ searchData }: { searchData: SearchResult[] }) {
               <Link href="/" onClick={() => setMobileOpen(false)} className="relative h-12 w-12 block">
                 <Image
                   src="/images/reign_logo.png"
-                  alt="ME byReign"
+                  alt="ME byReign Logo"
                   fill
+                  sizes="48px"
                   className="object-contain"
                 />
               </Link>

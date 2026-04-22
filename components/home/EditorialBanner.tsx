@@ -8,7 +8,7 @@ export function EditorialBanner() {
     >
       <div className="absolute inset-0 opacity-30 z-0">
         <Image
-          src="https://images.unsplash.com/photo-1629195068010-1389c5ff86e4?auto=format&fit=crop&q=80&w=1920"
+          src="/images/editorial_image.jpg"
           alt="Editorial background"
           fill
           sizes="100vw"

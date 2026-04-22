@@ -58,8 +58,9 @@ export function Footer({ policies }: FooterProps) {
               <div className="relative h-12 w-12">
                 <Image
                   src="/images/reign_logo.png"
-                  alt=""
+                  alt="ME byReign Logo"
                   fill
+                  sizes="48px"
                   className="object-contain brightness-0 invert"
                 />
               </div>
