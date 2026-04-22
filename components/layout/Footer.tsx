@@ -11,14 +11,10 @@ const discoverLinks = [
   { label: 'Home Decor', href: '/catalog' },
   { label: 'New Arrivals', href: '/catalog' },
   { label: 'Best Sellers', href: '/catalog' },
-  { label: 'Gift Cards', href: '/gift-cards' },
 ]
 
 const infoLinks = [
   { label: 'About Us', href: '/our-story' },
-  { label: 'Sustainability', href: '/sustainability' },
-  { label: 'Shipping & Returns', href: '/shipping' },
-  { label: 'FAQ', href: '/faq' },
   { label: 'Contact', href: '/contact' },
 ]
 
@@ -54,7 +50,11 @@ export function Footer({ policies }: FooterProps) {
 
           {/* Brand Column */}
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center gap-3 mb-6 transition-opacity hover:opacity-80">
+            <Link 
+              href="/" 
+              className="flex items-center gap-3 mb-6 transition-opacity hover:opacity-80"
+              onClick={() => window.scrollTo(0, 0)}
+            >
               <div className="relative h-12 w-12">
                 <Image
                   src="/images/reign_logo.png"
@@ -121,6 +121,7 @@ export function Footer({ policies }: FooterProps) {
                 <li key={link.label}>
                   <Link
                     href={link.href}
+                    onClick={() => window.scrollTo(0, 0)}
                     className="text-sm uppercase tracking-wider text-gray-400 hover:text-[#C5A059] transition-colors duration-200"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                     id={`footer-discover-${link.label.toLowerCase().replace(/[\s&]+/g, '-')}`}
@@ -145,6 +146,7 @@ export function Footer({ policies }: FooterProps) {
                 <li key={link.href}>
                   <Link
                     href={link.href}
+                    onClick={() => window.scrollTo(0, 0)}
                     className="text-sm uppercase tracking-wider text-gray-400 hover:text-[#C5A059] transition-colors duration-200"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                     id={`footer-info-${link.label.toLowerCase().replace(/[\s&]+/g, '-')}`}
@@ -220,6 +222,7 @@ export function Footer({ policies }: FooterProps) {
             <div className={`mt-8 ${status !== 'idle' ? 'mt-4' : ''}`}>
               <Link
                 href="/contact"
+                onClick={() => window.scrollTo(0, 0)}
                 className="inline-flex items-center gap-2 border border-[#C5A059] px-6 py-3 text-[10px] uppercase tracking-[0.2em] font-bold text-[#C5A059] hover:bg-[#C5A059] hover:text-white transition-all duration-300 transition-colors"
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
                 id="footer-contact-button"
@@ -245,6 +248,7 @@ export function Footer({ policies }: FooterProps) {
               href={policies?.privacyPolicy?.url || '/privacy'}
               target={policies?.privacyPolicy?.url ? "_blank" : undefined}
               rel={policies?.privacyPolicy?.url ? "noopener noreferrer" : undefined}
+              onClick={() => !policies?.privacyPolicy?.url && window.scrollTo(0, 0)}
               className="text-gray-500 text-xs uppercase tracking-widest hover:text-[#C5A059] transition-colors"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
               id="footer-privacy-link"
@@ -255,6 +259,7 @@ export function Footer({ policies }: FooterProps) {
               href={policies?.termsOfService?.url || '/terms'}
               target={policies?.termsOfService?.url ? "_blank" : undefined}
               rel={policies?.termsOfService?.url ? "noopener noreferrer" : undefined}
+              onClick={() => !policies?.termsOfService?.url && window.scrollTo(0, 0)}
               className="text-gray-500 text-xs uppercase tracking-widest hover:text-[#C5A059] transition-colors"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
               id="footer-terms-link"
