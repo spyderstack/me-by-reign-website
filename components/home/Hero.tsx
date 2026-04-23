@@ -17,7 +17,7 @@ export function Hero() {
           //src="https://images.unsplash.com/photo-1629195068010-1389c5ff86e4?auto=format&fit=crop&q=80&w=1920"
           //src="https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           //src="/images/heroimage.png"
-          src="/images/her.png"
+          src="/images/image2.png"
           alt="ME byReign — Artisan handmade skincare and home decor"
           fill
           sizes="100vw"
