@@ -49,9 +49,9 @@ export function Hero() {
           className="text-5xl md:text-7xl lg:text-8xl font-serif text-white leading-tight mb-6"
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
-          Where Luxury
+          It's All
           <br />
-          <span className="italic font-light">Meets Nature</span>
+          <span className="italic font-light">About Me.</span>
         </motion.h1>
 
         {/* Body */}
