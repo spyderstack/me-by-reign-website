@@ -60,7 +60,7 @@ export default function OurStoryPage() {
               className="text-[#C5A059] text-[10px] uppercase tracking-[0.45em] font-bold"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
-              ME byReign
+              ME <span className="lowercase">by</span>Reign
             </span>
             <span className="w-8 h-px bg-[#C5A059]" />
           </motion.div>

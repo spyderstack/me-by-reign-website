@@ -27,7 +27,7 @@ export function EditorialBanner() {
           className="text-[#C5A059] uppercase tracking-[0.2em] text-sm font-semibold"
           style={{ fontFamily: "'Montserrat', sans-serif" }}
         >
-          — ME byReign
+          — ME <span className="lowercase">by</span>Reign
         </p>
       </div>
     </section>

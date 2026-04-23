@@ -113,7 +113,7 @@ export function Philosophy() {
                   className="text-gray-500 text-xs uppercase tracking-widest"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
-                  Founder, ME byReign
+                  Founder, ME <span className="lowercase">by</span>Reign
                 </p>
               </div>
             </div>

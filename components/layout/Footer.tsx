@@ -69,7 +69,7 @@ export function Footer({ policies }: FooterProps) {
                   className="text-2xl tracking-widest uppercase text-white leading-none"
                   style={{ fontFamily: "'Playfair Display', serif" }}
                 >
-                  ME byReign
+                  ME <span className="lowercase">by</span>Reign
                 </p>
                 <p
                   className="text-[9px] tracking-[0.3em] uppercase text-[#C5A059] mt-1"
@@ -242,7 +242,7 @@ export function Footer({ policies }: FooterProps) {
             className="text-gray-500 text-xs uppercase tracking-widest"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
-            © {new Date().getFullYear()} ME byReign. All rights reserved.
+            © {new Date().getFullYear()} ME <span className="lowercase">by</span>REIGN. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <a

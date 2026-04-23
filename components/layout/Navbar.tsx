@@ -72,7 +72,7 @@ export function Navbar({ searchData }: { searchData: SearchResult[] }) {
                   className="text-lg md:text-xl tracking-widest uppercase font-semibold"
                   style={{ fontFamily: "'Playfair Display', serif" }}
                 >
-                  ME byReign
+                  ME <span className="lowercase">by</span>REIGN
                 </span>
                 <span
                   className="text-[8px] md:text-[9px] tracking-[0.3em] uppercase mt-0.5"
@@ -182,7 +182,7 @@ export function Navbar({ searchData }: { searchData: SearchResult[] }) {
                   className="text-2xl tracking-widest uppercase"
                   style={{ fontFamily: "'Playfair Display', serif", color: '#111' }}
                 >
-                  ME byReign
+                  ME <span className="lowercase">by</span>Reign
                 </p>
                 <p
                   className="text-[10px] tracking-[0.3em] uppercase mt-1 text-[#C5A059]"
