@@ -14,9 +14,10 @@ export function Hero() {
       {/* Background Image s */}
       <div className="absolute inset-0 scale-105 z-0">
         <Image
-          // src="https://images.unsplash.com/photo-1629195068010-1389c5ff86e4?auto=format&fit=crop&q=80&w=1920"
-          src="https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          // src="./public/images/background_photo.jpg"
+          //src="https://images.unsplash.com/photo-1629195068010-1389c5ff86e4?auto=format&fit=crop&q=80&w=1920"
+          //src="https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          //src="/images/heroimage.png"
+          src="/images/her.png"
           alt="ME byReign — Artisan handmade skincare and home decor"
           fill
           sizes="100vw"
@@ -26,7 +27,7 @@ export function Hero() {
       </div>
 
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/55 z-10" />
+      <div className="absolute inset-0 bg-black/25 z-10" />
 
       {/* Content */}
       <div className="relative z-20 text-center text-white max-w-4xl mx-auto px-4 sm:px-6">
@@ -35,7 +36,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-[#C5A059] tracking-[0.3em] uppercase text-xs mb-6"
+          className="text-[#FFFFFF] tracking-[0.3em] uppercase text-xs mb-6"
           style={{ fontFamily: "'Montserrat', sans-serif" }}
         >
           Artisan Crafted Perfection
