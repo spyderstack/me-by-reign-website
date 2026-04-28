@@ -30,6 +30,18 @@
       "source": "Shopify/shopify-ai-toolkit",
       "sourceType": "github",
       "computedHash": "f6d34caf77d2d5f0812d575abd91f2ea6ba0af776dc332e4e135dce85df68b00"
+    },
+    "supabase": {
+      "source": "supabase/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/supabase/SKILL.md",
+      "computedHash": "818d65251221019d5fed1d4fb4039866db09d9e4a05f97e536e95c407643b442"
+    },
+    "supabase-postgres-best-practices": {
+      "source": "supabase/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/supabase-postgres-best-practices/SKILL.md",
+      "computedHash": "8e41c7417894e6f394614ee7ca3ee5322b1e58d890255d441f42dea98732597f"
     }
   }
 }

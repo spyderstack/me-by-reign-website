@@ -7,6 +7,7 @@ import { ArrowLeft, Check, Plus, Minus, Star, ShareNetwork, CaretRight, ChatTear
 import { getProductByHandle as getMockDetail } from '@/lib/products-data'
 import { NormalizedProduct } from '@/lib/shopify/types'
 import { useCart } from '@/components/providers/CartProvider'
+import ProductReviews from '@/components/product/ProductReviews'
 
 export default function ProductDetailClient({
   product,
@@ -392,6 +393,11 @@ export default function ProductDetailClient({
             </div>
           </div>
         </div>
+      </section>
+
+      {/* ── Product Reviews ── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+        <ProductReviews productId={product.id} productName={product.name} />
       </section>
 
       {/* ── Related Products ── */}
