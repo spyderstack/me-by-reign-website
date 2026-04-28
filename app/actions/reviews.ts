@@ -6,26 +6,27 @@ import { revalidatePath } from 'next/cache'
 
 export async function submitReview(productId: string, productName: string, formData: FormData) {
   const authorName = formData.get('authorName') as string;
+  const authorEmail = formData.get('authorEmail') as string;
   const rating = parseInt(formData.get('rating') as string, 10);
   const content = formData.get('content') as string;
 
   if (!authorName || !rating || !content) {
-    return { error: 'All fields are required.' };
+    return { error: 'All fields are required except email.' };
   }
 
   // Insert review into Supabase as 'pending'
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from('reviews')
     .insert([
       {
         product_id: productId,
         author_name: authorName,
+        author_email: authorEmail || null,
         rating,
         content,
         status: 'pending',
       },
     ])
-    .select()
 
   if (error) {
     console.error('Error inserting review:', error);
@@ -36,6 +37,7 @@ export async function submitReview(productId: string, productName: string, formD
   await sendReviewNotification({
     productName,
     authorName,
+    authorEmail,
     rating,
     content,
   });
@@ -59,7 +61,7 @@ export async function getApprovedReviews(productId: string) {
   return data;
 }
 
-export async function getPendingReviews(password: string) {
+export async function getAdminReviews(password: string) {
   // Simple password check
   if (password !== process.env.ADMIN_PASSWORD) {
     return { error: 'Unauthorized' };
@@ -68,18 +70,17 @@ export async function getPendingReviews(password: string) {
   const { data, error } = await supabaseAdmin
     .from('reviews')
     .select('*')
-    .eq('status', 'pending')
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching pending reviews:', error);
+    console.error('Error fetching admin reviews:', error);
     return { error: 'Failed to fetch reviews' };
   }
 
   return { reviews: data };
 }
 
-export async function updateReviewStatus(reviewId: string, status: 'approved' | 'rejected', password: string) {
+export async function updateReviewStatus(reviewId: string, status: 'approved' | 'rejected' | 'pending', password: string) {
   if (password !== process.env.ADMIN_PASSWORD) {
     return { error: 'Unauthorized' };
   }

@@ -89,7 +89,7 @@ export default function ProductDetailClient({
         style={{ height: 'calc(var(--banner-height, 0px) + 80px)' }}
       />
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-black via-[#2a2010] to-transparent pointer-events-none z-0" />
-      
+
       {/* ── Breadcrumb ── */}
       <div className="border-b border-gray-100 bg-white relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
@@ -145,8 +145,8 @@ export default function ProductDetailClient({
                     )}
                   </motion.div>
                 </AnimatePresence>
-                
-                <button 
+
+                <button
                   onClick={handleShare}
                   className="absolute top-6 right-6 p-3 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-black hover:text-white transition-all duration-300 z-20"
                 >
@@ -160,9 +160,8 @@ export default function ProductDetailClient({
                     <button
                       key={i}
                       onClick={() => setSelectedMedia(i)}
-                      className={`relative aspect-square overflow-hidden bg-[#faf9f6] border-2 transition-all duration-300 ${
-                        selectedMedia === i ? 'border-black scale-95' : 'border-transparent opacity-70 hover:opacity-100'
-                      }`}
+                      className={`relative aspect-square overflow-hidden bg-[#faf9f6] border-2 transition-all duration-300 ${selectedMedia === i ? 'border-black scale-95' : 'border-transparent opacity-70 hover:opacity-100'
+                        }`}
                     >
                       <img
                         src={item.previewImage || item.url}
@@ -233,11 +232,10 @@ export default function ProductDetailClient({
                           <button
                             key={value}
                             onClick={() => setSelectedOptions(prev => ({ ...prev, [option.name]: value }))}
-                            className={`px-6 py-3 text-[10px] uppercase tracking-widest font-bold transition-all duration-300 border ${
-                              selectedOptions[option.name] === value
-                                ? 'bg-black text-white border-black'
-                                : 'bg-white text-gray-500 border-gray-200 hover:border-black hover:text-black'
-                            }`}
+                            className={`px-6 py-3 text-[10px] uppercase tracking-widest font-bold transition-all duration-300 border ${selectedOptions[option.name] === value
+                              ? 'bg-black text-white border-black'
+                              : 'bg-white text-gray-500 border-gray-200 hover:border-black hover:text-black'
+                              }`}
                           >
                             {value}
                           </button>
@@ -253,7 +251,7 @@ export default function ProductDetailClient({
                   Quantity
                 </p>
                 <div className="flex items-center w-fit border border-gray-100 bg-white shadow-sm">
-                  <button 
+                  <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     className="w-12 h-12 flex items-center justify-center hover:bg-gray-50 transition-colors text-black"
                     aria-label="Decrease quantity"
@@ -263,7 +261,7 @@ export default function ProductDetailClient({
                   <div className="w-12 h-12 flex items-center justify-center border-x border-gray-100 text-sm font-medium">
                     {quantity}
                   </div>
-                  <button 
+                  <button
                     onClick={() => setQuantity(quantity + 1)}
                     className="w-12 h-12 flex items-center justify-center hover:bg-gray-50 transition-colors text-black"
                     aria-label="Increase quantity"
@@ -278,13 +276,12 @@ export default function ProductDetailClient({
                 <button
                   onClick={handleAddToCart}
                   disabled={!selectedVariant?.available || isAdding}
-                  className={`w-full flex items-center justify-center gap-3 px-8 py-5 uppercase tracking-[0.3em] text-[10px] font-bold transition-all duration-500 relative overflow-hidden group ${
-                    !selectedVariant?.available || isAdding
-                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                      : added
-                        ? 'bg-[#C5A059] text-white'
-                        : 'bg-black text-white hover:bg-[#C5A059]'
-                  }`}
+                  className={`w-full flex items-center justify-center gap-3 px-8 py-5 uppercase tracking-[0.3em] text-[10px] font-bold transition-all duration-500 relative overflow-hidden group ${!selectedVariant?.available || isAdding
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : added
+                      ? 'bg-[#C5A059] text-white'
+                      : 'bg-black text-white hover:bg-[#C5A059]'
+                    }`}
                 >
                   <AnimatePresence mode="wait">
                     {!selectedVariant?.available ? (
@@ -318,9 +315,8 @@ export default function ProductDetailClient({
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id as any)}
-                      className={`pb-4 text-[10px] uppercase tracking-[0.25em] font-bold transition-all relative whitespace-nowrap ${
-                        activeTab === tab.id ? 'text-black' : 'text-gray-300 hover:text-gray-500'
-                      }`}
+                      className={`pb-4 text-[10px] uppercase tracking-[0.25em] font-bold transition-all relative whitespace-nowrap ${activeTab === tab.id ? 'text-black' : 'text-gray-300 hover:text-gray-500'
+                        }`}
                     >
                       {tab.label}
                       {activeTab === tab.id && (
@@ -347,7 +343,7 @@ export default function ProductDetailClient({
                             formattedDescription
                           )}
                         </div>
-                        
+
                         {ingredients.length > 0 && (
                           <div className="bg-[#faf9f6] p-6">
                             <h3 className="text-xs uppercase tracking-widest font-bold mb-4 flex items-center gap-2">
@@ -379,7 +375,7 @@ export default function ProductDetailClient({
                         <p className="text-gray-500 text-sm mb-6 max-w-sm">
                           Our team is here to assist with any delivery or return inquiries.
                         </p>
-                        <Link 
+                        <Link
                           href="/contact"
                           className="px-8 py-3 bg-black text-white text-[10px] uppercase tracking-widest font-bold hover:bg-[#C5A059] transition-colors"
                         >
