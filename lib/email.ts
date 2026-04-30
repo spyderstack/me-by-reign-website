@@ -57,7 +57,7 @@ export const sendReviewNotification = async (
               </div>
 
               <div style="text-align: center;">
-                <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/admin/reviews" 
+                <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://mebyreign.vercel.app/admin/reviews'}/admin/reviews" 
                    style="display: inline-block; background-color: #000000; color: #ffffff; text-decoration: none; padding: 16px 32px; font-size: 10px; text-transform: uppercase; letter-spacing: 3px; font-weight: bold; border: 1px solid #000000;">
                   View or Accept Review
                 </a>
