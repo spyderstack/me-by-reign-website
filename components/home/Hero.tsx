@@ -46,7 +46,7 @@ export function Hero() {
             />
             <div className="absolute inset-[6px] rounded-sm overflow-hidden">
               <Image
-                src="/images/background2.jpeg"
+                src="/images/reign2.png"
                 alt="ME byReign — Artisan handmade skincare and home decor"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
