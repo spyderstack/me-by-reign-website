@@ -1,12 +1,16 @@
 import { MetadataRoute } from 'next'
+import { siteConfig } from '@/lib/site-config'
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: ['/cart', '/api/'],
-    },
-    sitemap: 'https://me-by-reign.com/sitemap.xml',
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: ['/cart', '/api/', '/admin/'],
+      },
+    ],
+    sitemap: `${siteConfig.url}/sitemap.xml`,
+    host: siteConfig.url,
   }
 }

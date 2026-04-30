@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { getProductByHandle, getProductRecommendations } from '@/lib/shopify/client'
 import { getProductByHandle as getMockDetail } from '@/lib/products-data'
 import ProductDetailClient from './ProductDetailClient'
+import { ProductJsonLd, BreadcrumbJsonLd } from '@/components/seo/JsonLd'
 
 export async function generateMetadata({
   params,
@@ -15,15 +16,26 @@ export async function generateMetadata({
   if (!product) return { title: 'Product Not Found' }
 
   const richDetail = getMockDetail(product.handle)
-  const description = product.description || richDetail?.description || `Purchase ${product.name} from ME byReign.`
+  const description = product.seo?.description || product.description || richDetail?.description || `Shop ${product.name} from ME byReign — handcrafted with botanical intention.`
 
   return {
     title: product.name,
-    description: description,
+    description: description.slice(0, 160),
     openGraph: {
-      title: product.name,
-      description: description,
+      title: `${product.name} — ME byReign`,
+      description: description.slice(0, 160),
+      type: 'website',
       images: [{ url: product.image, alt: product.imageAlt }],
+      url: `/products/${product.handle}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${product.name} — ME byReign`,
+      description: description.slice(0, 160),
+      images: [product.image],
+    },
+    alternates: {
+      canonical: `/products/${resolvedParams.handle}`,
     },
   }
 }
@@ -42,5 +54,17 @@ export default async function ProductDetailPage({
 
   const relatedProducts = await getProductRecommendations(product.id)
 
-  return <ProductDetailClient product={product} relatedProducts={relatedProducts} />
+  return (
+    <>
+      <ProductJsonLd product={product} />
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Home', href: '/' },
+          { name: 'Catalog', href: '/catalog' },
+          { name: product.name, href: `/products/${product.handle}` },
+        ]}
+      />
+      <ProductDetailClient product={product} relatedProducts={relatedProducts} />
+    </>
+  )
 }

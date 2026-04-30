@@ -4,6 +4,8 @@ import './globals.css'
 import { ScrollProgressBar } from '@/components/ScrollProgressBar'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
+import { OrganizationJsonLd, WebSiteJsonLd } from '@/components/seo/JsonLd'
+import { siteConfig } from '@/lib/site-config'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -18,34 +20,39 @@ const montserrat = Montserrat({
   weight: ['300', '400', '500', '600', '700'],
 })
 
+const fullTitle = `${siteConfig.name} — ${siteConfig.tagline}`
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://me-by-reign.com'), // Replace with actual production URL
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: 'ME byReign — Handmade Skin & Home Decor',
-    template: '%s | ME byReign',
+    default: fullTitle,
+    template: `%s | ${siteConfig.name}`,
   },
-  description:
-    'Discover ME byReign — artisan-crafted skincare and luxury home decor rooted in botanical tradition. Handmade with intention, designed for the modern sanctuary.',
-  keywords: ['handmade skincare', 'artisan candles', 'botanical skincare', 'luxury home decor', 'ME byReign', 'Atlanta artisan'],
-  authors: [{ name: 'ME byReign' }],
-  creator: 'ME byReign',
-  publisher: 'ME byReign',
+  description: siteConfig.description,
+  keywords: [...siteConfig.keywords],
+  authors: [{ name: siteConfig.name }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    title: 'ME byReign — Handmade Skin & Home Decor',
-    description: 'Artisan-crafted skincare and luxury home decor. Handmade with intention.',
-    url: 'https://me-by-reign.com',
-    siteName: 'ME byReign',
+    title: fullTitle,
+    description:
+      'Artisan-crafted botanical skincare, handmade candles, and luxury home décor. All-natural, handmade with intention.',
+    url: siteConfig.url,
+    siteName: siteConfig.name,
     images: [
       {
-        url: '/images/og-image.jpg', // Ensure this asset exists or use a fallback
+        url: siteConfig.ogImage,
         width: 1200,
         height: 630,
-        alt: 'ME byReign — Luxury Living',
+        alt: fullTitle,
       },
     ],
     locale: 'en_US',
@@ -53,9 +60,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ME byReign — Handmade Skin & Home Decor',
-    description: 'Artisan-crafted skincare and luxury home decor. Handmade with intention.',
-    images: ['/images/og-image.jpg'],
+    title: fullTitle,
+    description:
+      'Artisan-crafted botanical skincare, handmade candles, and luxury home décor. Handmade with intention.',
+    images: [siteConfig.ogImage],
   },
   robots: {
     index: true,
@@ -117,6 +125,8 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${playfair.variable} ${montserrat.variable}`} suppressHydrationWarning data-scroll-behavior="smooth">
       <body suppressHydrationWarning>
+        <OrganizationJsonLd />
+        <WebSiteJsonLd />
         <CartProvider>
           <ScrollProgressBar />
           <Navbar searchData={searchData} />
