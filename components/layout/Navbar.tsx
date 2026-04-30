@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'motion/react'
 import { MagnifyingGlass, Bag, List, X } from '@phosphor-icons/react'
@@ -17,11 +18,16 @@ const navLinks = [
 
 export function Navbar({ searchData }: { searchData: SearchResult[] }) {
   const { cart } = useCart()
+  const pathname = usePathname()
+  const isHome = pathname === '/'
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
 
   const cartCount = cart?.totalQuantity || 0
+
+  // On the homepage the hero has a cream background, so the navbar should always be solid white
+  const useSolidNav = isHome || isScrolled
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,7 +53,7 @@ export function Navbar({ searchData }: { searchData: SearchResult[] }) {
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          isScrolled
+          useSolidNav
             ? 'bg-white text-black shadow-sm'
             : 'bg-transparent text-white'
         }`}
@@ -63,7 +69,7 @@ export function Navbar({ searchData }: { searchData: SearchResult[] }) {
                   alt="ME byReign Logo"
                   fill
                   sizes="(max-width: 768px) 40px, 40px"
-                  className={`object-contain transition-all duration-500 ${!isScrolled ? 'brightness-0 invert' : ''}`}
+                  className={`object-contain transition-all duration-500 ${!useSolidNav ? 'brightness-0 invert' : ''}`}
                   priority
                 />
               </div>
