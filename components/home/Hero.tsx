@@ -51,9 +51,8 @@ export function Hero() {
           className="text-5xl md:text-7xl lg:text-8xl font-serif text-white leading-tight mb-6"
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
-          It's All
+          It's All About <span className="text-[120px] italic font-light">ME</span>.
           <br />
-          <span className="italic font-light">About Me.</span>
         </motion.h1>
 
         {/* Body */}
