@@ -32,18 +32,7 @@ export function Hero() {
       <div className="absolute inset-0 bg-black/50 z-10" />
 
       {/* Content */}
-      <div className="relative z-20 text-center text-white max-w-4xl mx-auto px-4 sm:px-6">
-        {/* Eyebrow */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-[#FFFFFF] tracking-[0.3em] uppercase text-xs mb-6"
-          style={{ fontFamily: "'Montserrat', sans-serif" }}
-        >
-          Artisan Crafted Perfection
-        </motion.p>
-
+      <div className="relative z-20 text-center text-white max-w-4xl mx-auto px-4 sm:px-6 mt-44 md:mt-0">
         {/* Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
@@ -64,7 +53,7 @@ export function Hero() {
           className="text-gray-200 text-sm md:text-base leading-relaxed font-light max-w-xl mx-auto mb-10"
           style={{ fontFamily: "'Montserrat', sans-serif" }}
         >
-          Handcrafted with botanical intention. Each product is a ritual — a moment of calm in your everyday life. Discover our collection of artisan skincare and luxury home décor.
+          Handcrafted with botanical intention. Discover our collection of artisan skincare and luxury home décor.
         </motion.p>
 
         {/* CTAs */}
@@ -99,7 +88,7 @@ export function Hero() {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-3">
+      <div className="hidden md:flex absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex-col items-center gap-3">
         <p
           className="text-white text-[10px] uppercase tracking-widest"
           style={{ fontFamily: "'Montserrat', sans-serif" }}
