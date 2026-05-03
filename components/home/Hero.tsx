@@ -38,10 +38,10 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-5xl md:text-7xl lg:text-6xl font-serif text-white leading-tight mb-6"
+          className="text-3xl md:text-7xl lg:text-5xl font-serif text-white leading-tight mb-6"
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
-          It's All About <span className="text-[80px] italic font-light">ME</span>.
+          It's All About <span className="text-[70px] italic font-light">ME...byReign</span>.
           <br />
         </motion.h1>
 
