@@ -160,8 +160,11 @@ export function Hero() {
             className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-white leading-tight mb-4 md:mb-8"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
-            It's All About <br />
-            <span className="text-[32px] sm:text-[50px] md:text-[70px] lg:text-[80px] italic font-light block mt-2">ME...byReign</span>
+            It's All About
+            <span className="flex items-baseline gap-2">
+              <span className="text-[32px] sm:text-[50px] md:text-[70px] lg:text-[80px] italic font-light">ME</span>
+              <span className="text-xl sm:text-3xl md:text-4xl lg:text-5xl italic font-light">...byREIGN</span>
+            </span>
           </motion.h1>
 
           {/* Body */}
@@ -172,7 +175,8 @@ export function Hero() {
             className="text-gray-200 text-xs sm:text-base md:text-lg leading-relaxed font-light max-w-lg mb-6 md:mb-12"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
-            Handcrafted with botanical intention. Discover our collection of artisan skincare and luxury home décor.
+            Glow deeper, relax longer. Experience handcrafted,<br />
+            skin and home decor made just for YOU. 
           </motion.p>
 
 
