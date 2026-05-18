@@ -41,6 +41,31 @@ export default function ProductDetailClient({
     ) || product.variants[0]
   }, [product.variants, selectedOptions])
 
+  const handleOptionSelect = (optionName: string, value: string) => {
+    setSelectedOptions(prev => {
+      const newOptions = { ...prev, [optionName]: value }
+      
+      const exactMatch = product.variants.find(variant =>
+        variant.selectedOptions.every(opt => newOptions[opt.name] === opt.value)
+      )
+      if (exactMatch) return newOptions
+      
+      const partialMatch = product.variants.find(variant =>
+        variant.selectedOptions.some(opt => opt.name === optionName && opt.value === value)
+      )
+      
+      if (partialMatch) {
+        const matchedOptions: Record<string, string> = {}
+        partialMatch.selectedOptions.forEach(opt => {
+          matchedOptions[opt.name] = opt.value
+        })
+        return matchedOptions
+      }
+      
+      return newOptions
+    })
+  }
+
   // Fallback to rich mock data for descriptions/ingredients if available
   const richDetail = getMockDetail(product.handle)
 
@@ -231,7 +256,7 @@ export default function ProductDetailClient({
                         {option.values.map((value) => (
                           <button
                             key={value}
-                            onClick={() => setSelectedOptions(prev => ({ ...prev, [option.name]: value }))}
+                            onClick={() => handleOptionSelect(option.name, value)}
                             className={`px-6 py-3 text-[10px] uppercase tracking-widest font-bold transition-all duration-300 border ${selectedOptions[option.name] === value
                               ? 'bg-black text-white border-black'
                               : 'bg-white text-gray-500 border-gray-200 hover:border-black hover:text-black'
