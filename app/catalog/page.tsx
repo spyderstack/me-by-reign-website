@@ -47,7 +47,7 @@ export default async function CatalogPage() {
       />
 
       {/* ── HERO ── */}
-      <HeroSection title="Edit" />
+      <HeroSection title="Collection" />
 
       {/* ── INTERACTIVE GRID (Filter/Sort/Grid) ── */}
       <CatalogGrid initialProducts={products} />
