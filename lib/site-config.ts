@@ -9,7 +9,7 @@
 
 export const siteConfig = {
   /** Base URL of the site. Set via NEXT_PUBLIC_SITE_URL env var. */
-  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://mebyreign.vercel.app',
+  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://mebyreign.com',
 
   /** Brand name used in metadata, JSON-LD, and UI */
   name: 'ME byReign',

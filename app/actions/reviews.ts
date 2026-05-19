@@ -62,8 +62,8 @@ export async function getApprovedReviews(productId: string) {
 }
 
 export async function getAdminReviews(password: string) {
-  // Simple password check
-  if (password !== process.env.ADMIN_PASSWORD) {
+  // Ensure the admin password is set in the environment and matches the input
+  if (!process.env.ADMIN_PASSWORD || password !== process.env.ADMIN_PASSWORD) {
     return { error: 'Unauthorized' };
   }
 
@@ -81,7 +81,7 @@ export async function getAdminReviews(password: string) {
 }
 
 export async function updateReviewStatus(reviewId: string, status: 'approved' | 'rejected' | 'pending', password: string) {
-  if (password !== process.env.ADMIN_PASSWORD) {
+  if (!process.env.ADMIN_PASSWORD || password !== process.env.ADMIN_PASSWORD) {
     return { error: 'Unauthorized' };
   }
 

@@ -14,4 +14,4 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Client for admin operations (bypasses RLS)
 // ONLY use this in Server Actions protected by authentication
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey || supabaseAnonKey)
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey || '')
