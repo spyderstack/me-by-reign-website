@@ -3,7 +3,6 @@ import { FeaturedProducts }  from '@/components/home/FeaturedProducts'
 import { EditorialBanner }   from '@/components/home/EditorialBanner'
 import { Philosophy }        from '@/components/home/Philosophy'
 import { BlogPreview }       from '@/components/home/BlogPreview'
-import { NewsletterSection } from '@/components/home/NewsletterSection'
 import { getAllProducts, getAllArticles } from '@/lib/shopify/client'
 
 export const revalidate = 60
@@ -22,7 +21,6 @@ export default async function HomePage() {
         <EditorialBanner />
         <Philosophy />
         <BlogPreview posts={articles} />
-        <NewsletterSection />
       </main>
     </div>
   )

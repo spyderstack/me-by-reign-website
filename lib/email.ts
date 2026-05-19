@@ -86,3 +86,83 @@ export const sendReviewNotification = async (
     return { success: false, error };
   }
 };
+
+export const sendContactNotification = async (
+  contactDetails: {
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+  }
+) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: process.env.NOTIFICATION_EMAIL || process.env.EMAIL_USER,
+    subject: `New Contact Request: ${contactDetails.subject}`,
+    replyTo: contactDetails.email,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+      </head>
+      <body style="margin: 0; padding: 40px 20px; background-color: #faf9f6; font-family: 'Montserrat', Arial, sans-serif; color: #111111;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-w-4xl; margin: 0 auto; background-color: #ffffff; border: 1px solid #f0f0f0;">
+          <tr>
+            <td style="padding: 50px 40px; text-align: center; border-bottom: 1px solid #f0f0f0;">
+              <p style="margin: 0; color: #C5A059; font-size: 10px; text-transform: uppercase; letter-spacing: 4px; font-weight: bold;">ME byREIGN</p>
+              <h1 style="margin: 20px 0 0 0; font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 400; color: #000000;">New Contact Form Submission</h1>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 40px;">
+              <p style="margin: 0 0 30px 0; font-size: 14px; line-height: 1.8; color: #555555;">
+                You have received a new message from the contact form.
+              </p>
+              
+              <div style="background-color: #faf9f6; padding: 30px; margin-bottom: 40px; border-left: 3px solid #C5A059;">
+                <p style="margin: 0 0 10px 0; font-size: 16px; font-family: 'Playfair Display', serif; font-weight: 600;">
+                  ${contactDetails.name}
+                </p>
+                <p style="margin: 0 0 15px 0; font-size: 12px; color: #888888;">${contactDetails.email}</p>
+                
+                <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: 600; color: #111111;">
+                  Subject: ${contactDetails.subject}
+                </p>
+                
+                <p style="margin: 15px 0 0 0; font-size: 14px; line-height: 1.8; color: #333333;">
+                  ${contactDetails.message.replace(/\n/g, '<br>')}
+                </p>
+              </div>
+
+              <div style="text-align: center;">
+                <a href="mailto:${contactDetails.email}" 
+                   style="display: inline-block; background-color: #000000; color: #ffffff; text-decoration: none; padding: 16px 32px; font-size: 10px; text-transform: uppercase; letter-spacing: 3px; font-weight: bold; border: 1px solid #000000;">
+                  Reply to Customer
+                </a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 30px 40px; text-align: center; background-color: #faf9f6; border-top: 1px solid #f0f0f0;">
+              <p style="margin: 0; font-size: 10px; color: #999999; text-transform: uppercase; letter-spacing: 2px;">
+                ME byREIGN System
+              </p>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
+    `,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Contact email sent: ' + info.response);
+    return { success: true };
+  } catch (error) {
+    console.error('Error sending contact email:', error);
+    return { success: false, error };
+  }
+};
+

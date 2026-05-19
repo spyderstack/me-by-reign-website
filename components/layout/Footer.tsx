@@ -1,10 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { InstagramLogo, FacebookLogo, ArrowRight, CheckCircle, WarningCircle } from '@phosphor-icons/react/dist/ssr'
+import { InstagramLogo, FacebookLogo, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 import Image from 'next/image'
-import { useState } from 'react'
-import { subscribeToNewsletter } from '@/app/actions/newsletter'
 
 const discoverLinks = [
   { label: 'Skincare Collection', href: '/catalog' },
@@ -26,20 +24,6 @@ interface FooterProps {
 }
 
 export function Footer({ policies }: FooterProps) {
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
-  const [message, setMessage] = useState('')
-
-  async function handleSubmit(formData: FormData) {
-    setStatus('loading')
-    const result = await subscribeToNewsletter(formData)
-    if (result.success) {
-      setStatus('success')
-    } else {
-      setStatus('error')
-      setMessage(result.message)
-    }
-  }
-
   return (
     <footer className="bg-[#111] py-24 text-white">
       {/* Gold gradient rule */}
@@ -159,68 +143,10 @@ export function Footer({ policies }: FooterProps) {
             </ul>
           </div>
 
-          {/* Newsletter + Contact Column */}
+          {/* Contact Column */}
           <div>
-            <h3
-              className="text-xs uppercase tracking-[0.25em] text-white mb-6 font-semibold"
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
-            >
-              Join the Ritual
-            </h3>
-            <p
-              className="text-gray-400 text-sm mb-5 leading-relaxed"
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
-            >
-              Subscribe for our latest updates.
-            </p>
-
-            {status === 'success' ? (
-              <div className="flex items-center gap-2 text-[#C5A059] text-sm py-2 mb-8">
-                <CheckCircle size={20} weight="fill" />
-                <span>Thank you for joining our sanctuary.</span>
-              </div>
-            ) : (
-              <>
-                <form
-                  action={handleSubmit}
-                  className="flex items-center border-b border-gray-700 pb-2 mb-2 group focus-within:border-[#C5A059] transition-colors"
-                  id="footer-newsletter-form"
-                >
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Enter your email"
-                    required
-                    disabled={status === 'loading'}
-                    className="bg-transparent flex-1 text-sm text-white placeholder-gray-500 focus:outline-none disabled:opacity-50"
-                    style={{ fontFamily: "'Montserrat', sans-serif" }}
-                    id="footer-email-input"
-                  />
-                  <button
-                    type="submit"
-                    disabled={status === 'loading'}
-                    className="text-gray-400 hover:text-[#C5A059] transition-colors ml-2 disabled:opacity-50"
-                    aria-label="Subscribe"
-                    id="footer-subscribe-btn"
-                  >
-                    {status === 'loading' ? (
-                      <div className="animate-spin h-4 w-4 border-2 border-[#C5A059] border-t-transparent rounded-full" />
-                    ) : (
-                      <ArrowRight size={18} weight="regular" />
-                    )}
-                  </button>
-                </form>
-                {status === 'error' && (
-                  <div className="flex items-center gap-1.5 text-red-400 text-[10px] mb-8 pb-2">
-                    <WarningCircle size={14} />
-                    <span>{message}</span>
-                  </div>
-                )}
-              </>
-            )}
-
             {/* Contact Button */}
-            <div className={`mt-8 ${status !== 'idle' ? 'mt-4' : ''}`}>
+            <div>
               <Link
                 href="/contact"
                 onClick={() => window.scrollTo(0, 0)}
