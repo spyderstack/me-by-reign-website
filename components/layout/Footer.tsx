@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { InstagramLogo, FacebookLogo, ArrowRight } from '@phosphor-icons/react/dist/ssr'
+import { InstagramLogo, FacebookLogo, TiktokLogo, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 import Image from 'next/image'
 
 const discoverLinks = [
@@ -89,6 +89,16 @@ export function Footer({ policies }: FooterProps) {
                 id="footer-facebook-link"
               >
                 <FacebookLogo size={20} weight="regular" />
+              </a>
+              <a
+                href="https://www.tiktok.com/@mebyreign"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-[#C5A059] transition-colors duration-200"
+                aria-label="TikTok"
+                id="footer-tiktok-link"
+              >
+                <TiktokLogo size={20} weight="regular" />
               </a>
             </div>
           </div>
