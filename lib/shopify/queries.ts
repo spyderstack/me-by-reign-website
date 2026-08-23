@@ -263,6 +263,24 @@ export const CART_FRAGMENT = `
             }
           }
         }
+        cost {
+          totalAmount {
+            amount
+            currencyCode
+          }
+          subtotalAmount {
+            amount
+            currencyCode
+          }
+          amountPerQuantity {
+            amount
+            currencyCode
+          }
+          compareAtAmountPerQuantity {
+            amount
+            currencyCode
+          }
+        }
         attributes {
           key
           value

@@ -142,9 +142,17 @@ export interface ShopifySellingPlanAllocation {
   }[]
 }
 
+export interface ShopifyCartLineCost {
+  totalAmount: ShopifyMoneyV2
+  subtotalAmount: ShopifyMoneyV2
+  amountPerQuantity: ShopifyMoneyV2
+  compareAtAmountPerQuantity?: ShopifyMoneyV2 | null
+}
+
 export interface ShopifyCartLine {
   id: string
   quantity: number
+  cost?: ShopifyCartLineCost
   merchandise: ShopifyProductVariant
   attributes: { key: string; value: string }[]
   sellingPlanAllocation?: ShopifySellingPlanAllocation | null
@@ -298,6 +306,7 @@ export interface NormalizedCartLine {
   quantity: number
   name: string
   price: string
+  compareAtPrice?: string | null
   total: string
   image: string
   handle: string

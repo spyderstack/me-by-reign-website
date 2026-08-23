@@ -208,24 +208,50 @@ export function normalizeCart(cart: ShopifyCart): NormalizedCart {
     id: cart.id,
     checkoutUrl: cart.checkoutUrl,
     totalQuantity: cart.totalQuantity,
-    lines: cart.lines.nodes.map((line) => ({
-      id: line.id,
-      variantId: line.merchandise.id,
-      quantity: line.quantity,
-      name: line.merchandise.product?.title || 'Product',
-      price: formatPrice(line.merchandise.price.amount, line.merchandise.price.currencyCode),
-      total: formatPrice(
-        (parseFloat(line.merchandise.price.amount) * line.quantity).toString(),
+    lines: cart.lines.nodes.map((line) => {
+      // Determine effective unit price (respects subscription discounts and promo line adjustments)
+      const effectiveUnitAmount =
+        line.cost?.amountPerQuantity?.amount ||
+        line.sellingPlanAllocation?.priceAdjustments?.[0]?.price?.amount ||
+        line.merchandise.price.amount
+
+      const currency =
+        line.cost?.amountPerQuantity?.currencyCode ||
         line.merchandise.price.currencyCode
-      ),
-      image: line.merchandise.product?.featuredImage?.url || '/images/placeholder.png',
-      handle: line.merchandise.product?.handle || '',
-      sellingPlan: line.sellingPlanAllocation?.sellingPlan ? {
-        id: line.sellingPlanAllocation.sellingPlan.id,
-        name: line.sellingPlanAllocation.sellingPlan.name,
-        description: line.sellingPlanAllocation.sellingPlan.description,
-      } : null,
-    })),
+
+      // Determine compareAt price if item is on sale or subscription discount applies
+      const compareAtAmount =
+        line.cost?.compareAtAmountPerQuantity?.amount ||
+        (line.sellingPlanAllocation ? line.merchandise.price.amount : null)
+
+      // Calculate line total: if Shopify line.cost.totalAmount is non-zero, use it; otherwise compute unit * quantity
+      const lineTotalAmount =
+        line.cost?.totalAmount?.amount && parseFloat(line.cost.totalAmount.amount) > 0
+          ? line.cost.totalAmount.amount
+          : (parseFloat(effectiveUnitAmount) * Math.max(1, line.quantity)).toString()
+
+      return {
+        id: line.id,
+        variantId: line.merchandise.id,
+        quantity: line.quantity,
+        name: line.merchandise.product?.title || 'Product',
+        price: formatPrice(effectiveUnitAmount, currency),
+        compareAtPrice:
+          compareAtAmount && parseFloat(compareAtAmount) > parseFloat(effectiveUnitAmount)
+            ? formatPrice(compareAtAmount, currency)
+            : null,
+        total: formatPrice(lineTotalAmount, currency),
+        image: line.merchandise.product?.featuredImage?.url || '/images/placeholder.png',
+        handle: line.merchandise.product?.handle || '',
+        sellingPlan: line.sellingPlanAllocation?.sellingPlan
+          ? {
+              id: line.sellingPlanAllocation.sellingPlan.id,
+              name: line.sellingPlanAllocation.sellingPlan.name,
+              description: line.sellingPlanAllocation.sellingPlan.description,
+            }
+          : null,
+      }
+    }),
     subtotal: formatPrice(cart.cost.subtotalAmount.amount, cart.cost.subtotalAmount.currencyCode),
     total: formatPrice(cart.cost.totalAmount.amount, cart.cost.totalAmount.currencyCode),
     currencyCode: cart.cost.totalAmount.currencyCode,

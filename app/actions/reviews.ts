@@ -46,19 +46,24 @@ export async function submitReview(productId: string, productName: string, formD
 }
 
 export async function getApprovedReviews(productId: string) {
-  const { data, error } = await supabase
-    .from('reviews')
-    .select('*')
-    .eq('product_id', productId)
-    .eq('status', 'approved')
-    .order('created_at', { ascending: false });
+  try {
+    const { data, error } = await supabase
+      .from('reviews')
+      .select('*')
+      .eq('product_id', productId)
+      .eq('status', 'approved')
+      .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('Error fetching approved reviews:', error);
+    if (error) {
+      console.warn('Could not fetch approved reviews:', error.message);
+      return [];
+    }
+
+    return data || [];
+  } catch (err: any) {
+    console.warn('Error in getApprovedReviews:', err?.message);
     return [];
   }
-
-  return data;
 }
 
 export async function getAdminReviews(password: string) {

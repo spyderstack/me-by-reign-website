@@ -204,12 +204,19 @@ export default function CartPage() {
                       {/* Price */}
                       <div className="text-right">
                         <p className="text-xs text-gray-400 mb-1" style={{ fontFamily: "'Montserrat', sans-serif" }}>Subtotal</p>
-                        <p
-                          className="text-xl font-medium"
-                          style={{ fontFamily: "'Montserrat', sans-serif" }}
-                        >
-                          {line.total}
-                        </p>
+                        <div className="flex items-baseline justify-end gap-2">
+                          {line.compareAtPrice && (
+                            <span className="text-xs text-gray-400 line-through">
+                              {line.compareAtPrice}
+                            </span>
+                          )}
+                          <p
+                            className="text-xl font-medium text-black"
+                            style={{ fontFamily: "'Montserrat', sans-serif" }}
+                          >
+                            {line.total}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
