@@ -103,6 +103,80 @@ export const PRODUCT_FRAGMENT = `
           name
           value
         }
+        sellingPlanAllocations(first: 10) {
+          nodes {
+            checkoutChargeAmount {
+              amount
+              currencyCode
+            }
+            priceAdjustments {
+              price {
+                amount
+                currencyCode
+              }
+              compareAtPrice {
+                amount
+                currencyCode
+              }
+              perDeliveryPrice {
+                amount
+                currencyCode
+              }
+            }
+            sellingPlan {
+              id
+              name
+              description
+              options {
+                name
+                value
+              }
+              recurringDeliveries
+            }
+          }
+        }
+      }
+    }
+    sellingPlanGroups(first: 5) {
+      nodes {
+        name
+        appName
+        options {
+          name
+          values
+        }
+        sellingPlans(first: 10) {
+          nodes {
+            id
+            name
+            description
+            recurringDeliveries
+            options {
+              name
+              value
+            }
+            priceAdjustments {
+              orderCount
+              adjustmentValue {
+                ... on SellingPlanFixedAmountPriceAdjustment {
+                  adjustmentAmount {
+                    amount
+                    currencyCode
+                  }
+                }
+                ... on SellingPlanPercentagePriceAdjustment {
+                  adjustmentPercentage
+                }
+                ... on SellingPlanFixedPriceAdjustment {
+                  price {
+                    amount
+                    currencyCode
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
     seo {
@@ -165,6 +239,27 @@ export const CART_FRAGMENT = `
                 url
                 altText
               }
+            }
+          }
+        }
+        sellingPlanAllocation {
+          sellingPlan {
+            id
+            name
+            description
+          }
+          priceAdjustments {
+            price {
+              amount
+              currencyCode
+            }
+            compareAtPrice {
+              amount
+              currencyCode
+            }
+            perDeliveryPrice {
+              amount
+              currencyCode
             }
           }
         }

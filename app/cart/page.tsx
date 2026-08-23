@@ -154,6 +154,12 @@ export default function CartPage() {
                             {line.name}
                           </h3>
                         </Link>
+                        {line.sellingPlan && (
+                          <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#faf7f2] border border-[#C5A059]/30 text-[#8c6b2d] text-[11px] tracking-wide font-medium">
+                            <span>✨</span>
+                            <span>{line.sellingPlan.name}</span>
+                          </div>
+                        )}
                       </div>
                       <button
                         onClick={() => removeItem(line.id)}

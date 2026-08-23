@@ -32,6 +32,7 @@ export interface ShopifyProductVariant {
   price: ShopifyMoneyV2
   compareAtPrice: ShopifyMoneyV2 | null
   selectedOptions: ShopifySelectedOption[]
+  sellingPlanAllocations?: { nodes: ShopifySellingPlanAllocation[] }
   product?: {
     id: string
     handle: string
@@ -82,6 +83,7 @@ export interface ShopifyProduct {
   options: ShopifyProductOption[]
   metafields: (ShopifyMetafield | null)[]
   variants: { nodes: ShopifyProductVariant[] }
+  sellingPlanGroups?: { nodes: ShopifySellingPlanGroup[] }
   seo: ShopifySEO
 }
 
@@ -91,11 +93,61 @@ export interface ShopifyMetafield {
   value: string
 }
 
+export interface ShopifySellingPlanPriceAdjustment {
+  orderCount?: number | null
+  adjustmentValue: {
+    adjustmentAmount?: ShopifyMoneyV2
+    adjustmentPercentage?: number
+    price?: ShopifyMoneyV2
+  }
+}
+
+export interface ShopifySellingPlanOption {
+  name: string
+  value: string
+}
+
+export interface ShopifySellingPlan {
+  id: string
+  name: string
+  description: string | null
+  recurringDeliveries: boolean
+  options?: ShopifySellingPlanOption[]
+  priceAdjustments?: ShopifySellingPlanPriceAdjustment[]
+}
+
+export interface ShopifySellingPlanGroup {
+  name: string
+  appName: string | null
+  options: {
+    name: string
+    values: string[]
+  }[]
+  sellingPlans: {
+    nodes: ShopifySellingPlan[]
+  }
+}
+
+export interface ShopifySellingPlanAllocation {
+  sellingPlan: {
+    id: string
+    name: string
+    description?: string | null
+    options?: { name: string; value: string }[]
+  }
+  priceAdjustments?: {
+    price: ShopifyMoneyV2
+    compareAtPrice?: ShopifyMoneyV2 | null
+    perDeliveryPrice?: ShopifyMoneyV2 | null
+  }[]
+}
+
 export interface ShopifyCartLine {
   id: string
   quantity: number
   merchandise: ShopifyProductVariant
   attributes: { key: string; value: string }[]
+  sellingPlanAllocation?: ShopifySellingPlanAllocation | null
 }
 
 export interface ShopifyArticle {
@@ -206,11 +258,23 @@ export interface NormalizedProduct {
     quantityAvailable: number | null
     isOnSale: boolean
     selectedOptions: { name: string; value: string }[]
+    sellingPlanAllocations?: {
+      sellingPlan: {
+        id: string
+        name: string
+        description?: string | null
+        options?: { name: string; value: string }[]
+      }
+      price: string
+      compareAtPrice: string | null
+      perDeliveryPrice: string | null
+    }[]
   }[]
   reviews: {
     rating: number
     count: number
   }
+  sellingPlanGroups?: ShopifySellingPlanGroup[]
   seo: ShopifySEO
 }
 
@@ -237,6 +301,11 @@ export interface NormalizedCartLine {
   total: string
   image: string
   handle: string
+  sellingPlan?: {
+    id: string
+    name: string
+    description?: string | null
+  } | null
 }
 
 export interface NormalizedCart {

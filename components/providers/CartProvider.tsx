@@ -7,7 +7,7 @@ import { getCart, cartCreate, cartLinesAdd, cartLinesUpdate, cartLinesRemove } f
 interface CartContextType {
   cart: NormalizedCart | null
   isLoading: boolean
-  addItem: (variantId: string, quantity?: number) => Promise<void>
+  addItem: (variantId: string, quantity?: number, sellingPlanId?: string) => Promise<void>
   updateItem: (lineId: string, quantity: number) => Promise<void>
   removeItem: (lineId: string) => Promise<void>
   refreshCart: () => Promise<void>
@@ -47,17 +47,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [fetchCart])
 
-  const addItem = async (variantId: string, quantity: number = 1) => {
+  const addItem = async (variantId: string, quantity: number = 1, sellingPlanId?: string) => {
     setIsLoading(true)
     try {
       let currentCartId = localStorage.getItem(CART_ID_KEY)
       let updatedCart: NormalizedCart
 
       if (!currentCartId) {
-        updatedCart = await cartCreate([{ variantId, quantity }])
+        updatedCart = await cartCreate([{ variantId, quantity, sellingPlanId }])
         localStorage.setItem(CART_ID_KEY, updatedCart.id)
       } else {
-        updatedCart = await cartLinesAdd(currentCartId, [{ variantId, quantity }])
+        updatedCart = await cartLinesAdd(currentCartId, [{ variantId, quantity, sellingPlanId }])
       }
 
       setCart(updatedCart)

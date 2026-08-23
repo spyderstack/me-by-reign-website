@@ -145,12 +145,30 @@ export function normalizeProduct(product: ShopifyProduct): NormalizedProduct {
       available: v.availableForSale,
       quantityAvailable: v.quantityAvailable ?? null,
       isOnSale: v.compareAtPrice ? parseFloat(v.price.amount) < parseFloat(v.compareAtPrice.amount) : false,
-      selectedOptions: v.selectedOptions
+      selectedOptions: v.selectedOptions,
+      sellingPlanAllocations: v.sellingPlanAllocations?.nodes?.map(spa => ({
+        sellingPlan: {
+          id: spa.sellingPlan.id,
+          name: spa.sellingPlan.name,
+          description: spa.sellingPlan.description,
+          options: spa.sellingPlan.options,
+        },
+        price: spa.priceAdjustments?.[0]?.price
+          ? formatPrice(spa.priceAdjustments[0].price.amount, spa.priceAdjustments[0].price.currencyCode)
+          : formatPrice(v.price.amount, v.price.currencyCode),
+        compareAtPrice: spa.priceAdjustments?.[0]?.compareAtPrice
+          ? formatPrice(spa.priceAdjustments[0].compareAtPrice.amount, spa.priceAdjustments[0].compareAtPrice.currencyCode)
+          : null,
+        perDeliveryPrice: spa.priceAdjustments?.[0]?.perDeliveryPrice
+          ? formatPrice(spa.priceAdjustments[0].perDeliveryPrice.amount, spa.priceAdjustments[0].perDeliveryPrice.currencyCode)
+          : null,
+      })) || [],
     })),
     reviews: {
       rating: rating || 5, // Fallback to 5 if not set
       count: countMeta ? parseInt(countMeta.value) : 0
     },
+    sellingPlanGroups: product.sellingPlanGroups?.nodes || [],
     seo: {
       title: seo?.title || title,
       description: seo?.description || description,
@@ -202,6 +220,11 @@ export function normalizeCart(cart: ShopifyCart): NormalizedCart {
       ),
       image: line.merchandise.product?.featuredImage?.url || '/images/placeholder.png',
       handle: line.merchandise.product?.handle || '',
+      sellingPlan: line.sellingPlanAllocation?.sellingPlan ? {
+        id: line.sellingPlanAllocation.sellingPlan.id,
+        name: line.sellingPlanAllocation.sellingPlan.name,
+        description: line.sellingPlanAllocation.sellingPlan.description,
+      } : null,
     })),
     subtotal: formatPrice(cart.cost.subtotalAmount.amount, cart.cost.subtotalAmount.currencyCode),
     total: formatPrice(cart.cost.totalAmount.amount, cart.cost.totalAmount.currencyCode),
@@ -344,7 +367,7 @@ export async function getCart(cartId: string): Promise<NormalizedCart | null> {
   return data.cart ? normalizeCart(data.cart) : null
 }
 
-export async function cartCreate(lineItems: { variantId: string; quantity: number }[]): Promise<NormalizedCart> {
+export async function cartCreate(lineItems: { variantId: string; quantity: number; sellingPlanId?: string }[]): Promise<NormalizedCart> {
   const data = await shopifyFetch<{ cartCreate: { cart: ShopifyCart } }>({
     query: CART_CREATE_MUTATION,
     variables: {
@@ -352,6 +375,7 @@ export async function cartCreate(lineItems: { variantId: string; quantity: numbe
         lines: lineItems.map((item) => ({
           merchandiseId: item.variantId,
           quantity: item.quantity,
+          ...(item.sellingPlanId ? { sellingPlanId: item.sellingPlanId } : {}),
         })),
       },
     },
@@ -360,7 +384,7 @@ export async function cartCreate(lineItems: { variantId: string; quantity: numbe
   return normalizeCart(data.cartCreate.cart)
 }
 
-export async function cartLinesAdd(cartId: string, lines: { variantId: string; quantity: number }[]): Promise<NormalizedCart> {
+export async function cartLinesAdd(cartId: string, lines: { variantId: string; quantity: number; sellingPlanId?: string }[]): Promise<NormalizedCart> {
   const data = await shopifyFetch<{ cartLinesAdd: { cart: ShopifyCart } }>({
     query: CART_LINES_ADD_MUTATION,
     variables: {
@@ -368,6 +392,7 @@ export async function cartLinesAdd(cartId: string, lines: { variantId: string; q
       lines: lines.map((line) => ({
         merchandiseId: line.variantId,
         quantity: line.quantity,
+        ...(line.sellingPlanId ? { sellingPlanId: line.sellingPlanId } : {}),
       })),
     },
     cache: 'no-store',

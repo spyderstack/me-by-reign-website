@@ -41,6 +41,20 @@ export default function ProductDetailClient({
     ) || product.variants[0]
   }, [product.variants, selectedOptions])
 
+  // Selling plan subscription options on selected variant
+  const sellingPlans = useMemo(() => {
+    return selectedVariant?.sellingPlanAllocations || []
+  }, [selectedVariant])
+
+  const [purchaseType, setPurchaseType] = useState<'one-time' | 'subscription'>('one-time')
+  const [selectedSellingPlanId, setSelectedSellingPlanId] = useState<string>('')
+
+  useEffect(() => {
+    if (sellingPlans.length > 0) {
+      setSelectedSellingPlanId(sellingPlans[0].sellingPlan.id)
+    }
+  }, [sellingPlans])
+
   const handleOptionSelect = (optionName: string, value: string) => {
     setSelectedOptions(prev => {
       const newOptions = { ...prev, [optionName]: value }
@@ -72,7 +86,8 @@ export default function ProductDetailClient({
   const handleAddToCart = async () => {
     if (!selectedVariant) return
     setIsAdding(true)
-    await addItem(selectedVariant.id, quantity)
+    const planId = purchaseType === 'subscription' && selectedSellingPlanId ? selectedSellingPlanId : undefined
+    await addItem(selectedVariant.id, quantity, planId)
     setIsAdding(false)
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
@@ -270,6 +285,98 @@ export default function ProductDetailClient({
                   ))}
               </div>
 
+              {/* Purchase Options (One-Time vs Subscribe & Save) */}
+              {sellingPlans.length > 0 && (
+                <div className="mb-8 space-y-3">
+                  <p className="text-[10px] uppercase tracking-[0.25em] text-gray-500 font-bold">
+                    Purchase Options
+                  </p>
+
+                  {/* One-Time Purchase */}
+                  <div
+                    onClick={() => setPurchaseType('one-time')}
+                    className={`p-4 border cursor-pointer transition-all ${
+                      purchaseType === 'one-time'
+                        ? 'border-black bg-[#faf9f6]'
+                        : 'border-gray-200 bg-white hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <label className="flex items-center gap-3 cursor-pointer text-xs font-semibold uppercase tracking-wider text-black">
+                        <input
+                          type="radio"
+                          name="purchaseType"
+                          checked={purchaseType === 'one-time'}
+                          onChange={() => setPurchaseType('one-time')}
+                          className="accent-black"
+                        />
+                        One-Time Purchase
+                      </label>
+                      <span className="text-sm font-medium text-black">
+                        {selectedVariant?.price || product.price}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Subscribe & Save */}
+                  <div
+                    onClick={() => setPurchaseType('subscription')}
+                    className={`p-4 border cursor-pointer transition-all ${
+                      purchaseType === 'subscription'
+                        ? 'border-[#C5A059] bg-[#faf7f2] shadow-sm'
+                        : 'border-gray-200 bg-white hover:border-[#C5A059]/40'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="flex items-center gap-3 cursor-pointer text-xs font-bold uppercase tracking-wider text-[#8c6b2d]">
+                        <input
+                          type="radio"
+                          name="purchaseType"
+                          checked={purchaseType === 'subscription'}
+                          onChange={() => setPurchaseType('subscription')}
+                          className="accent-[#C5A059]"
+                        />
+                        Subscribe & Save
+                      </label>
+                      <span className="text-sm font-bold text-[#8c6b2d]">
+                        {sellingPlans.find((sp) => sp.sellingPlan.id === selectedSellingPlanId)?.price ||
+                          sellingPlans[0]?.price}
+                      </span>
+                    </div>
+
+                    {purchaseType === 'subscription' && (
+                      <div className="mt-3 pt-3 border-t border-[#C5A059]/20 space-y-2">
+                        {sellingPlans.length > 1 ? (
+                          <div>
+                            <p className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">
+                              Delivery Frequency:
+                            </p>
+                            <select
+                              value={selectedSellingPlanId}
+                              onChange={(e) => setSelectedSellingPlanId(e.target.value)}
+                              className="w-full text-xs p-2.5 bg-white border border-[#C5A059]/40 text-black font-medium"
+                            >
+                              {sellingPlans.map((sp) => (
+                                <option key={sp.sellingPlan.id} value={sp.sellingPlan.id}>
+                                  {sp.sellingPlan.name} ({sp.price})
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        ) : (
+                          <p className="text-xs text-[#8c6b2d] font-semibold">
+                            ✨ {sellingPlans[0].sellingPlan.name}
+                          </p>
+                        )}
+                        <p className="text-[11px] text-gray-500 italic">
+                          • Recurring automated delivery. Pause, skip, or cancel anytime.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Quantity Selector */}
               <div className="mb-8">
                 <p className="text-[10px] uppercase tracking-[0.25em] text-gray-500 font-bold mb-3">
@@ -305,7 +412,9 @@ export default function ProductDetailClient({
                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                     : added
                       ? 'bg-[#C5A059] text-white'
-                      : 'bg-black text-white hover:bg-[#C5A059]'
+                      : purchaseType === 'subscription'
+                        ? 'bg-[#8c6b2d] text-white hover:bg-black'
+                        : 'bg-black text-white hover:bg-[#C5A059]'
                     }`}
                 >
                   <AnimatePresence mode="wait">
@@ -319,11 +428,11 @@ export default function ProductDetailClient({
                       </motion.span>
                     ) : added ? (
                       <motion.div key="added" className="flex items-center gap-2" initial={{ y: 20 }} animate={{ y: 0 }} exit={{ y: -20 }}>
-                        <Check size={18} weight="bold" /> Product Added
+                        <Check size={18} weight="bold" /> {purchaseType === 'subscription' ? 'Subscription Added' : 'Product Added'}
                       </motion.div>
                     ) : (
                       <motion.div key="add" className="flex items-center gap-2" initial={{ y: 20 }} animate={{ y: 0 }} exit={{ y: -20 }}>
-                        <Plus size={18} weight="regular" /> Add to Cart
+                        <Plus size={18} weight="regular" /> {purchaseType === 'subscription' ? 'Subscribe Now' : 'Add to Cart'}
                       </motion.div>
                     )}
                   </AnimatePresence>
