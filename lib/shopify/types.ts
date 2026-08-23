@@ -305,6 +305,8 @@ export interface NormalizedCartLine {
   variantId: string
   quantity: number
   name: string
+  variantTitle?: string | null
+  selectedOptions?: { name: string; value: string }[]
   price: string
   compareAtPrice?: string | null
   total: string

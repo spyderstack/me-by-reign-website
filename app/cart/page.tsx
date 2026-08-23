@@ -154,6 +154,11 @@ export default function CartPage() {
                             {line.name}
                           </h3>
                         </Link>
+                        {line.variantTitle && (
+                          <p className="text-xs text-gray-500 mt-1 font-medium">
+                            {line.variantTitle}
+                          </p>
+                        )}
                         {line.sellingPlan && (
                           <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#faf7f2] border border-[#C5A059]/30 text-[#8c6b2d] text-[11px] tracking-wide font-medium">
                             <span>✨</span>

@@ -235,6 +235,8 @@ export function normalizeCart(cart: ShopifyCart): NormalizedCart {
         variantId: line.merchandise.id,
         quantity: line.quantity,
         name: line.merchandise.product?.title || 'Product',
+        variantTitle: line.merchandise.title !== 'Default Title' ? line.merchandise.title : null,
+        selectedOptions: line.merchandise.selectedOptions || [],
         price: formatPrice(effectiveUnitAmount, currency),
         compareAtPrice:
           compareAtAmount && parseFloat(compareAtAmount) > parseFloat(effectiveUnitAmount)
@@ -295,6 +297,18 @@ export async function getAllProducts({
     hasNextPage: data.products.pageInfo.hasNextPage,
     endCursor: data.products.pageInfo.endCursor,
   }
+}
+
+export async function getSubscriptionProducts(): Promise<NormalizedProduct[]> {
+  const { products } = await getAllProducts({ first: 100 })
+  return products.filter((p) => {
+    const hasGroup = p.sellingPlanGroups && p.sellingPlanGroups.length > 0
+    const hasAllocation = p.variants.some(
+      (v) => v.sellingPlanAllocations && v.sellingPlanAllocations.length > 0
+    )
+    const isSub = p.handle.includes('sub') || p.name.toLowerCase().includes('subscription')
+    return hasGroup || hasAllocation || isSub
+  })
 }
 
 export async function getProductByHandle(handle: string): Promise<NormalizedProduct | null> {

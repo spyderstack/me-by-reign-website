@@ -5,6 +5,7 @@ import { InstagramLogo, FacebookLogo, TiktokLogo, ArrowRight } from '@phosphor-i
 import Image from 'next/image'
 
 const discoverLinks = [
+  { label: 'Curated Subscriptions', href: '/subscriptions' },
   { label: 'Skincare Collection', href: '/catalog' },
   { label: 'Home Decor', href: '/catalog' },
   { label: 'New Arrivals', href: '/catalog' },

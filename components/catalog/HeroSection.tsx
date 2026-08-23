@@ -4,7 +4,15 @@ import Image from 'next/image'
 import { useRef } from 'react'
 import { useInView, motion } from 'motion/react'
 
-export function HeroSection({ title = 'Edit' }: { title?: string }) {
+export function HeroSection({
+  title = 'Edit',
+  eyebrow = 'ME byReign',
+  description = 'Artisan-crafted skincare and luxury home essentials — chosen for their craftsmanship, botanical integrity, and the ritual they inspire.',
+}: {
+  title?: string | React.ReactNode
+  eyebrow?: string
+  description?: string
+}) {
   const heroRef = useRef(null)
   const isHeroVisible = useInView(heroRef, { once: true })
 
@@ -18,7 +26,7 @@ export function HeroSection({ title = 'Edit' }: { title?: string }) {
       <div className="absolute inset-0">
         <Image
           src="/images/golden_background.jpg"
-          alt="ME byReign — The Edit"
+          alt="ME byReign — Hero"
           fill
           priority
           sizes="100vw"
@@ -45,7 +53,7 @@ export function HeroSection({ title = 'Edit' }: { title?: string }) {
             className="text-[#C5A059] text-[10px] uppercase tracking-[0.45em] font-bold"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
-            ME <span className="lowercase">by</span>Reign
+            {eyebrow}
           </span>
         </motion.div>
 
@@ -77,8 +85,7 @@ export function HeroSection({ title = 'Edit' }: { title?: string }) {
           className="text-sm md:text-base leading-relaxed font-light max-w-lg"
           style={{ fontFamily: "'Montserrat', sans-serif", color: 'rgba(255,255,255,0.85)' }}
         >
-          Artisan-crafted skincare and luxury home essentials — chosen for their
-          craftsmanship, botanical integrity, and the ritual they inspire.
+          {description}
         </motion.p>
       </div>
 
