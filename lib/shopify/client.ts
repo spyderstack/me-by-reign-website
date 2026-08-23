@@ -168,6 +168,15 @@ export function normalizeProduct(product: ShopifyProduct): NormalizedProduct {
       rating: rating || 5, // Fallback to 5 if not set
       count: countMeta ? parseInt(countMeta.value) : 0
     },
+    requiresSellingPlan: product.requiresSellingPlan ?? false,
+    tags: product.tags || [],
+    productType: product.productType || '',
+    isSubscriptionOnly: Boolean(
+      product.requiresSellingPlan ||
+      product.tags?.some(t => t.toLowerCase() === 'subscription') ||
+      product.productType?.toLowerCase() === 'subscription' ||
+      product.handle?.toLowerCase().includes('subscription')
+    ),
     sellingPlanGroups: product.sellingPlanGroups?.nodes || [],
     seo: {
       title: seo?.title || title,
@@ -267,11 +276,13 @@ export async function getAllProducts({
   after,
   sort = 'MANUAL',
   query,
+  includeSubscriptions = false,
 }: {
   first?: number
   after?: string
   sort?: SortKey
   query?: string
+  includeSubscriptions?: boolean
 } = {}): Promise<{ products: NormalizedProduct[]; hasNextPage: boolean; endCursor: string | null }> {
   const SORT_MAP: Record<SortKey, { sortKey: string; reverse: boolean }> = {
     MANUAL:       { sortKey: 'RELEVANCE',    reverse: false },
@@ -292,22 +303,24 @@ export async function getAllProducts({
     variables: { first, after, sortKey, reverse, query },
   })
 
+  const all = data.products.nodes.map(normalizeProduct)
+  const filtered = includeSubscriptions ? all : all.filter((p) => !p.isSubscriptionOnly)
+
   return {
-    products: data.products.nodes.map(normalizeProduct),
+    products: filtered,
     hasNextPage: data.products.pageInfo.hasNextPage,
     endCursor: data.products.pageInfo.endCursor,
   }
 }
 
 export async function getSubscriptionProducts(): Promise<NormalizedProduct[]> {
-  const { products } = await getAllProducts({ first: 100 })
+  const { products } = await getAllProducts({ first: 100, includeSubscriptions: true })
   return products.filter((p) => {
     const hasGroup = p.sellingPlanGroups && p.sellingPlanGroups.length > 0
     const hasAllocation = p.variants.some(
       (v) => v.sellingPlanAllocations && v.sellingPlanAllocations.length > 0
     )
-    const isSub = p.handle.includes('sub') || p.name.toLowerCase().includes('subscription')
-    return hasGroup || hasAllocation || isSub
+    return p.isSubscriptionOnly || hasGroup || hasAllocation
   })
 }
 
@@ -324,7 +337,9 @@ export async function getProductRecommendations(productId: string): Promise<Norm
     query: GET_PRODUCT_RECOMMENDATIONS_QUERY,
     variables: { productId },
   })
-  return data.productRecommendations.map(normalizeProduct)
+  return data.productRecommendations
+    .map(normalizeProduct)
+    .filter((p) => !p.isSubscriptionOnly)
 }
 
 export async function getCollectionProducts({
@@ -351,7 +366,7 @@ export async function getCollectionProducts({
 
   return {
     title: data.collection.title,
-    products: data.collection.products.nodes.map(normalizeProduct),
+    products: data.collection.products.nodes.map(normalizeProduct).filter((p) => !p.isSubscriptionOnly),
     hasNextPage: data.collection.products.pageInfo.hasNextPage,
     endCursor: data.collection.products.pageInfo.endCursor,
   }

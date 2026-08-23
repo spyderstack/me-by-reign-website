@@ -72,6 +72,7 @@ export interface ShopifyProduct {
   descriptionHtml: string
   productType: string
   tags: string[]
+  requiresSellingPlan?: boolean
   availableForSale: boolean
   featuredImage: ShopifyImage | null
   images: { nodes: ShopifyImage[] }
@@ -282,6 +283,10 @@ export interface NormalizedProduct {
     rating: number
     count: number
   }
+  requiresSellingPlan?: boolean
+  isSubscriptionOnly?: boolean
+  tags?: string[]
+  productType?: string
   sellingPlanGroups?: ShopifySellingPlanGroup[]
   seo: ShopifySEO
 }

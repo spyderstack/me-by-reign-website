@@ -13,6 +13,7 @@ export const PRODUCT_FRAGMENT = `
     descriptionHtml
     productType
     tags
+    requiresSellingPlan
     availableForSale
     featuredImage {
       url
