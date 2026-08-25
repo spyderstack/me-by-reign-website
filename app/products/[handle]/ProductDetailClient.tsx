@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { ArrowLeft, Check, Plus, Minus, Star, ShareNetwork, CaretRight, ChatTeardropText } from '@phosphor-icons/react'
+import { ArrowLeft, Check, Plus, Minus, Star, ShareNetwork, CaretRight, ChatTeardropText, Sparkle } from '@phosphor-icons/react'
 import { getProductByHandle as getMockDetail } from '@/lib/products-data'
 import { NormalizedProduct } from '@/lib/shopify/types'
 import { useCart } from '@/components/providers/CartProvider'
@@ -46,14 +46,44 @@ export default function ProductDetailClient({
     return selectedVariant?.sellingPlanAllocations || []
   }, [selectedVariant])
 
-  const [purchaseType, setPurchaseType] = useState<'one-time' | 'subscription'>('one-time')
+  const isSubscriptionOnly = Boolean(
+    product.requiresSellingPlan ||
+    product.isSubscriptionOnly ||
+    (sellingPlans.length > 0 && product.requiresSellingPlan)
+  )
+
+  const [purchaseType, setPurchaseType] = useState<'one-time' | 'subscription'>(() => {
+    return isSubscriptionOnly ? 'subscription' : 'one-time'
+  })
   const [selectedSellingPlanId, setSelectedSellingPlanId] = useState<string>('')
 
   useEffect(() => {
-    if (sellingPlans.length > 0) {
-      setSelectedSellingPlanId(sellingPlans[0].sellingPlan.id)
+    if (isSubscriptionOnly) {
+      setPurchaseType('subscription')
     }
-  }, [sellingPlans])
+  }, [isSubscriptionOnly])
+
+  useEffect(() => {
+    if (sellingPlans.length > 0) {
+      if (!selectedSellingPlanId || !sellingPlans.some(sp => sp.sellingPlan.id === selectedSellingPlanId)) {
+        setSelectedSellingPlanId(sellingPlans[0].sellingPlan.id)
+      }
+    }
+  }, [sellingPlans, selectedSellingPlanId])
+
+  const currentSellingPlan = useMemo(() => {
+    return sellingPlans.find(sp => sp.sellingPlan.id === selectedSellingPlanId) || sellingPlans[0]
+  }, [sellingPlans, selectedSellingPlanId])
+
+  const activePrice = purchaseType === 'subscription' && currentSellingPlan
+    ? currentSellingPlan.price
+    : selectedVariant?.price || product.price
+
+  const activeCompareAtPrice = purchaseType === 'subscription' && currentSellingPlan
+    ? currentSellingPlan.compareAtPrice || (currentSellingPlan.price !== (selectedVariant?.price || product.price) ? (selectedVariant?.price || product.price) : null)
+    : selectedVariant?.compareAtPrice
+
+  const hasComparePrice = Boolean(activeCompareAtPrice && activeCompareAtPrice !== activePrice)
 
   const handleOptionSelect = (optionName: string, value: string) => {
     setSelectedOptions(prev => {
@@ -237,20 +267,24 @@ export default function ProductDetailClient({
               </h1>
 
 
-              <div className="flex items-end gap-4 mb-10">
-                <p className="text-3xl font-light text-black" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                  {selectedVariant?.price || product.price}
+              <div className="flex flex-wrap items-baseline gap-4 mb-8">
+                <p className="text-3xl md:text-4xl font-light text-black" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  {activePrice}
                 </p>
-                {selectedVariant?.isOnSale && (
-                  <p className="text-xl text-gray-300 line-through mb-1" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                    {selectedVariant.compareAtPrice}
+                {hasComparePrice && (
+                  <p className="text-xl text-gray-400 line-through" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                    {activeCompareAtPrice}
                   </p>
                 )}
-                {selectedVariant?.isOnSale && (
-                  <span className="mb-2 px-2 py-0.5 bg-black text-white text-[8px] uppercase tracking-widest font-bold">
+                {isSubscriptionOnly ? (
+                  <span className="px-2.5 py-1 bg-[#faf7f2] border border-[#C5A059]/40 text-[#8c6b2d] text-[9px] uppercase tracking-widest font-bold">
+                    Subscription Exclusive
+                  </span>
+                ) : (selectedVariant?.isOnSale || hasComparePrice) ? (
+                  <span className="px-2 py-0.5 bg-black text-white text-[8px] uppercase tracking-widest font-bold">
                     Special Offer
                   </span>
-                )}
+                ) : null}
               </div>
 
               {/* Variant Selectors */}
@@ -288,73 +322,86 @@ export default function ProductDetailClient({
               {/* Purchase Options (One-Time vs Subscribe & Save) */}
               {sellingPlans.length > 0 && (
                 <div className="mb-8 space-y-3">
-                  <p className="text-[10px] uppercase tracking-[0.25em] text-gray-500 font-bold">
-                    Purchase Options
-                  </p>
-
-                  {/* One-Time Purchase */}
-                  <div
-                    onClick={() => setPurchaseType('one-time')}
-                    className={`p-4 border cursor-pointer transition-all ${
-                      purchaseType === 'one-time'
-                        ? 'border-black bg-[#faf9f6]'
-                        : 'border-gray-200 bg-white hover:border-gray-300'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <label className="flex items-center gap-3 cursor-pointer text-xs font-semibold uppercase tracking-wider text-black">
-                        <input
-                          type="radio"
-                          name="purchaseType"
-                          checked={purchaseType === 'one-time'}
-                          onChange={() => setPurchaseType('one-time')}
-                          className="accent-black"
-                        />
-                        One-Time Purchase
-                      </label>
-                      <span className="text-sm font-medium text-black">
-                        {selectedVariant?.price || product.price}
+                  <div className="flex items-center justify-between">
+                    <p className="text-[10px] uppercase tracking-[0.25em] text-gray-500 font-bold">
+                      {isSubscriptionOnly ? 'Subscription Plan' : 'Purchase Options'}
+                    </p>
+                    {isSubscriptionOnly && (
+                      <span className="text-[10px] uppercase tracking-wider text-[#8c6b2d] font-semibold">
+                        Auto-Delivery
                       </span>
-                    </div>
+                    )}
                   </div>
 
-                  {/* Subscribe & Save */}
+                  {/* One-Time Purchase - only show if NOT subscription-only */}
+                  {!isSubscriptionOnly && (
+                    <div
+                      onClick={() => setPurchaseType('one-time')}
+                      className={`p-4 border cursor-pointer transition-all ${
+                        purchaseType === 'one-time'
+                          ? 'border-black bg-[#faf9f6]'
+                          : 'border-gray-200 bg-white hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <label className="flex items-center gap-3 cursor-pointer text-xs font-semibold uppercase tracking-wider text-black">
+                          <input
+                            type="radio"
+                            name="purchaseType"
+                            checked={purchaseType === 'one-time'}
+                            onChange={() => setPurchaseType('one-time')}
+                            className="accent-black"
+                          />
+                          One-Time Purchase
+                        </label>
+                        <span className="text-sm font-medium text-black">
+                          {selectedVariant?.price || product.price}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Subscribe & Save / Subscription Plan */}
                   <div
                     onClick={() => setPurchaseType('subscription')}
-                    className={`p-4 border cursor-pointer transition-all ${
-                      purchaseType === 'subscription'
+                    className={`p-4 md:p-5 border transition-all ${
+                      isSubscriptionOnly || purchaseType === 'subscription'
                         ? 'border-[#C5A059] bg-[#faf7f2] shadow-sm'
-                        : 'border-gray-200 bg-white hover:border-[#C5A059]/40'
+                        : 'border-gray-200 bg-white hover:border-[#C5A059]/40 cursor-pointer'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <label className="flex items-center gap-3 cursor-pointer text-xs font-bold uppercase tracking-wider text-[#8c6b2d]">
-                        <input
-                          type="radio"
-                          name="purchaseType"
-                          checked={purchaseType === 'subscription'}
-                          onChange={() => setPurchaseType('subscription')}
-                          className="accent-[#C5A059]"
-                        />
-                        Subscribe & Save
-                      </label>
+                      <div className="flex items-center gap-3">
+                        {!isSubscriptionOnly && (
+                          <input
+                            type="radio"
+                            name="purchaseType"
+                            checked={purchaseType === 'subscription'}
+                            onChange={() => setPurchaseType('subscription')}
+                            className="accent-[#C5A059]"
+                          />
+                        )}
+                        <span className="text-xs font-bold uppercase tracking-wider text-[#8c6b2d] flex items-center gap-1.5">
+                          <Sparkle size={14} weight="fill" className="text-[#C5A059]" />
+                          {isSubscriptionOnly ? 'Recurring Subscription' : 'Subscribe & Save'}
+                        </span>
+                      </div>
                       <span className="text-sm font-bold text-[#8c6b2d]">
-                        {sellingPlans.find((sp) => sp.sellingPlan.id === selectedSellingPlanId)?.price ||
-                          sellingPlans[0]?.price}
+                        {currentSellingPlan?.price || selectedVariant?.price}
                       </span>
                     </div>
 
-                    {purchaseType === 'subscription' && (
-                      <div className="mt-3 pt-3 border-t border-[#C5A059]/20 space-y-2">
+                    {(isSubscriptionOnly || purchaseType === 'subscription') && (
+                      <div className="mt-3 pt-3 border-t border-[#C5A059]/20 space-y-3">
                         {sellingPlans.length > 1 ? (
                           <div>
-                            <p className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">
+                            <p className="text-[10px] text-gray-500 uppercase tracking-wider mb-1.5 font-bold">
                               Delivery Frequency:
                             </p>
                             <select
                               value={selectedSellingPlanId}
                               onChange={(e) => setSelectedSellingPlanId(e.target.value)}
-                              className="w-full text-xs p-2.5 bg-white border border-[#C5A059]/40 text-black font-medium"
+                              className="w-full text-xs p-2.5 bg-white border border-[#C5A059]/40 text-black font-medium focus:outline-none focus:border-[#8c6b2d]"
                             >
                               {sellingPlans.map((sp) => (
                                 <option key={sp.sellingPlan.id} value={sp.sellingPlan.id}>
@@ -365,11 +412,11 @@ export default function ProductDetailClient({
                           </div>
                         ) : (
                           <p className="text-xs text-[#8c6b2d] font-semibold">
-                            ✨ {sellingPlans[0].sellingPlan.name}
+                            ✨ {currentSellingPlan?.sellingPlan?.name || sellingPlans[0]?.sellingPlan?.name}
                           </p>
                         )}
                         <p className="text-[11px] text-gray-500 italic">
-                          • Recurring automated delivery. Pause, skip, or cancel anytime.
+                          • Recurring automated delivery. Pause, skip, or cancel anytime in your account.
                         </p>
                       </div>
                     )}

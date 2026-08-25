@@ -29,10 +29,13 @@ export function SubscriptionCatalogCard({ product, index }: SubscriptionCatalogC
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: index * 0.15 }}
-      className="group flex flex-col bg-white border border-gray-100 p-6 md:p-8 hover:border-[#C5A059]/40 hover:shadow-lg transition-all duration-500"
+      className="group flex flex-col bg-white border border-[#E2DDD5] shadow-[0_4px_20px_-2px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_36px_-6px_rgba(197,160,89,0.18)] hover:border-[#C5A059] p-7 md:p-9 transition-all duration-500 relative overflow-hidden"
     >
+      {/* Top Gold Accent Bar */}
+      <div className="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-[#C5A059]/30 via-[#C5A059] to-[#C5A059]/30 opacity-75 group-hover:opacity-100 transition-opacity" />
+
       {/* Product Image */}
-      <Link href={`/products/${product.handle}`} className="block relative aspect-[4/3] overflow-hidden bg-[#faf9f6] mb-6">
+      <Link href={`/products/${product.handle}`} className="block relative aspect-[4/3] overflow-hidden bg-[#faf9f6] mb-6 border border-[#ECE7DF]">
         <Image
           src={product.image}
           alt={product.imageAlt}
@@ -41,24 +44,26 @@ export function SubscriptionCatalogCard({ product, index }: SubscriptionCatalogC
           className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
           priority={index === 0}
         />
-        <div className="absolute top-4 left-4 bg-white/95 px-3 py-1 text-[9px] uppercase tracking-[0.25em] font-bold text-[#8c6b2d] flex items-center gap-1.5 shadow-sm">
-          <Sparkle size={12} weight="fill" />
+        <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm border border-[#C5A059]/40 px-3.5 py-1.5 text-[9px] uppercase tracking-[0.25em] font-bold text-[#8c6b2d] flex items-center gap-1.5 shadow-sm">
+          <Sparkle size={12} weight="fill" className="text-[#C5A059]" />
           <span>Subscription Plan</span>
         </div>
       </Link>
 
       {/* Cadence Tag */}
-      <p
-        className="text-[#C5A059] text-[10px] uppercase tracking-[0.25em] font-bold mb-2"
-        style={{ fontFamily: "'Montserrat', sans-serif" }}
-      >
-        {planName}
-      </p>
+      <div className="mb-3">
+        <span
+          className="inline-block px-2.5 py-1 bg-[#FAF7F2] border border-[#C5A059]/30 text-[#8c6b2d] text-[10px] uppercase tracking-[0.25em] font-bold"
+          style={{ fontFamily: "'Montserrat', sans-serif" }}
+        >
+          {planName}
+        </span>
+      </div>
 
       {/* Product Title */}
       <Link href={`/products/${product.handle}`}>
         <h3
-          className="text-2xl md:text-3xl text-black font-serif hover:text-[#C5A059] transition-colors leading-snug mb-3"
+          className="text-2xl md:text-3xl text-black font-serif hover:text-[#8c6b2d] transition-colors leading-snug mb-3"
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
           {product.name}
@@ -67,22 +72,22 @@ export function SubscriptionCatalogCard({ product, index }: SubscriptionCatalogC
 
       {/* Description Snippet */}
       {product.description && (
-        <p className="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-3">
+        <p className="text-neutral-600 text-sm leading-relaxed mb-6 line-clamp-3">
           {product.description}
         </p>
       )}
 
       {/* Customizable Options Summary */}
       {customizableOptions.length > 0 && (
-        <div className="mb-6 pt-4 border-t border-gray-100">
-          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-2.5">
+        <div className="mb-6 pt-5 border-t border-[#ECE7DF]">
+          <p className="text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-3">
             Customizable Options:
           </p>
           <div className="flex flex-wrap gap-2">
             {customizableOptions.map((opt) => (
               <span
                 key={opt.name}
-                className="px-2.5 py-1 bg-[#faf7f2] border border-[#C5A059]/30 text-gray-800 text-[11px] font-medium"
+                className="px-3 py-1.5 bg-[#FAF7F2] border border-[#C5A059]/35 text-neutral-800 text-[11px] font-medium shadow-xs"
               >
                 ✓ {opt.name} ({opt.values.length} {opt.values.length === 1 ? 'choice' : 'scents'})
               </span>
@@ -92,9 +97,9 @@ export function SubscriptionCatalogCard({ product, index }: SubscriptionCatalogC
       )}
 
       {/* Pricing & CTA */}
-      <div className="mt-auto pt-6 border-t border-gray-100 flex items-center justify-between gap-4">
+      <div className="mt-auto pt-6 border-t border-[#ECE7DF] flex items-center justify-between gap-4">
         <div>
-          <p className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold mb-0.5">
+          <p className="text-[10px] uppercase tracking-wider text-neutral-400 font-semibold mb-0.5">
             Recurring Price
           </p>
           <div className="flex items-baseline gap-2">
@@ -104,8 +109,8 @@ export function SubscriptionCatalogCard({ product, index }: SubscriptionCatalogC
             >
               {displayPrice}
             </span>
-            {comparePrice && (
-              <span className="text-sm text-gray-400 line-through">
+            {comparePrice && comparePrice !== '$0.00' && comparePrice !== '$0' && comparePrice !== displayPrice && (
+              <span className="text-sm text-neutral-400 line-through">
                 {comparePrice}
               </span>
             )}
@@ -114,7 +119,7 @@ export function SubscriptionCatalogCard({ product, index }: SubscriptionCatalogC
 
         <Link
           href={`/products/${product.handle}`}
-          className="inline-flex items-center gap-2 px-6 py-3.5 bg-black text-white text-[10px] uppercase tracking-[0.25em] font-bold hover:bg-[#C5A059] transition-all duration-300 group/btn"
+          className="inline-flex items-center gap-2 px-7 py-3.5 bg-black text-white text-[10px] uppercase tracking-[0.25em] font-bold hover:bg-[#C5A059] shadow-sm transition-all duration-300 group/btn"
           style={{ fontFamily: "'Montserrat', sans-serif" }}
         >
           <span>Customize</span>
