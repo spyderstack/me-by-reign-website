@@ -8,6 +8,7 @@ import { getProductByHandle as getMockDetail } from '@/lib/products-data'
 import { NormalizedProduct } from '@/lib/shopify/types'
 import { useCart } from '@/components/providers/CartProvider'
 import ProductReviews from '@/components/product/ProductReviews'
+import { getCategoryForProductType } from '@/lib/categories'
 
 export default function ProductDetailClient({
   product,
@@ -161,23 +162,31 @@ export default function ProductDetailClient({
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-black via-[#2a2010] to-transparent pointer-events-none z-0" />
 
       {/* ── Breadcrumb ── */}
-      <div className="border-b border-gray-100 bg-white relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <Link
-            href="/catalog"
-            className="inline-flex items-center gap-2 text-gray-500 hover:text-black transition-colors group"
-            id="product-back-link"
-          >
-            <ArrowLeft size={16} weight="regular" className="group-hover:-translate-x-1 transition-transform" />
-            <span
-              className="text-xs uppercase tracking-[0.2em]"
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
-            >
-              Back to Catalog
-            </span>
-          </Link>
-        </div>
-      </div>
+      {(() => {
+        const categoryConfig = getCategoryForProductType(product.category)
+        const backHref = categoryConfig ? `/catalog/${categoryConfig.slug}` : '/catalog'
+        const backLabel = categoryConfig ? `Back to ${categoryConfig.title}` : 'Back to Catalog'
+
+        return (
+          <div className="border-b border-gray-100 bg-white relative z-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+              <Link
+                href={backHref}
+                className="inline-flex items-center gap-2 text-gray-500 hover:text-black transition-colors group"
+                id="product-back-link"
+              >
+                <ArrowLeft size={16} weight="regular" className="group-hover:-translate-x-1 transition-transform" />
+                <span
+                  className="text-xs uppercase tracking-[0.2em]"
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                >
+                  {backLabel}
+                </span>
+              </Link>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* ── Main Grid ── */}
       <section className="py-16">

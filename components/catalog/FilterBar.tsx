@@ -1,6 +1,8 @@
 'use client'
 
+import Link from 'next/link'
 import { SortKey } from '@/lib/shopify/types'
+import { CATALOG_CATEGORIES } from '@/lib/categories'
 
 const SORT_OPTIONS: { label: string; value: SortKey }[] = [
   { label: 'Featured',    value: 'MANUAL'       },
@@ -11,20 +13,16 @@ const SORT_OPTIONS: { label: string; value: SortKey }[] = [
 ]
 
 interface FilterBarProps {
-  categories: string[]          // All unique product categories
-  activeCategory: string | null // Currently selected category, null = All
+  activeCategorySlug?: string | null
   activeSort: SortKey
   productCount: number
-  onCategoryChange: (category: string | null) => void
   onSortChange: (sort: SortKey) => void
 }
 
 export function FilterBar({
-  categories,
-  activeCategory,
+  activeCategorySlug = null,
   activeSort,
   productCount,
-  onCategoryChange,
   onSortChange,
 }: FilterBarProps) {
   return (
@@ -32,34 +30,44 @@ export function FilterBar({
       {/* Category Filters */}
       <div className="w-full md:w-auto overflow-x-auto scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
         <div className="flex items-center gap-3 whitespace-nowrap min-w-max pb-1 md:pb-0">
-          <button
-            onClick={() => onCategoryChange(null)}
-            className={`px-5 py-2 text-[10px] uppercase tracking-[0.25em] font-bold border transition-all duration-200 ${
-              activeCategory === null
-                ? 'bg-black text-white border-black'
+          <Link
+            href="/catalog"
+            scroll={false}
+            className={`px-5 py-2 text-[10px] uppercase tracking-[0.25em] font-bold border transition-all duration-200 inline-block ${
+              !activeCategorySlug
+                ? 'bg-black text-white border-black shadow-xs'
                 : 'bg-white text-gray-500 border-gray-200 hover:border-black hover:text-black'
             }`}
             style={{ fontFamily: "'Montserrat', sans-serif" }}
             id="filter-category-all"
           >
             All
-          </button>
+          </Link>
 
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => onCategoryChange(cat)}
-              className={`px-5 py-2 text-[10px] uppercase tracking-[0.25em] font-bold border transition-all duration-200 ${
-                activeCategory === cat
-                  ? 'bg-black text-white border-black'
-                  : 'bg-white text-gray-500 border-gray-200 hover:border-black hover:text-black'
-              }`}
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
-              id={`filter-category-${cat.toLowerCase().replace(/\s+/g, '-')}`}
-            >
-              {cat}
-            </button>
-          ))}
+          {CATALOG_CATEGORIES.map((cat) => {
+            const isSelected =
+              Boolean(activeCategorySlug && (
+                activeCategorySlug.toLowerCase() === cat.slug.toLowerCase() ||
+                cat.aliases.includes(activeCategorySlug.toLowerCase())
+              ))
+
+            return (
+              <Link
+                key={cat.slug}
+                href={`/catalog/${cat.slug}`}
+                scroll={false}
+                className={`px-5 py-2 text-[10px] uppercase tracking-[0.25em] font-bold border transition-all duration-200 inline-block ${
+                  isSelected
+                    ? 'bg-black text-white border-black shadow-xs'
+                    : 'bg-white text-gray-500 border-gray-200 hover:border-black hover:text-black'
+                }`}
+                style={{ fontFamily: "'Montserrat', sans-serif" }}
+                id={`filter-category-${cat.slug}`}
+              >
+                {cat.title}
+              </Link>
+            )
+          })}
         </div>
       </div>
 

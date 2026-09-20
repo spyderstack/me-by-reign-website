@@ -5,11 +5,12 @@ import { InstagramLogo, FacebookLogo, TiktokLogo, ArrowRight } from '@phosphor-i
 import Image from 'next/image'
 
 const discoverLinks = [
+  { label: 'All Products', href: '/catalog' },
+  { label: 'Body Butters', href: '/catalog/body-butters' },
+  { label: 'Soaps and Scrubs', href: '/catalog/soaps-and-scrubs' },
+  { label: 'Candles', href: '/catalog/candles' },
+  { label: 'Other Essentials', href: '/catalog/other' },
   { label: 'Curated Subscriptions', href: '/subscriptions' },
-  { label: 'Skincare Collection', href: '/catalog' },
-  { label: 'Home Decor', href: '/catalog' },
-  { label: 'New Arrivals', href: '/catalog' },
-  { label: 'Best Sellers', href: '/catalog' },
 ]
 
 const infoLinks = [

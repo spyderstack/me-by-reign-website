@@ -42,6 +42,8 @@ export async function generateMetadata({
 
 export const revalidate = 60
 
+import { getCategoryForProductType } from '@/lib/categories'
+
 export default async function ProductDetailPage({
   params,
 }: {
@@ -53,17 +55,21 @@ export default async function ProductDetailPage({
   if (!product) notFound()
 
   const relatedProducts = await getProductRecommendations(product.id)
+  const categoryConfig = getCategoryForProductType(product.category)
+
+  const breadcrumbItems = [
+    { name: 'Home', href: '/' },
+    { name: 'Catalog', href: '/catalog' },
+    ...(categoryConfig
+      ? [{ name: categoryConfig.title, href: `/catalog/${categoryConfig.slug}` }]
+      : []),
+    { name: product.name, href: `/products/${product.handle}` },
+  ]
 
   return (
     <>
       <ProductJsonLd product={product} />
-      <BreadcrumbJsonLd
-        items={[
-          { name: 'Home', href: '/' },
-          { name: 'Catalog', href: '/catalog' },
-          { name: product.name, href: `/products/${product.handle}` },
-        ]}
-      />
+      <BreadcrumbJsonLd items={breadcrumbItems} />
       <ProductDetailClient product={product} relatedProducts={relatedProducts} />
     </>
   )

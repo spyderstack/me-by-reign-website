@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState, useMemo } from 'react'
+import Link from 'next/link'
 import { useInView } from 'motion/react'
 import { FilterBar } from './FilterBar'
 import { ProductCard } from './ProductCard'
@@ -9,6 +10,7 @@ import { NormalizedProduct, SortKey } from '@/lib/shopify/types'
 interface CatalogGridProps {
   initialProducts: NormalizedProduct[]
   title?: string
+  activeCategorySlug?: string | null
 }
 
 function sortProducts(products: NormalizedProduct[], sort: SortKey): NormalizedProduct[] {
@@ -35,27 +37,17 @@ function sortProducts(products: NormalizedProduct[], sort: SortKey): NormalizedP
   }
 }
 
-export function CatalogGrid({ initialProducts }: CatalogGridProps) {
+export function CatalogGrid({
+  initialProducts,
+  activeCategorySlug = null,
+}: CatalogGridProps) {
   const gridRef = useRef(null)
   const isGridVisible = useInView(gridRef, { once: true, margin: '-60px' })
-
-  const categories = useMemo(() => {
-    const seen = new Set<string>()
-    initialProducts.forEach((p) => { 
-      if (p.category) seen.add(p.category) 
-    })
-    return Array.from(seen).sort()
-  }, [initialProducts])
-
-  const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [activeSort, setActiveSort] = useState<SortKey>('MANUAL')
 
   const filteredProducts = useMemo(() => {
-    let base = activeCategory
-      ? initialProducts.filter((p) => p.category === activeCategory)
-      : initialProducts
-    return sortProducts(base, activeSort)
-  }, [initialProducts, activeCategory, activeSort])
+    return sortProducts(initialProducts, activeSort)
+  }, [initialProducts, activeSort])
 
   return (
     <>
@@ -66,11 +58,9 @@ export function CatalogGrid({ initialProducts }: CatalogGridProps) {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <FilterBar
-            categories={categories}
-            activeCategory={activeCategory}
+            activeCategorySlug={activeCategorySlug}
             activeSort={activeSort}
             productCount={filteredProducts.length}
-            onCategoryChange={setActiveCategory}
             onSortChange={setActiveSort}
           />
         </div>
@@ -78,7 +68,7 @@ export function CatalogGrid({ initialProducts }: CatalogGridProps) {
 
       {/* ── Product Grid ── */}
       <section className="bg-white">
-        <div 
+        <div
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-100 pb-32 md:pb-100"
           style={{ paddingTop: 'calc(var(--banner-height, 0px) + 50px)', paddingBottom: '4rem' }}
         >
@@ -116,13 +106,13 @@ export function CatalogGrid({ initialProducts }: CatalogGridProps) {
                 >
                   Try a different category or browse the full collection.
                 </p>
-                <button
-                  onClick={() => setActiveCategory(null)}
+                <Link
+                  href="/catalog"
                   className="px-10 py-3.5 border border-black text-[11px] uppercase tracking-[0.25em] font-semibold hover:bg-black hover:text-white transition-all duration-300"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
                   View All
-                </button>
+                </Link>
               </div>
             )}
           </div>

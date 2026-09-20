@@ -32,6 +32,10 @@ export const revalidate = 60
 export default async function CatalogPage() {
   const { products } = await getAllProducts({ first: 100 })
 
+  const allCategories = Array.from(
+    new Set(products.map((p) => p.category).filter((c): c is string => Boolean(c && c.trim())))
+  ).sort()
+
   return (
     <main className="min-h-screen bg-white text-gray-900 antialiased">
       <CollectionJsonLd
@@ -50,7 +54,10 @@ export default async function CatalogPage() {
       <HeroSection title="The Collection" />
 
       {/* ── INTERACTIVE GRID (Filter/Sort/Grid) ── */}
-      <CatalogGrid initialProducts={products} />
+      <CatalogGrid
+        initialProducts={products}
+        activeCategorySlug={null}
+      />
     </main>
   )
 }

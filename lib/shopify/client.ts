@@ -30,6 +30,7 @@ import {
   GET_SHOP_SETTINGS_QUERY,
   GET_ALL_ARTICLES_QUERY,
   GET_ARTICLE_BY_HANDLE_QUERY,
+  GET_ALL_COLLECTIONS_QUERY,
 } from './queries'
 
 // ─── Config ──────────────────────────────────────────────────────────────────
@@ -358,17 +359,43 @@ export async function getCollectionProducts({
         nodes: ShopifyProduct[]
         pageInfo: { hasNextPage: boolean; endCursor: string | null }
       }
-    }
+    } | null
   }>({
     query: GET_COLLECTION_QUERY,
     variables: { handle, first, after },
   })
+
+  if (!data.collection) {
+    return {
+      title: '',
+      products: [],
+      hasNextPage: false,
+      endCursor: null,
+    }
+  }
 
   return {
     title: data.collection.title,
     products: data.collection.products.nodes.map(normalizeProduct).filter((p) => !p.isSubscriptionOnly),
     hasNextPage: data.collection.products.pageInfo.hasNextPage,
     endCursor: data.collection.products.pageInfo.endCursor,
+  }
+}
+
+export async function getAllCollections(first = 50): Promise<{ id: string; handle: string; title: string }[]> {
+  try {
+    const data = await shopifyFetch<{
+      collections: {
+        nodes: { id: string; handle: string; title: string }[]
+      }
+    }>({
+      query: GET_ALL_COLLECTIONS_QUERY,
+      variables: { first },
+    })
+    return data.collections?.nodes || []
+  } catch (error) {
+    console.error('[Shopify] Error fetching collections:', error)
+    return []
   }
 }
 

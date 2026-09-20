@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
 import { getAllProducts, getAllArticles } from '@/lib/shopify/client'
 import { siteConfig } from '@/lib/site-config'
+import { CATALOG_CATEGORIES } from '@/lib/categories'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = siteConfig.url
@@ -16,6 +17,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.7,
+  }))
+
+  const categoryEntries = CATALOG_CATEGORIES.map((cat) => ({
+    url: `${baseUrl}/catalog/${cat.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
   }))
 
   const articleEntries = articles.map((article) => ({
@@ -39,6 +47,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${baseUrl}/subscriptions`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.8,
+    },
+    {
       url: `${baseUrl}/blog`,
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
@@ -58,5 +72,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
-  return [...staticEntries, ...productEntries, ...articleEntries]
+  return [...staticEntries, ...categoryEntries, ...productEntries, ...articleEntries]
 }
