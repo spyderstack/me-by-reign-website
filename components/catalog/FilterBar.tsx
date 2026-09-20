@@ -1,6 +1,8 @@
 'use client'
 
+import { useState, useRef, useEffect, useCallback } from 'react'
 import Link from 'next/link'
+import { CaretLeft, CaretRight } from '@phosphor-icons/react'
 import { SortKey } from '@/lib/shopify/types'
 import { CATALOG_CATEGORIES } from '@/lib/categories'
 
@@ -25,49 +27,125 @@ export function FilterBar({
   productCount,
   onSortChange,
 }: FilterBarProps) {
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
+
+  const checkScroll = useCallback(() => {
+    const el = scrollContainerRef.current
+    if (!el) return
+    const { scrollLeft, scrollWidth, clientWidth } = el
+    // 4px tolerance buffer for sub-pixel rendering
+    setCanScrollLeft(scrollLeft > 4)
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 4)
+  }, [])
+
+  useEffect(() => {
+    checkScroll()
+    const rafId = requestAnimationFrame(checkScroll)
+    const timer = setTimeout(checkScroll, 100)
+
+    window.addEventListener('resize', checkScroll)
+    return () => {
+      cancelAnimationFrame(rafId)
+      clearTimeout(timer)
+      window.removeEventListener('resize', checkScroll)
+    }
+  }, [checkScroll])
+
+  const handleScroll = (direction: 'left' | 'right') => {
+    const el = scrollContainerRef.current
+    if (!el) return
+    const maxScroll = el.scrollWidth - el.clientWidth
+    el.scrollTo({
+      left: direction === 'right' ? maxScroll : 0,
+      behavior: 'smooth',
+    })
+  }
+
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-      {/* Category Filters */}
-      <div className="w-full md:w-auto overflow-x-auto scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
-        <div className="flex items-center gap-3 whitespace-nowrap min-w-max pb-1 md:pb-0">
-          <Link
-            href="/catalog"
-            scroll={false}
-            className={`px-5 py-2 text-[10px] uppercase tracking-[0.25em] font-bold border transition-all duration-200 inline-block ${
-              !activeCategorySlug
-                ? 'bg-black text-white border-black shadow-xs'
-                : 'bg-white text-gray-500 border-gray-200 hover:border-black hover:text-black'
-            }`}
-            style={{ fontFamily: "'Montserrat', sans-serif" }}
-            id="filter-category-all"
+      {/* Category Filters Container with Scroll Indicator Arrows */}
+      <div className="relative w-full md:w-auto -mx-4 px-4 md:mx-0 md:px-0">
+        {/* Left Arrow with soft gradient fade */}
+        <div
+          className={`absolute left-0 top-0 bottom-0 z-10 flex items-center pl-2 pr-4 bg-gradient-to-r from-white via-white/90 to-transparent transition-opacity duration-200 md:hidden ${
+            canScrollLeft ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
+        >
+          <button
+            type="button"
+            onClick={() => handleScroll('left')}
+            aria-label="Scroll categories left"
+            className="w-7 h-7 rounded-full bg-white border border-black/15 shadow-sm flex items-center justify-center text-black hover:border-black active:scale-90 transition-all cursor-pointer"
           >
-            All
-          </Link>
+            <CaretLeft weight="bold" className="w-3.5 h-3.5" />
+          </button>
+        </div>
 
-          {CATALOG_CATEGORIES.map((cat) => {
-            const isSelected =
-              Boolean(activeCategorySlug && (
-                activeCategorySlug.toLowerCase() === cat.slug.toLowerCase() ||
-                cat.aliases.includes(activeCategorySlug.toLowerCase())
-              ))
+        {/* Right Arrow with soft gradient fade */}
+        <div
+          className={`absolute right-0 top-0 bottom-0 z-10 flex items-center pr-2 pl-4 bg-gradient-to-l from-white via-white/90 to-transparent transition-opacity duration-200 md:hidden ${
+            canScrollRight ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
+        >
+          <button
+            type="button"
+            onClick={() => handleScroll('right')}
+            aria-label="Scroll categories right"
+            className="w-7 h-7 rounded-full bg-white border border-black/15 shadow-sm flex items-center justify-center text-black hover:border-black active:scale-90 transition-all cursor-pointer"
+          >
+            <CaretRight weight="bold" className="w-3.5 h-3.5" />
+          </button>
+        </div>
 
-            return (
-              <Link
-                key={cat.slug}
-                href={`/catalog/${cat.slug}`}
-                scroll={false}
-                className={`px-5 py-2 text-[10px] uppercase tracking-[0.25em] font-bold border transition-all duration-200 inline-block ${
-                  isSelected
-                    ? 'bg-black text-white border-black shadow-xs'
-                    : 'bg-white text-gray-500 border-gray-200 hover:border-black hover:text-black'
-                }`}
-                style={{ fontFamily: "'Montserrat', sans-serif" }}
-                id={`filter-category-${cat.slug}`}
-              >
-                {cat.title}
-              </Link>
-            )
-          })}
+        {/* Scrollable Rail */}
+        <div
+          ref={scrollContainerRef}
+          onScroll={checkScroll}
+          className="overflow-x-auto scrollbar-hide scroll-smooth py-0.5"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
+          <div className="flex items-center gap-2.5 sm:gap-3 whitespace-nowrap min-w-max pr-3 md:pr-0">
+            <Link
+              href="/catalog"
+              scroll={false}
+              className={`px-5 py-2 text-[10px] uppercase tracking-[0.25em] font-bold border transition-all duration-200 inline-block flex-shrink-0 ${
+                !activeCategorySlug
+                  ? 'bg-black text-white border-black shadow-xs'
+                  : 'bg-white text-gray-500 border-gray-200 hover:border-black hover:text-black'
+              }`}
+              style={{ fontFamily: "'Montserrat', sans-serif" }}
+              id="filter-category-all"
+            >
+              All
+            </Link>
+
+            {CATALOG_CATEGORIES.map((cat) => {
+              const isSelected =
+                Boolean(activeCategorySlug && (
+                  activeCategorySlug.toLowerCase() === cat.slug.toLowerCase() ||
+                  cat.aliases.includes(activeCategorySlug.toLowerCase())
+                ))
+
+              return (
+                <Link
+                  key={cat.slug}
+                  href={`/catalog/${cat.slug}`}
+                  scroll={false}
+                  className={`px-5 py-2 text-[10px] uppercase tracking-[0.25em] font-bold border transition-all duration-200 inline-block flex-shrink-0 ${
+                    isSelected
+                      ? 'bg-black text-white border-black shadow-xs'
+                      : 'bg-white text-gray-500 border-gray-200 hover:border-black hover:text-black'
+                  }`}
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  id={`filter-category-${cat.slug}`}
+                >
+                  {cat.title}
+                </Link>
+              )
+            })}
+          </div>
         </div>
       </div>
 

@@ -51,7 +51,10 @@ export default async function CatalogPage() {
       />
 
       {/* ── HERO ── */}
-      <HeroSection title="The Collection" />
+      <HeroSection
+        title="The Collection"
+        description="Explore our complete collection of artisan skincare and luxury home essentials, crafted with botanical integrity to elevate your daily self-care rituals."
+      />
 
       {/* ── INTERACTIVE GRID (Filter/Sort/Grid) ── */}
       <CatalogGrid

@@ -26,11 +26,12 @@ export const CATALOG_CATEGORIES: CategoryConfig[] = [
   },
   {
     slug: 'soaps-and-scrubs',
-    title: 'Soaps and Scrubs',
+    title: 'Soaps & Scrubs',
     eyebrow: 'Cleanse & Renew',
     description:
-      'Cold-processed artisan soaps and gentle exfoliating sugar scrubs crafted to cleanse, polish, and replenish your skin.',
+      'Cold-processed artisan soaps and gentle exfoliating sugar scrubs crafted to cleanse, polish, and replenish your skin with soothing botanical nourishment.',
     aliases: [
+      'soaps-and-scrubs',
       'soaps-scrubs',
       'soaps',
       'soap',
@@ -55,7 +56,7 @@ export const CATALOG_CATEGORIES: CategoryConfig[] = [
     title: 'Other',
     eyebrow: 'ME byReign Collection',
     description:
-      'Explore our curated collection of botanical body oils, ambient room diffusers, wellness tools, and signature gift sets.',
+      'Explore our curated collection of botanical body oils, ambient room diffusers, wellness tools, and signature gift sets designed for everyday indulgence.',
     aliases: [
       'body-oils',
       'body-oil',
