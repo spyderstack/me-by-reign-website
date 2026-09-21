@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { CaretLeft, CaretRight } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowRight } from '@phosphor-icons/react'
 import { SortKey } from '@/lib/shopify/types'
 import { CATALOG_CATEGORIES } from '@/lib/categories'
 
@@ -66,10 +66,10 @@ export function FilterBar({
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
       {/* Category Filters Container with Scroll Indicator Arrows */}
-      <div className="relative w-full md:w-auto -mx-4 px-4 md:mx-0 md:px-0">
+      <div className="relative w-[calc(100%+2rem)] md:w-auto -mx-4 px-4 md:mx-0 md:px-0">
         {/* Left Arrow with soft gradient fade */}
         <div
-          className={`absolute left-0 top-0 bottom-0 z-10 flex items-center pl-2 pr-4 bg-gradient-to-r from-white via-white/90 to-transparent transition-opacity duration-200 md:hidden ${
+          className={`absolute left-0 top-0 h-9 z-10 flex items-center pl-3 pr-7 bg-gradient-to-r from-white via-white/95 to-transparent transition-opacity duration-200 md:hidden ${
             canScrollLeft ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}
         >
@@ -77,15 +77,15 @@ export function FilterBar({
             type="button"
             onClick={() => handleScroll('left')}
             aria-label="Scroll categories left"
-            className="w-7 h-7 rounded-full bg-white border border-black/15 shadow-sm flex items-center justify-center text-black hover:border-black active:scale-90 transition-all cursor-pointer"
+            className="flex items-center justify-center text-black hover:text-[#C5A059] active:scale-90 transition-all cursor-pointer"
           >
-            <CaretLeft weight="bold" className="w-3.5 h-3.5" />
+            <ArrowLeft weight="bold" className="w-4 h-4" />
           </button>
         </div>
 
         {/* Right Arrow with soft gradient fade */}
         <div
-          className={`absolute right-0 top-0 bottom-0 z-10 flex items-center pr-2 pl-4 bg-gradient-to-l from-white via-white/90 to-transparent transition-opacity duration-200 md:hidden ${
+          className={`absolute right-0 top-0 h-9 z-10 flex items-center pr-3 pl-7 bg-gradient-to-l from-white via-white/95 to-transparent transition-opacity duration-200 md:hidden ${
             canScrollRight ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}
         >
@@ -93,9 +93,9 @@ export function FilterBar({
             type="button"
             onClick={() => handleScroll('right')}
             aria-label="Scroll categories right"
-            className="w-7 h-7 rounded-full bg-white border border-black/15 shadow-sm flex items-center justify-center text-black hover:border-black active:scale-90 transition-all cursor-pointer"
+            className="flex items-center justify-center text-black hover:text-[#C5A059] active:scale-90 transition-all cursor-pointer"
           >
-            <CaretRight weight="bold" className="w-3.5 h-3.5" />
+            <ArrowRight weight="bold" className="w-4 h-4" />
           </button>
         </div>
 
@@ -103,14 +103,14 @@ export function FilterBar({
         <div
           ref={scrollContainerRef}
           onScroll={checkScroll}
-          className="overflow-x-auto scrollbar-hide scroll-smooth py-0.5"
+          className="overflow-x-auto scrollbar-hide scroll-smooth"
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
-          <div className="flex items-center gap-2.5 sm:gap-3 whitespace-nowrap min-w-max pr-3 md:pr-0">
+          <div className="flex items-center h-9 gap-2.5 sm:gap-3 whitespace-nowrap min-w-max">
             <Link
               href="/catalog"
               scroll={false}
-              className={`px-5 py-2 text-[10px] uppercase tracking-[0.25em] font-bold border transition-all duration-200 inline-block flex-shrink-0 ${
+              className={`h-9 flex items-center justify-center px-5 text-[10px] uppercase tracking-[0.25em] font-bold border transition-all duration-200 flex-shrink-0 leading-none ${
                 !activeCategorySlug
                   ? 'bg-black text-white border-black shadow-xs'
                   : 'bg-white text-gray-500 border-gray-200 hover:border-black hover:text-black'
@@ -133,7 +133,7 @@ export function FilterBar({
                   key={cat.slug}
                   href={`/catalog/${cat.slug}`}
                   scroll={false}
-                  className={`px-5 py-2 text-[10px] uppercase tracking-[0.25em] font-bold border transition-all duration-200 inline-block flex-shrink-0 ${
+                  className={`h-9 flex items-center justify-center px-5 text-[10px] uppercase tracking-[0.25em] font-bold border transition-all duration-200 flex-shrink-0 leading-none ${
                     isSelected
                       ? 'bg-black text-white border-black shadow-xs'
                       : 'bg-white text-gray-500 border-gray-200 hover:border-black hover:text-black'
