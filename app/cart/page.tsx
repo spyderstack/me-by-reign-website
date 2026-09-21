@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Minus, Plus, X, ShoppingBag } from '@phosphor-icons/react'
 import { useCart } from '@/components/providers/CartProvider'
@@ -53,13 +53,38 @@ function EmptyCart() {
 // ─── Cart Page ────────────────────────────────────────────────────────────────
 
 export default function CartPage() {
-  const { cart, isLoading, updateItem, removeItem } = useCart()
+  const { cart, isLoading, updateItem, removeItem, refreshCart } = useCart()
   const [isCheckingOut, setIsCheckingOut] = useState(false)
+  const checkoutTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Reset checkout state when user navigates back to this page
+  // Reset checkout state when user navigates back to this page (bfcache restore, focus, visibility)
   useEffect(() => {
-    setIsCheckingOut(false)
-  }, [])
+    const handlePageShow = (event: PageTransitionEvent) => {
+      setIsCheckingOut(false)
+      if (event.persisted) {
+        refreshCart?.()
+      }
+    }
+
+    const handleVisibilityOrFocus = () => {
+      if (document.visibilityState === 'visible') {
+        setIsCheckingOut(false)
+      }
+    }
+
+    window.addEventListener('pageshow', handlePageShow)
+    window.addEventListener('focus', handleVisibilityOrFocus)
+    document.addEventListener('visibilitychange', handleVisibilityOrFocus)
+
+    return () => {
+      window.removeEventListener('pageshow', handlePageShow)
+      window.removeEventListener('focus', handleVisibilityOrFocus)
+      document.removeEventListener('visibilitychange', handleVisibilityOrFocus)
+      if (checkoutTimeoutRef.current) {
+        clearTimeout(checkoutTimeoutRef.current)
+      }
+    }
+  }, [refreshCart])
 
   const handleUpdateQuantity = async (lineId: string, qty: number) => {
     if (qty <= 0) {
@@ -73,6 +98,12 @@ export default function CartPage() {
     if (!cart?.checkoutUrl) return
     setIsCheckingOut(true)
     window.location.href = cart.checkoutUrl
+
+    // Option 3: Safety fallback timeout to re-enable if navigation is cancelled, delayed, or user returns
+    if (checkoutTimeoutRef.current) clearTimeout(checkoutTimeoutRef.current)
+    checkoutTimeoutRef.current = setTimeout(() => {
+      setIsCheckingOut(false)
+    }, 5000)
   }
 
   // Handle Loading state for the initial fetch

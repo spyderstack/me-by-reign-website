@@ -100,12 +100,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const refreshCart = async () => {
+  const refreshCart = useCallback(async () => {
     const cartId = localStorage.getItem(CART_ID_KEY)
     if (cartId) {
       await fetchCart(cartId)
     }
-  }
+  }, [fetchCart])
 
   return (
     <CartContext.Provider value={{ cart, isLoading, addItem, updateItem, removeItem, refreshCart }}>
