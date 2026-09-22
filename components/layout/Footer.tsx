@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { InstagramLogo, FacebookLogo, TiktokLogo, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 import Image from 'next/image'
+import { SubscribeForm } from '@/components/newsletter/SubscribeForm'
 
 const discoverLinks = [
   { label: 'All Products', href: '/catalog' },
@@ -15,6 +16,7 @@ const discoverLinks = [
 
 const infoLinks = [
   { label: 'About Us', href: '/our-story' },
+  { label: 'Newsletter', href: '/subscribe' },
   { label: 'Contact', href: '/contact' },
 ]
 
@@ -32,6 +34,29 @@ export function Footer({ policies }: FooterProps) {
       <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-[#C5A059] to-transparent opacity-50 mb-16" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Newsletter Section */}
+        <div className="border-b border-gray-800/80 pb-16 mb-16 text-center max-w-2xl mx-auto">
+          <p
+            className="text-[10px] tracking-[0.3em] uppercase text-[#C5A059] mb-2 font-semibold"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+          >
+            The Inner Sanctuary
+          </p>
+          <h3
+            className="text-2xl sm:text-3xl font-medium tracking-wide text-white mb-3"
+            style={{ fontFamily: "'Playfair Display', serif" }}
+          >
+            Subscribe to <span className="italic text-[#C5A059]">ME byREIGN</span>
+          </h3>
+          <p
+            className="text-gray-400 text-xs sm:text-sm max-w-md mx-auto mb-6 leading-relaxed"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+          >
+            Receive private invitations, seasonal batch releases, and botanical skincare rituals.
+          </p>
+          <SubscribeForm variant="inline" idPrefix="footer-sub" className="max-w-lg mx-auto" />
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
 
           {/* Brand Column */}
@@ -157,12 +182,23 @@ export function Footer({ policies }: FooterProps) {
 
           {/* Contact Column */}
           <div>
-            {/* Contact Button */}
+            <h3
+              className="text-xs uppercase tracking-[0.25em] text-white mb-6 font-semibold"
+              style={{ fontFamily: "'Montserrat', sans-serif" }}
+            >
+              Contact Us
+            </h3>
+            <p
+              className="text-gray-400 text-sm leading-relaxed mb-6"
+              style={{ fontFamily: "'Montserrat', sans-serif" }}
+            >
+              Have a question about an order or our artisan formulations? We are here to help.
+            </p>
             <div>
               <Link
                 href="/contact"
                 onClick={() => window.scrollTo(0, 0)}
-                className="inline-flex items-center gap-2 border border-[#C5A059] px-6 py-3 text-[10px] uppercase tracking-[0.2em] font-bold text-[#C5A059] hover:bg-[#C5A059] hover:text-white transition-all duration-300 transition-colors"
+                className="inline-flex items-center gap-2 border border-[#C5A059] px-6 py-3 text-[10px] uppercase tracking-[0.2em] font-bold text-[#C5A059] hover:bg-[#C5A059] hover:text-white transition-all duration-300"
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
                 id="footer-contact-button"
               >
