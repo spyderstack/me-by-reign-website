@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Sparkle, ShieldCheck, EnvelopeOpen, Gift } from '@phosphor-icons/react/dist/ssr'
+import { Sparkle, EnvelopeOpen, Gift } from '@phosphor-icons/react/dist/ssr'
 import { SubscribeForm } from '@/components/newsletter/SubscribeForm'
 import { siteConfig } from '@/lib/site-config'
 
@@ -84,15 +84,6 @@ export default function SubscribePage() {
             idPrefix="subscribe-page"
           />
 
-          <div className="mt-6 pt-6 border-t border-white/5 flex items-center justify-center gap-2 text-gray-500 text-[11px]">
-            <ShieldCheck size={14} className="text-[#C5A059]" />
-            <span style={{ fontFamily: "'Montserrat', sans-serif" }}>
-              Respecting your privacy. We never share your details.{' '}
-              <Link href="/privacy" className="text-gray-400 underline hover:text-[#C5A059]">
-                Privacy Policy
-              </Link>
-            </span>
-          </div>
         </div>
       </section>
 
